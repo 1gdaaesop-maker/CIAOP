@@ -807,10 +807,9 @@
     // ==============================
     const STORAGE_KEY_V2 = 'qmf2026_state_v2';
     const STORAGE_KEY_V1 = 'qmf2026_state_v1';
-    const AUTH_SESSION_KEY = 'qmf2026_auth_session';
     const AUTH_EDITOR_NAME_KEY = 'qmf2026_auth_editor_name';
-    const LOGIN_USERNAME = 'SOP1GDAAE';
-    const LOGIN_PASSWORD = 'quemlerégay';
+    const AUTH_EMAIL_KEY = 'qmf2026_auth_email';
+    const SYSTEM_LOGIN_LABEL = 'Firebase Authentication';
     const PUBLIC_TAB_ID = 'tab3';
     const YEAR = 2026;
     const PTGRAD_OPTIONS = ["CL", "TC", "MJ", "CP", "1T", "2T", "SO", "1S", "2S", "3S", "CB", "S1", "S2"];
@@ -844,6 +843,10 @@
     const BOARD_WIDTHS = { ptgrad: 56, nomeGuerra: 108, trigrama: 50, mission: 26, day: 18 };
 
     let state = loadState();
+    let firebaseReady = false;
+    let authUser = null;
+    let cloudSyncEnabled = false;
+    let cloudPublicMode = true;
 
     // ==============================
     // Utilidades
@@ -866,21 +869,38 @@
     }
 
     function isAuthenticated() {
-      return sessionStorage.getItem(AUTH_SESSION_KEY) === '1';
+      return !!authUser;
     }
 
     function getAuthenticatedEditorName() {
       return sessionStorage.getItem(AUTH_EDITOR_NAME_KEY) || '';
     }
 
-    function setAuthenticated(value, editorName = '') {
-      if (value) {
-        sessionStorage.setItem(AUTH_SESSION_KEY, '1');
-        sessionStorage.setItem(AUTH_EDITOR_NAME_KEY, String(editorName || '').trim());
-      } else {
-        sessionStorage.removeItem(AUTH_SESSION_KEY);
-        sessionStorage.removeItem(AUTH_EDITOR_NAME_KEY);
+    function getAuthenticatedEmail() {
+      return authUser?.email || sessionStorage.getItem(AUTH_EMAIL_KEY) || '';
+    }
+
+    function applyAuthContext(user = null, editorName = undefined) {
+      authUser = user || null;
+      if (typeof editorName === 'string') {
+        const cleanName = editorName.trim();
+        if (cleanName) sessionStorage.setItem(AUTH_EDITOR_NAME_KEY, cleanName);
+        else sessionStorage.removeItem(AUTH_EDITOR_NAME_KEY);
       }
+      if (authUser?.email) sessionStorage.setItem(AUTH_EMAIL_KEY, authUser.email);
+      else sessionStorage.removeItem(AUTH_EMAIL_KEY);
+      renderMenu();
+    }
+
+    function setCloudMode(enabled, publicOnly = false) {
+      cloudSyncEnabled = !!enabled;
+      cloudPublicMode = !!publicOnly;
+      renderMenu();
+    }
+
+    function markFirebaseReady(value) {
+      firebaseReady = !!value;
+      renderMenu();
     }
 
     function requireAuth() {
@@ -1146,9 +1166,19 @@
           id: item.id || uid('log'),
           timestamp: item.timestamp || item.dateTime || new Date().toISOString(),
           editorName: String(item.editorName || item.nome || item.userName || '').trim(),
-          systemUser: String(item.systemUser || item.login || LOGIN_USERNAME).trim() || LOGIN_USERNAME
+          systemUser: String(item.systemUser || item.login || item.email || SYSTEM_LOGIN_LABEL).trim() || SYSTEM_LOGIN_LABEL
         }))
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    }
+
+    function normalizeStateData(rawState = {}) {
+      return {
+        personnel: normalizePersonnel(rawState.personnel),
+        missions: normalizeMissions(rawState.missions),
+        assignments: normalizeAssignments(rawState.assignments),
+        financial: normalizeFinancial(rawState.financial),
+        accessLogs: normalizeAccessLogs(rawState.accessLogs)
+      };
     }
 
     function loadState() {
@@ -1156,21 +1186,22 @@
         const rawV2 = localStorage.getItem(STORAGE_KEY_V2);
         const rawV1 = localStorage.getItem(STORAGE_KEY_V1);
         const parsed = rawV2 ? JSON.parse(rawV2) : (rawV1 ? JSON.parse(rawV1) : {});
-        return {
-          personnel: normalizePersonnel(parsed.personnel),
-          missions: normalizeMissions(parsed.missions),
-          assignments: normalizeAssignments(parsed.assignments),
-          financial: normalizeFinancial(parsed.financial),
-          accessLogs: normalizeAccessLogs(parsed.accessLogs)
-        };
+        return normalizeStateData(parsed);
       } catch (error) {
         console.error('Erro ao carregar estado:', error);
-        return { personnel: [], missions: [], assignments: {}, financial: buildDefaultFinancial(), accessLogs: [] };
+        return normalizeStateData({});
       }
     }
 
-    function saveState() {
+    function writeLocalCache() {
       localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(state));
+    }
+
+    function saveState() {
+      writeLocalCache();
+      if (cloudSyncEnabled && typeof window.queueCloudSave === 'function') {
+        window.queueCloudSave();
+      }
     }
 
     function recordLoginAccess(editorName) {
@@ -1179,9 +1210,71 @@
         id: uid('log'),
         timestamp: new Date().toISOString(),
         editorName: String(editorName || '').trim(),
-        systemUser: LOGIN_USERNAME
+        systemUser: getAuthenticatedEmail() || SYSTEM_LOGIN_LABEL
       });
       state.accessLogs = state.accessLogs.slice(0, 1000);
+      writeLocalCache();
+    }
+
+    function getPrivateCloudPayload() {
+      return {
+        personnel: state.personnel,
+        missions: state.missions,
+        assignments: state.assignments,
+        financial: state.financial,
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function getPublicCloudPayload() {
+      return {
+        personnel: state.personnel.map(person => ({
+          id: person.id,
+          ptgrad: person.ptgrad,
+          quadro: person.quadro,
+          nomeGuerra: person.nomeGuerra,
+          trigrama: person.trigrama,
+          ferias: person.ferias || []
+        })),
+        missions: state.missions.map(mission => ({
+          id: mission.id,
+          name: mission.name,
+          start: mission.start,
+          end: mission.end,
+          color: mission.color,
+          stateUf: mission.stateUf,
+          stateName: mission.stateName,
+          city: mission.city
+        })),
+        assignments: state.assignments,
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function applyPrivateCloudState(rawState) {
+      state = normalizeStateData(rawState || {});
+      writeLocalCache();
+      renderAll();
+    }
+
+    function applyPublicCloudState(rawState) {
+      const nextState = normalizeStateData({
+        personnel: rawState?.personnel || [],
+        missions: rawState?.missions || [],
+        assignments: rawState?.assignments || {},
+        financial: state?.financial || buildDefaultFinancial(),
+        accessLogs: state?.accessLogs || []
+      });
+      state = nextState;
+      writeLocalCache();
+      renderAll();
+      if (!isAuthenticated()) setActiveTab(PUBLIC_TAB_ID);
+    }
+
+    function applyCloudAccessLogs(rawLogs) {
+      state.accessLogs = normalizeAccessLogs(rawLogs);
+      writeLocalCache();
+      renderAccessLog();
     }
 
     // ==============================
@@ -1213,8 +1306,9 @@
         panel.innerHTML = `
           <div class="menu-auth-title">Login</div>
           <div class="login-status">
-            <div><strong>Usuário autenticado</strong></div>
+            <div><strong>Editor autenticado</strong></div>
             <div class="login-meta">Responsável: ${escapeHtml(getAuthenticatedEditorName() || '-')}</div>
+            <div class="login-meta">Conta Firebase: ${escapeHtml(getAuthenticatedEmail() || '-')}</div>
             <div class="login-meta">Acesso liberado para cadastro, edição e custos.</div>
             <button class="btn btn-secondary" type="button" id="logoutBtn">Sair</button>
           </div>
@@ -1225,38 +1319,58 @@
         <div class="menu-auth-title">Login</div>
         <form id="loginForm" class="login-grid">
           <input id="loginEditor" type="text" placeholder="Nome do responsável. Ex: Sgt Roberto" autocomplete="name" required />
-          <input id="loginUser" type="text" placeholder="Usuário" autocomplete="username" />
-          <input id="loginPass" type="password" placeholder="Senha" autocomplete="current-password" />
-          <button class="btn btn-primary" type="submit">Entrar</button>
-          <div class="login-meta">Sem login, somente o quadro fica visível em modo consulta.</div>
+          <input id="loginUser" type="email" placeholder="E-mail cadastrado no Firebase" autocomplete="username" required />
+          <input id="loginPass" type="password" placeholder="Senha" autocomplete="current-password" required />
+          <button class="btn btn-primary" type="submit" id="loginSubmitBtn" ${firebaseReady ? '' : 'disabled'}>${firebaseReady ? 'Entrar' : 'Conectando...'}</button>
+          <div class="login-meta">${firebaseReady ? 'Sem login, somente o quadro fica visível em modo consulta.' : 'Conectando ao Firebase. Aguarde alguns segundos.'}</div>
         </form>
       `;
     }
 
-    function handleLogin(event) {
+    async function handleLogin(event) {
       event.preventDefault();
       const editorName = (document.getElementById('loginEditor')?.value || '').trim();
-      const user = (document.getElementById('loginUser')?.value || '').trim();
+      const email = (document.getElementById('loginUser')?.value || '').trim();
       const pass = document.getElementById('loginPass')?.value || '';
       if (!editorName) {
         alert('Preencha o nome do responsável pela edição.');
         return;
       }
-      if (user === LOGIN_USERNAME && pass === LOGIN_PASSWORD) {
-        setAuthenticated(true, editorName);
-        recordLoginAccess(editorName);
-        saveState();
-        renderAll();
+      if (!email || !pass) {
+        alert('Informe e-mail e senha.');
+        return;
+      }
+      if (typeof window.firebaseLogin !== 'function') {
+        alert('Firebase ainda não foi inicializado. Aguarde alguns segundos e tente novamente.');
+        return;
+      }
+      const submitBtn = document.getElementById('loginSubmitBtn');
+      if (submitBtn) submitBtn.disabled = true;
+      try {
+        await window.firebaseLogin(email, pass, editorName);
+        setActiveTab(PUBLIC_TAB_ID);
+      } catch (error) {
+        console.error(error);
+        alert(`Falha no login: ${error?.message || 'verifique e-mail e senha.'}`);
+      } finally {
+        renderMenu();
+      }
+    }
+
+    async function handleLogout() {
+      if (typeof window.firebaseLogout !== 'function') {
+        applyAuthContext(null, '');
         setActiveTab(PUBLIC_TAB_ID);
         return;
       }
-      alert('Usuário ou senha inválidos.');
-    }
-
-    function handleLogout() {
-      setAuthenticated(false);
-      renderAll();
-      setActiveTab(PUBLIC_TAB_ID);
+      try {
+        await window.firebaseLogout();
+      } catch (error) {
+        console.error(error);
+        alert('Não foi possível encerrar a sessão agora.');
+      } finally {
+        setActiveTab(PUBLIC_TAB_ID);
+      }
     }
 
     function renderMenu() {
@@ -2030,7 +2144,7 @@
         <tr>
           <td>${escapeHtml(formatDateTimeBR(log.timestamp))}</td>
           <td>${escapeHtml(log.editorName || '-')}</td>
-          <td>${escapeHtml(log.systemUser || LOGIN_USERNAME)}</td>
+          <td>${escapeHtml(log.systemUser || SYSTEM_LOGIN_LABEL)}</td>
         </tr>
       `).join('');
     }
@@ -2101,6 +2215,18 @@
       renderAccessLog();
     }
 
+    window.CIAOP = {
+      getState: () => JSON.parse(JSON.stringify(state)),
+      applyPrivateCloudState,
+      applyPublicCloudState,
+      applyCloudAccessLogs,
+      getPrivateCloudPayload,
+      getPublicCloudPayload,
+      applyAuthContext,
+      setCloudMode,
+      markFirebaseReady
+    };
+
     // ==============================
     // Inicialização
     // ==============================
@@ -2110,5 +2236,161 @@
     renderAll();
     setActiveTab(PUBLIC_TAB_ID);
   </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC3iiFg_bGctsRLv44hLuVTOhpxeEgEh8s",
+      authDomain: "ciaop-d68cb.firebaseapp.com",
+      projectId: "ciaop-d68cb",
+      storageBucket: "ciaop-d68cb.firebasestorage.app",
+      messagingSenderId: "833557504616",
+      appId: "1:833557504616:web:4fa9599c9f46064a3ad1dd",
+      measurementId: "G-ET58NCTMQ4"
+    };
+
+    const AUTH_EDITOR_NAME_KEY = 'qmf2026_auth_editor_name';
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let unsubscribeMain = null;
+    let unsubscribePublic = null;
+    let unsubscribeLogs = null;
+    let saveTimer = null;
+    let seedingMainDoc = false;
+
+    setPersistence(auth, browserSessionPersistence).catch((error) => {
+      console.error('Não foi possível aplicar persistência de sessão:', error);
+    }).finally(() => {
+      window.CIAOP.markFirebaseReady(true);
+    });
+
+    function cleanupPrivate() {
+      if (unsubscribeMain) unsubscribeMain();
+      if (unsubscribeLogs) unsubscribeLogs();
+      unsubscribeMain = null;
+      unsubscribeLogs = null;
+    }
+
+    function cleanupPublic() {
+      if (unsubscribePublic) unsubscribePublic();
+      unsubscribePublic = null;
+    }
+
+    function payloadHasData(payload) {
+      return Boolean(
+        payload?.personnel?.length ||
+        payload?.missions?.length ||
+        Object.keys(payload?.assignments || {}).length ||
+        Object.values(payload?.financial?.soldos || {}).some(v => Number(v) > 0) ||
+        Object.values(payload?.financial?.diarias || {}).some(group => Object.values(group || {}).some(v => Number(v) > 0))
+      );
+    }
+
+    async function persistCloudState() {
+      const privatePayload = window.CIAOP.getPrivateCloudPayload();
+      await setDoc(doc(db, 'appData', 'main'), privatePayload, { merge: true });
+      await setDoc(doc(db, 'publicView', 'quadro'), window.CIAOP.getPublicCloudPayload(), { merge: true });
+    }
+
+    window.queueCloudSave = function queueCloudSave() {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(async () => {
+        if (!auth.currentUser) return;
+        try {
+          await persistCloudState();
+        } catch (error) {
+          console.error('Erro ao salvar na nuvem:', error);
+        }
+      }, 250);
+    };
+
+    window.firebaseLogin = async function firebaseLogin(email, password, editorName) {
+      sessionStorage.setItem(AUTH_EDITOR_NAME_KEY, editorName.trim());
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      await addDoc(collection(db, 'logsAcesso'), {
+        timestamp: serverTimestamp(),
+        editorName: editorName.trim(),
+        systemUser: cred.user.email || email.trim(),
+        email: cred.user.email || email.trim()
+      });
+    };
+
+    window.firebaseLogout = async function firebaseLogout() {
+      sessionStorage.removeItem(AUTH_EDITOR_NAME_KEY);
+      await signOut(auth);
+    };
+
+    function subscribePrivateMode() {
+      cleanupPublic();
+      window.CIAOP.setCloudMode(true, false);
+
+      const mainRef = doc(db, 'appData', 'main');
+      unsubscribeMain = onSnapshot(mainRef, async (snapshot) => {
+        if (!snapshot.exists()) {
+          if (seedingMainDoc) return;
+          const localPayload = window.CIAOP.getPrivateCloudPayload();
+          if (!payloadHasData(localPayload)) return;
+          try {
+            seedingMainDoc = true;
+            await persistCloudState();
+          } catch (error) {
+            console.error('Erro ao criar documento principal na nuvem:', error);
+          } finally {
+            seedingMainDoc = false;
+          }
+          return;
+        }
+        window.CIAOP.applyPrivateCloudState(snapshot.data());
+      }, (error) => {
+        console.error('Erro ao ouvir dados privados:', error);
+      });
+
+      const logsQuery = query(collection(db, 'logsAcesso'), orderBy('timestamp', 'desc'), limit(500));
+      unsubscribeLogs = onSnapshot(logsQuery, (snapshot) => {
+        const logs = snapshot.docs.map(docSnap => {
+          const data = docSnap.data();
+          const ts = data.timestamp;
+          return {
+            id: docSnap.id,
+            timestamp: typeof ts?.toDate === 'function' ? ts.toDate().toISOString() : (ts || new Date().toISOString()),
+            editorName: data.editorName || '',
+            systemUser: data.systemUser || data.email || ''
+          };
+        });
+        window.CIAOP.applyCloudAccessLogs(logs);
+      }, (error) => {
+        console.error('Erro ao ouvir logs de acesso:', error);
+      });
+    }
+
+    function subscribePublicMode() {
+      cleanupPrivate();
+      window.CIAOP.setCloudMode(false, true);
+
+      const publicRef = doc(db, 'publicView', 'quadro');
+      unsubscribePublic = onSnapshot(publicRef, (snapshot) => {
+        if (!snapshot.exists()) {
+          window.CIAOP.applyPublicCloudState({ personnel: [], missions: [], assignments: {} });
+          return;
+        }
+        window.CIAOP.applyPublicCloudState(snapshot.data());
+      }, (error) => {
+        console.error('Erro ao ouvir quadro público:', error);
+      });
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      const editorName = sessionStorage.getItem(AUTH_EDITOR_NAME_KEY) || '';
+      window.CIAOP.applyAuthContext(user, editorName);
+      if (user) subscribePrivateMode();
+      else subscribePublicMode();
+    });
+  </script>
+
 </body>
 </html>
