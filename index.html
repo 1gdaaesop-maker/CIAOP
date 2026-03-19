@@ -431,7 +431,312 @@
         background: white !important;
       }
     }
-  </style>
+    .header-flex {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .logo-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    min-width: 90px;
+  }
+
+  .logo-preview {
+    width: 60px;
+    height: 60px;
+    border: 1px solid rgba(240,240,240,0.16);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .logo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .logo-placeholder {
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .logo-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+  }
+
+  .editable-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .edit-pen,
+  .menu-item-edit {
+    border: 1px solid rgba(110,165,125,0.35);
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
+    border-radius: 8px;
+    font-size: 11px;
+    line-height: 1;
+    padding: 4px 6px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .editable-title:hover .edit-pen,
+  .menu-item:hover .menu-item-edit {
+    opacity: 1;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .title-inline-input {
+    width: 100%;
+    min-width: 120px;
+    background: rgba(20,20,20,0.9);
+    color: var(--text);
+    border: 1px solid rgba(110,165,125,0.45);
+    border-radius: 8px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .menu-title-inline {
+    font-size: 11px;
+  }
+
+  .section-divider {
+    margin: 12px 0 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.10);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.9px;
+    color: var(--accent);
+  }
+
+  .dynamic-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .dynamic-row-wide {
+    grid-template-columns: 1.8fr 120px auto;
+  }
+
+  .compact-actions {
+    justify-content: flex-start;
+    margin-top: 4px;
+  }
+
+  .board-topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .year-switcher {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .year-switcher select {
+    width: auto;
+    min-width: 94px;
+  }
+
+  .year-current {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  [data-holiday-name] {
+    position: relative;
+  }
+
+  [data-holiday-name]:hover::after {
+    content: attr(data-holiday-name);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 6px);
+    transform: translateX(-50%);
+    background: rgba(92,64,125,0.96);
+    color: #efe5ff;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 10px;
+    white-space: nowrap;
+    z-index: 30;
+    box-shadow: var(--shadow);
+    pointer-events: none;
+  }
+
+  .badge-com {
+    background: rgba(158,122,46,0.24);
+    color: #ffe29b;
+    border: 1px solid rgba(158,122,46,0.55);
+  }
+
+  .subtab-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .subtab-switch {
+    display: flex;
+    gap: 6px;
+  }
+
+  .cell-alert {
+    background: rgba(141,51,51,0.35) !important;
+    color: #fff !important;
+    font-weight: 700;
+  }
+
+  .commission-layout {
+    display: grid;
+    grid-template-columns: minmax(360px, 1.05fr) minmax(360px, 1.2fr);
+    gap: 12px;
+  }
+
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
+    gap: 8px;
+    margin: 8px 0 10px;
+  }
+
+  .metric-box {
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .metric-box span,
+  .metric-line span {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .metric-box strong,
+  .metric-line strong {
+    font-size: 14px;
+  }
+
+  .financial-comparison {
+    display: grid;
+    gap: 8px;
+  }
+
+  .field-inline {
+    display: grid;
+    grid-template-columns: 1.3fr 80px minmax(110px, 150px);
+    gap: 8px;
+    align-items: center;
+  }
+
+  .metric-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 6px;
+  }
+
+  .toggle-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .pill.active-open {
+    background: rgba(47,125,63,0.28);
+    border-color: rgba(47,125,63,0.7);
+    color: #d6f2dd;
+  }
+
+  .pill.active-closed {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.24);
+  }
+
+  .fop-pick-wrap {
+    display: grid;
+    gap: 6px;
+  }
+
+  .manual-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 1400px) {
+    .commission-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .metrics-grid {
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+    }
+  }
+
+</style>
 </head>
 <body>
   <div class="menu-shell">
@@ -2235,6 +2540,2015 @@
     attachEvents();
     renderAll();
     setActiveTab(PUBLIC_TAB_ID);
+  </script>
+
+  <script>
+(function () {
+  // ==============================
+  // Extensões e evolução do sistema
+  // ==============================
+  const FORMATION_OPTIONS = ['NIL', 'Especialização', 'Aperfeiçoamento', 'Altos Estudos I', 'Altos Estudos II'];
+  const FOP_OPTIONS = [
+    'ADJ OF CT', 'AJOLAAE', 'AT', 'AUX COM', 'AUX LOG', 'AUX REOP', 'AUX RADAR', 'ENC SUB ARM',
+    'CMT BIA DAAE', 'CMT DAAE', 'CMT SEC TIR', 'CMT UTIR', 'ENC COM', 'ENC ELT', 'ENC LOG', 'LOCADOR',
+    'MOT', 'OBDAAE', 'OF CTRL', 'OF LOG', 'OF RADAR', 'OF REOP', 'OLAAE', 'OP RADAR', 'OP SMOT',
+    'REGISTRADOR', 'REMUNICIADOR'
+  ];
+  const CAPACITATION_OPTIONS = ['CBMAC', 'CBR', 'COGE/CDGE', 'GCC001', 'OPM012', 'OSD001', 'RAD001', 'TEL025', 'CDDAE BCO', 'CODAAE OF INF'];
+  const BOARD_YEAR_MIN = 2024;
+  const BOARD_YEAR_MAX = 2030;
+  let boardYearView = Math.min(BOARD_YEAR_MAX, Math.max(BOARD_YEAR_MIN, new Date().getFullYear()));
+  const holidayCache = {};
+  let titleEditorCleanupAttached = false;
+  let idprep11Mode = 'efetivo';
+  let idprep12Mode = 'efetivo';
+
+  const TAB_OVERRIDES = [
+    { id: 'tab1', label: '1. Cadastro de Efetivo', subtitle: 'Cadastro de dados pessoais, remuneração, FOP, capacitações e cursos.' },
+    { id: 'tab2', label: '2. Cadastro de Missões', subtitle: 'Missões, períodos, cores e localidade da missão.' },
+    { id: 'tab3', label: '3. Quadro de Missões e Férias', subtitle: 'Escala anual por ano selecionado, com férias, escalas, feriados e comissionamento.' },
+    { id: 'tab4', label: '4. Dashboard por Missão', subtitle: 'Resumo operacional e efetivo escalado por missão.' },
+    { id: 'tab5', label: '5. Dashboard por Militar', subtitle: 'Visão matricial de militares versus missões.' },
+    { id: 'tab6', label: '6. Consulta de Missão + PDF', subtitle: 'Consulta de escalados com impressão formatada.' },
+    { id: 'tab7', label: '7. Cadastro Financeiro', subtitle: 'Soldos, diárias e percentuais de adicional de formação.' },
+    { id: 'tab8', label: '8. Custo da Missão', subtitle: 'Cálculo financeiro por missão com base na remuneração total.' },
+    { id: 'tab9', label: '9. Comissionamento', subtitle: 'Painel acumulado de economicidade por militar comissionado.' },
+    { id: 'tab11', label: '10. Manning de Missões', subtitle: 'Distribuição operacional e FOP escolhida para cada militar escalado.' },
+    { id: 'tab12', label: '11. IDPREP 1.1', subtitle: 'Panorama e quantitativo das FOPs cadastradas no efetivo.' },
+    { id: 'tab13', label: '12. IDPREP 1.2', subtitle: 'Panorama e quantitativo das capacitações cadastradas.' },
+    { id: 'tab14', label: '13. Cursos', subtitle: 'Consulta rápida de cursos realizados e cursos pretendidos por militar.' },
+    { id: 'tab10', label: '14. Registro de Acessos', subtitle: 'Auditoria de data, hora e responsável por cada login.' }
+  ];
+
+  const TITLE_DEFAULTS = {
+    mainTitle: 'Sistema de Gestão Militar',
+    tab1: 'Cadastro de Efetivo',
+    tab2: 'Cadastro de Missões',
+    tab3: 'Quadro de Missões e Férias',
+    tab4: 'Dashboard por Missão',
+    tab5: 'Dashboard por Militar',
+    tab6: 'Consulta de Missão + Impressão PDF',
+    tab7: 'Cadastro Financeiro',
+    tab8: 'Custo da Missão',
+    tab9: 'Comissionamento',
+    tab10: 'Registro de Acessos',
+    tab11: 'Manning de Missões',
+    tab12: 'IDPREP 1.1',
+    tab13: 'IDPREP 1.2',
+    tab14: 'Cursos'
+  };
+
+  TAB_META.splice(0, TAB_META.length, ...TAB_OVERRIDES);
+
+  function buildDefaultConfig() {
+    return {
+      titles: {},
+      fopNecessario: {},
+      capacitacaoNecessario: {},
+      logoDataUrl: ''
+    };
+  }
+
+  function normalizeConfig(rawConfig) {
+    const base = buildDefaultConfig();
+    const incoming = rawConfig && typeof rawConfig === 'object' ? rawConfig : {};
+    base.titles = incoming.titles && typeof incoming.titles === 'object' ? { ...incoming.titles } : {};
+    base.fopNecessario = incoming.fopNecessario && typeof incoming.fopNecessario === 'object' ? { ...incoming.fopNecessario } : {};
+    base.capacitacaoNecessario = incoming.capacitacaoNecessario && typeof incoming.capacitacaoNecessario === 'object' ? { ...incoming.capacitacaoNecessario } : {};
+    base.logoDataUrl = String(incoming.logoDataUrl || incoming.logo || '').trim();
+    return base;
+  }
+
+  function normalizeCommissionData(rawCommissionData) {
+    const source = rawCommissionData && typeof rawCommissionData === 'object' ? rawCommissionData : {};
+    const normalized = {};
+    Object.entries(source).forEach(([personId, item]) => {
+      const entry = item && typeof item === 'object' ? item : {};
+      normalized[personId] = {
+        proposta: String(entry.proposta || '').trim(),
+        solicitacaoAbertura: String(entry.solicitacaoAbertura || '').trim(),
+        autorizacaoComissionamento: String(entry.autorizacaoComissionamento || '').trim(),
+        portaria: String(entry.portaria || '').trim(),
+        publicacaoPortaria: String(entry.publicacaoPortaria || '').trim(),
+        pag: String(entry.pag || '').trim(),
+        apostila: String(entry.apostila || '').trim(),
+        publicacaoApostila: String(entry.publicacaoApostila || '').trim(),
+        situacao: entry.situacao === 'FECHADO' ? 'FECHADO' : 'ABERTO',
+        siloms: String(entry.siloms || '').trim(),
+        dataAbertura: entry.dataAbertura || '',
+        idaManualEnabled: !!entry.idaManualEnabled,
+        idaManualValue: currencyToNumber(entry.idaManualValue),
+        voltaManualEnabled: !!entry.voltaManualEnabled,
+        voltaManualValue: currencyToNumber(entry.voltaManualValue)
+      };
+    });
+    return normalized;
+  }
+
+  buildDefaultFinancial = function buildDefaultFinancialEnhanced() {
+    const soldos = Object.fromEntries(PTGRAD_OPTIONS.map(item => [item, 0]));
+    const diarias = {};
+    Object.keys(DIARY_GROUPS).forEach(key => diarias[key] = { priority: 0, capital: 0, other: 0 });
+    return {
+      soldos,
+      diarias,
+      adicionaisFormacao: {
+        NIL: 0,
+        'Especialização': 0,
+        'Aperfeiçoamento': 0,
+        'Altos Estudos I': 0,
+        'Altos Estudos II': 0
+      }
+    };
+  };
+
+  normalizePersonnel = function normalizePersonnelEnhanced(rawPersonnel) {
+    return (Array.isArray(rawPersonnel) ? rawPersonnel : []).map(item => {
+      const ferias = Array.isArray(item.ferias) ? item.ferias : [];
+      return {
+        id: item.id || uid('mil'),
+        ptgrad: String(item.ptgrad || '').trim().toUpperCase(),
+        quadro: normalizeText(item.quadro || '').slice(0, 3),
+        nomeGuerra: String(item.nomeGuerra || '').trim(),
+        trigrama: normalizeText(item.trigrama || '').slice(0, 3),
+        nomeCompleto: String(item.nomeCompleto || '').trim(),
+        saram: digitsOnly(item.saram),
+        cpf: digitsOnly(item.cpf).slice(0, 11),
+        idMilitar: String(item.idMilitar || '').trim(),
+        email: String(item.email || '').trim(),
+        soldoBruto: currencyToNumber(item.soldoBruto),
+        dependente: !!item.dependente,
+        adicionalFormacao: FORMATION_OPTIONS.includes(item.adicionalFormacao) ? item.adicionalFormacao : 'NIL',
+        cotaAeronavegante: currencyToNumber(item.cotaAeronavegante),
+        cotaIncorporada: currencyToNumber(item.cotaIncorporada),
+        outrosAdicionais: currencyToNumber(item.outrosAdicionais),
+        fop1: String(item.fop1 || '').trim(),
+        fop2: String(item.fop2 || '').trim(),
+        fop3: String(item.fop3 || '').trim(),
+        fop4: String(item.fop4 || '').trim(),
+        capacitacoes: Array.isArray(item.capacitacoes) ? item.capacitacoes.map(v => String(v || '').trim()).filter(Boolean) : [],
+        cursos: Array.isArray(item.cursos) ? item.cursos.map(cur => ({
+          nome: String(cur?.nome || '').trim(),
+          ano: String(cur?.ano || '').trim()
+        })).filter(cur => cur.nome || cur.ano) : [],
+        cursosPretendidos: Array.isArray(item.cursosPretendidos) ? item.cursosPretendidos.map(v => String(v || '').trim()).filter(Boolean) : [],
+        ferias: [0, 1, 2].map(index => ({
+          inicio: ferias[index]?.inicio || '',
+          fim: ferias[index]?.fim || ''
+        }))
+      };
+    });
+  };
+
+  normalizeAssignments = function normalizeAssignmentsEnhanced(rawAssignments) {
+    const result = {};
+    if (!rawAssignments || typeof rawAssignments !== 'object') return result;
+    Object.entries(rawAssignments).forEach(([missionId, missionMap]) => {
+      result[missionId] = {};
+      if (!missionMap || typeof missionMap !== 'object') return;
+      Object.entries(missionMap).forEach(([personId, value]) => {
+        if (typeof value === 'boolean') {
+          result[missionId][personId] = { selected: value, commissioned: false, additional: 0, fop: '', fopManual: false };
+        } else {
+          result[missionId][personId] = {
+            selected: !!value?.selected,
+            commissioned: !!value?.commissioned,
+            additional: currencyToNumber(value?.additional),
+            fop: String(value?.fop || '').trim(),
+            fopManual: !!value?.fopManual
+          };
+        }
+      });
+    });
+    return result;
+  };
+
+  normalizeFinancial = function normalizeFinancialEnhanced(rawFinancial) {
+    const base = buildDefaultFinancial();
+    const incoming = rawFinancial && typeof rawFinancial === 'object' ? rawFinancial : {};
+    PTGRAD_OPTIONS.forEach(pt => base.soldos[pt] = currencyToNumber(incoming.soldos?.[pt]));
+    Object.keys(DIARY_GROUPS).forEach(group => {
+      base.diarias[group].priority = currencyToNumber(incoming.diarias?.[group]?.priority);
+      base.diarias[group].capital = currencyToNumber(incoming.diarias?.[group]?.capital);
+      base.diarias[group].other = currencyToNumber(incoming.diarias?.[group]?.other);
+    });
+    FORMATION_OPTIONS.forEach(option => {
+      base.adicionaisFormacao[option] = option === 'NIL' ? 0 : currencyToNumber(incoming.adicionaisFormacao?.[option]);
+    });
+    return base;
+  };
+
+  normalizeStateData = function normalizeStateDataEnhanced(rawState = {}) {
+    const merged = rawState && typeof rawState === 'object' ? rawState : {};
+    return {
+      personnel: normalizePersonnel(merged.personnel),
+      missions: normalizeMissions(merged.missions),
+      assignments: normalizeAssignments(merged.assignments),
+      financial: normalizeFinancial(merged.financial),
+      accessLogs: normalizeAccessLogs(merged.accessLogs),
+      config: normalizeConfig(merged.config),
+      commissionData: normalizeCommissionData(merged.commissionData)
+    };
+  };
+
+  function getMergedState(rawState) {
+    return normalizeStateData({
+      personnel: rawState?.personnel ?? state?.personnel,
+      missions: rawState?.missions ?? state?.missions,
+      assignments: rawState?.assignments ?? state?.assignments,
+      financial: rawState?.financial ?? state?.financial,
+      accessLogs: rawState?.accessLogs ?? state?.accessLogs,
+      config: { ...(state?.config || {}), ...(rawState?.config || {}) },
+      commissionData: { ...(state?.commissionData || {}), ...(rawState?.commissionData || {}) }
+    });
+  }
+
+  getPrivateCloudPayload = function getPrivateCloudPayloadEnhanced() {
+    return {
+      personnel: state.personnel,
+      missions: state.missions,
+      assignments: state.assignments,
+      financial: state.financial,
+      config: state.config,
+      commissionData: state.commissionData,
+      updatedAt: new Date().toISOString()
+    };
+  };
+
+  getPublicCloudPayload = function getPublicCloudPayloadEnhanced() {
+    return {
+      personnel: state.personnel.map(person => ({
+        id: person.id,
+        ptgrad: person.ptgrad,
+        quadro: person.quadro,
+        nomeGuerra: person.nomeGuerra,
+        trigrama: person.trigrama,
+        ferias: person.ferias || []
+      })),
+      missions: state.missions.map(mission => ({
+        id: mission.id,
+        name: mission.name,
+        start: mission.start,
+        end: mission.end,
+        color: mission.color,
+        stateUf: mission.stateUf,
+        stateName: mission.stateName,
+        city: mission.city
+      })),
+      assignments: state.assignments,
+      config: {
+        titles: state.config?.titles || {},
+        logoDataUrl: state.config?.logoDataUrl || ''
+      },
+      updatedAt: new Date().toISOString()
+    };
+  };
+
+  applyPrivateCloudState = function applyPrivateCloudStateEnhanced(rawState) {
+    state = getMergedState(rawState || {});
+    writeLocalCache();
+    renderAll();
+  };
+
+  applyPublicCloudState = function applyPublicCloudStateEnhanced(rawState) {
+    state = normalizeStateData({
+      personnel: rawState?.personnel || [],
+      missions: rawState?.missions || [],
+      assignments: rawState?.assignments || {},
+      financial: state?.financial || buildDefaultFinancial(),
+      accessLogs: state?.accessLogs || [],
+      config: { ...(state?.config || {}), ...(rawState?.config || {}) },
+      commissionData: state?.commissionData || {}
+    });
+    writeLocalCache();
+    renderAll();
+    if (!isAuthenticated()) setActiveTab(PUBLIC_TAB_ID);
+  };
+
+  applyCloudAccessLogs = function applyCloudAccessLogsEnhanced(rawLogs) {
+    state.accessLogs = normalizeAccessLogs(rawLogs);
+    writeLocalCache();
+    renderAccessLog();
+  };
+
+  function getTabTitle(tabId) {
+    return state.config?.titles?.[tabId] || TITLE_DEFAULTS[tabId] || (TAB_META.find(item => item.id === tabId)?.label || tabId);
+  }
+
+  function getConfiguredTitle(key, fallback) {
+    return state.config?.titles?.[key] || fallback;
+  }
+
+  function setConfiguredTitle(key, value) {
+    if (!state.config) state.config = normalizeConfig({});
+    const clean = String(value || '').trim();
+    if (!clean) return;
+    state.config.titles[key] = clean;
+    saveState();
+    renderAll();
+  }
+
+  function startStaticTitleEdit(key) {
+    if (!isAuthenticated()) return;
+    const el = document.querySelector(`[data-title-key="${key}"]`);
+    if (!el) return;
+    const fallback = el.dataset.titleDefault || TITLE_DEFAULTS[key] || el.textContent.trim();
+    const current = getConfiguredTitle(key, fallback);
+    el.innerHTML = `<input class="title-inline-input" type="text" value="${escapeHtml(current)}" />`;
+    const input = el.querySelector('input');
+    input.focus();
+    input.select();
+    const commit = () => {
+      setConfiguredTitle(key, input.value || fallback);
+    };
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        commit();
+      }
+      if (event.key === 'Escape') {
+        renderAll();
+      }
+    });
+    input.addEventListener('blur', commit, { once: true });
+  }
+
+  function startMenuTitleEdit(tabId, trigger) {
+    if (!isAuthenticated()) return;
+    if (trigger) {
+      trigger.stopPropagation();
+      trigger.preventDefault();
+    }
+    const btn = document.querySelector(`#menuList [data-tab="${tabId}"]`);
+    if (!btn) return;
+    const current = getTabTitle(tabId);
+    btn.innerHTML = `<input class="title-inline-input menu-title-inline" type="text" value="${escapeHtml(current)}" />`;
+    const input = btn.querySelector('input');
+    input.focus();
+    input.select();
+    const commit = () => setConfiguredTitle(tabId, input.value || TITLE_DEFAULTS[tabId] || current);
+    input.addEventListener('click', event => event.stopPropagation());
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        commit();
+      }
+      if (event.key === 'Escape') {
+        renderMenu();
+      }
+    });
+    input.addEventListener('blur', commit, { once: true });
+  }
+
+  window.startStaticTitleEdit = startStaticTitleEdit;
+  window.startMenuTitleEdit = startMenuTitleEdit;
+
+  function renderEditableStaticTitles() {
+    document.querySelectorAll('[data-title-key]').forEach(el => {
+      const key = el.dataset.titleKey;
+      const defaultText = el.dataset.titleDefault || TITLE_DEFAULTS[key] || '';
+      const text = getConfiguredTitle(key, defaultText);
+      if (isAuthenticated()) {
+        el.classList.add('editable-title');
+        el.innerHTML = `<span>${escapeHtml(text)}</span><button type="button" class="edit-pen" onclick="startStaticTitleEdit('${key}')">✏️</button>`;
+      } else {
+        el.classList.remove('editable-title');
+        el.textContent = text;
+      }
+    });
+  }
+
+  function renderLogoPanel() {
+    const preview = document.getElementById('logoPreview');
+    const actions = document.getElementById('logoActions');
+    if (!preview || !actions) return;
+    if (state.config?.logoDataUrl) {
+      preview.innerHTML = `<img src="${state.config.logoDataUrl}" alt="Brasão" />`;
+    } else {
+      preview.innerHTML = '<div class="logo-placeholder">BR</div>';
+    }
+    if (isAuthenticated()) {
+      actions.innerHTML = `
+        <label class="btn btn-secondary btn-mini logo-upload-btn">
+          Alterar brasão
+          <input id="logoUploadInput" type="file" accept="image/*" hidden onchange="handleLogoUpload(event)" />
+        </label>
+        ${state.config?.logoDataUrl ? '<button type="button" class="btn btn-danger btn-mini" onclick="clearLogoUpload()">Remover</button>' : ''}
+      `;
+    } else {
+      actions.innerHTML = '';
+    }
+  }
+
+  window.handleLogoUpload = function handleLogoUpload(event) {
+    if (!requireAuth()) return;
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (file.size > 1024 * 1024) {
+      alert('Utilize uma imagem com até 1 MB.');
+      event.target.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      state.config.logoDataUrl = String(reader.result || '');
+      saveState();
+      renderLogoPanel();
+    };
+    reader.readAsDataURL(file);
+  };
+
+  window.clearLogoUpload = function clearLogoUpload() {
+    if (!requireAuth()) return;
+    state.config.logoDataUrl = '';
+    saveState();
+    renderLogoPanel();
+  };
+
+  function canHaveAdditionalFields(personOrPt) {
+    const pt = normalizeText(typeof personOrPt === 'string' ? personOrPt : personOrPt?.ptgrad);
+    return !['CB', 'S1', 'S2'].includes(pt);
+  }
+
+  getPersonnelSoldo = function getPersonnelSoldoEnhanced(person) {
+    const currentByGrade = currencyToNumber(state.financial?.soldos?.[normalizeText(person?.ptgrad)]);
+    if (currentByGrade > 0) return currentByGrade;
+    return currencyToNumber(person?.soldoBruto);
+  };
+
+  function getFormationPercent(person) {
+    const label = FORMATION_OPTIONS.includes(person?.adicionalFormacao) ? person.adicionalFormacao : 'NIL';
+    return currencyToNumber(state.financial?.adicionaisFormacao?.[label]) / 100;
+  }
+
+  function getPersonnelTotalRemuneration(person) {
+    const soldo = getPersonnelSoldo(person);
+    if (!canHaveAdditionalFields(person)) return soldo;
+    return soldo
+      + (soldo * getFormationPercent(person))
+      + currencyToNumber(person?.cotaAeronavegante)
+      + currencyToNumber(person?.cotaIncorporada)
+      + currencyToNumber(person?.outrosAdicionais);
+  }
+
+  getPersonnel2Percent = function getPersonnel2PercentEnhanced(person) {
+    return getPersonnelTotalRemuneration(person) * 0.02;
+  };
+
+  getAssignment = function getAssignmentEnhanced(missionId, personId) {
+    if (!state.assignments[missionId]) state.assignments[missionId] = {};
+    if (!state.assignments[missionId][personId]) {
+      state.assignments[missionId][personId] = { selected: false, commissioned: false, additional: 0, fop: '', fopManual: false };
+    }
+    const item = state.assignments[missionId][personId];
+    if (typeof item.additional === 'undefined') item.additional = 0;
+    if (typeof item.fop === 'undefined') item.fop = '';
+    if (typeof item.fopManual === 'undefined') item.fopManual = false;
+    return item;
+  };
+
+  function getPersonAvailableFops(person) {
+    return [person?.fop1, person?.fop2, person?.fop3, person?.fop4].map(v => String(v || '').trim()).filter(Boolean);
+  }
+
+  function getCommissionDataEntry(personId) {
+    if (!state.commissionData) state.commissionData = {};
+    if (!state.commissionData[personId]) {
+      state.commissionData[personId] = normalizeCommissionData({ [personId]: {} })[personId];
+    }
+    return state.commissionData[personId];
+  }
+
+  window.updateCommissionDataField = function updateCommissionDataField(personId, key, value) {
+    if (!requireAuth()) return;
+    const entry = getCommissionDataEntry(personId);
+    if (['idaManualEnabled', 'voltaManualEnabled'].includes(key)) {
+      entry[key] = !!value;
+    } else if (['idaManualValue', 'voltaManualValue'].includes(key)) {
+      entry[key] = currencyToNumber(value);
+    } else if (key === 'situacao') {
+      entry[key] = value === 'FECHADO' ? 'FECHADO' : 'ABERTO';
+    } else {
+      entry[key] = value;
+    }
+    saveState();
+    renderCommissionPanel();
+  };
+
+  function getCurrentDateISO() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function isMissionExecuted(mission) {
+    const today = getCurrentDateISO();
+    return mission?.end && mission.end < today;
+  }
+
+  function getCommissionedMissionsForPerson(personId) {
+    return state.missions.filter(mission => isPersonCommissionedInMission(personId, mission.id));
+  }
+
+  function getFallbackHolidayMap(year) {
+    const fixed = {
+      [`${year}-01-01`]: 'Confraternização Universal',
+      [`${year}-04-21`]: 'Tiradentes',
+      [`${year}-05-01`]: 'Dia do Trabalho',
+      [`${year}-09-07`]: 'Independência do Brasil',
+      [`${year}-10-12`]: 'Nossa Senhora Aparecida',
+      [`${year}-11-02`]: 'Finados',
+      [`${year}-11-15`]: 'Proclamação da República',
+      [`${year}-11-20`]: 'Dia Nacional de Zumbi e da Consciência Negra',
+      [`${year}-12-25`]: 'Natal'
+    };
+    const easter = getEasterDate(year);
+    if (easter) {
+      const goodFriday = new Date(easter.getTime());
+      goodFriday.setDate(goodFriday.getDate() - 2);
+      fixed[goodFriday.toISOString().slice(0, 10)] = 'Paixão de Cristo';
+    }
+    return fixed;
+  }
+
+  function getEasterDate(year) {
+    const a = year % 19;
+    const b = Math.floor(year / 100);
+    const c = year % 100;
+    const d = Math.floor(b / 4);
+    const e = b % 4;
+    const f = Math.floor((b + 8) / 25);
+    const g = Math.floor((b - f + 1) / 3);
+    const h = (19 * a + b - d - g + 15) % 30;
+    const i = Math.floor(c / 4);
+    const k = c % 4;
+    const l = (32 + 2 * e + 2 * i - h - k) % 7;
+    const m = Math.floor((a + 11 * h + 22 * l) / 451);
+    const month = Math.floor((h + l - 7 * m + 114) / 31);
+    const day = ((h + l - 7 * m + 114) % 31) + 1;
+    return new Date(Date.UTC(year, month - 1, day));
+  }
+
+  async function ensureHolidayData(year) {
+    if (!holidayCache[year]) holidayCache[year] = getFallbackHolidayMap(year);
+    try {
+      const response = await fetch(`https://brasilapi.com.br/api/feriados/v1/${year}`);
+      if (!response.ok) throw new Error('Falha ao consultar BrasilAPI');
+      const data = await response.json();
+      if (Array.isArray(data) && data.length) {
+        holidayCache[year] = data.reduce((acc, item) => {
+          if (item?.date) acc[item.date] = item.name || 'Feriado';
+          return acc;
+        }, { ...holidayCache[year] });
+      }
+    } catch (error) {
+      console.warn('Falha ao buscar feriados online. Usando fallback local.', error);
+    }
+  }
+
+  function getBoardHolidayMap(year) {
+    if (!holidayCache[year]) holidayCache[year] = getFallbackHolidayMap(year);
+    return holidayCache[year];
+  }
+
+  function getBoardDays(year) {
+    const holidayMap = getBoardHolidayMap(year);
+    const days = [];
+    let current = new Date(`${year}-01-01T00:00:00`);
+    const end = new Date(`${year}-12-31T00:00:00`);
+    while (current <= end) {
+      const iso = current.toISOString().slice(0, 10);
+      days.push({
+        iso,
+        month: current.getMonth(),
+        day: String(current.getDate()).padStart(2, '0'),
+        weekday: current.getDay(),
+        weekdayShort: WEEKDAY_SHORT[current.getDay()],
+        isWeekend: current.getDay() === 0 || current.getDay() === 6,
+        isHoliday: !!holidayMap[iso],
+        holidayName: holidayMap[iso] || ''
+      });
+      current.setDate(current.getDate() + 1);
+    }
+    return days;
+  }
+
+  function setBoardYear(value) {
+    const next = Math.min(BOARD_YEAR_MAX, Math.max(BOARD_YEAR_MIN, Number(value) || boardYearView));
+    boardYearView = next;
+    const label = document.getElementById('boardYearLabel');
+    if (label) label.textContent = String(boardYearView);
+    renderBoard();
+    ensureHolidayData(boardYearView).then(() => renderBoard());
+  }
+
+  window.incrementBoardYear = function incrementBoardYear(delta) {
+    setBoardYear(boardYearView + Number(delta || 0));
+  };
+  window.changeBoardYear = function changeBoardYear(value) {
+    setBoardYear(value);
+  };
+
+  function ensureEnhancedDom() {
+    if (document.body.dataset.ciaopEnhanced === '1') return;
+    document.body.dataset.ciaopEnhanced = '1';
+
+    const header = document.querySelector('.page .header');
+    if (header) {
+      header.innerHTML = `
+        <div class="header-flex">
+          <div>
+            <h1 data-title-key="mainTitle" data-title-default="Sistema de Gestão Militar"></h1>
+            <p id="headerSubtitle">Missões, férias, custos e comissionamento.</p>
+          </div>
+          <div class="logo-panel">
+            <div class="logo-preview" id="logoPreview"></div>
+            <div class="logo-actions" id="logoActions"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    const tab1 = document.getElementById('tab1');
+    if (tab1) {
+      tab1.innerHTML = `
+        <div class="card">
+          <h3 class="section-title" data-title-key="tab1" data-title-default="Cadastro de Efetivo"></h3>
+          <div class="notice">A ordem da lista abaixo é global. Use ▲ e ▼ para reposicionar o efetivo.</div>
+          <form id="personnelForm" onsubmit="handlePersonnelSubmit(event)">
+            <input type="hidden" id="personnelEditId" />
+
+            <div class="section-divider">── DADOS PESSOAIS ──</div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="ptgrad">PT/GRAD</label>
+                <input id="ptgrad" list="ptgradList" placeholder="Digite e selecione" required oninput="handlePersonnelPtgradInput()" onchange="handlePersonnelPtgradInput()" />
+              </div>
+              <div class="field">
+                <label for="quadro">Quadro</label>
+                <input id="quadro" list="quadroList" placeholder="INF, SGS, BCO..." required onchange="validateExactQuadro()" />
+              </div>
+              <div class="field">
+                <label for="nomeGuerra">Nome de Guerra</label>
+                <input id="nomeGuerra" type="text" placeholder="Ex: SILVA" required />
+              </div>
+              <div class="field">
+                <label for="trigrama">Trigrama</label>
+                <input id="trigrama" type="text" maxlength="3" placeholder="ABC" oninput="handleTrigramaInput()" required />
+              </div>
+              <div class="field">
+                <label for="nomeCompleto">Nome Completo</label>
+                <input id="nomeCompleto" type="text" placeholder="Nome completo" required />
+              </div>
+              <div class="field">
+                <label for="saram">SARAM</label>
+                <input id="saram" type="text" inputmode="numeric" placeholder="Ex: 6494617" oninput="sanitizeNumericInput('saram')" />
+              </div>
+              <div class="field">
+                <label for="cpf">CPF</label>
+                <input id="cpf" type="text" inputmode="numeric" maxlength="11" placeholder="Ex: 10119424678" oninput="sanitizeNumericInput('cpf', 11)" />
+              </div>
+              <div class="field">
+                <label for="idMilitar">ID Militar</label>
+                <input id="idMilitar" type="text" placeholder="Identificação" />
+              </div>
+              <div class="field">
+                <label for="email">E-mail</label>
+                <input id="email" type="email" placeholder="militar@dominio.mil.br" />
+              </div>
+              <div class="field">
+                <label>Dependente</label>
+                <div class="toggle-line">
+                  <input id="dependente" type="checkbox" />
+                  <span>Possui Dependente?</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-divider">── FINANCEIRO ──</div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="soldoBruto">Soldo Bruto (R$)</label>
+                <input id="soldoBruto" type="number" step="0.01" min="0" readonly />
+              </div>
+              <div class="field additional-only-field">
+                <label for="adicionalFormacao">Adicional de Formação</label>
+                <select id="adicionalFormacao">
+                  ${FORMATION_OPTIONS.map(option => `<option value="${option}">${option}</option>`).join('')}
+                </select>
+              </div>
+              <div class="field additional-only-field">
+                <label for="cotaAeronavegante">Cota Aeronavegante (R$)</label>
+                <input id="cotaAeronavegante" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" />
+              </div>
+              <div class="field additional-only-field">
+                <label for="cotaIncorporada">Cota Incorporada (R$)</label>
+                <input id="cotaIncorporada" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" />
+              </div>
+              <div class="field additional-only-field">
+                <label for="outrosAdicionais">Outros Adicionais (R$)</label>
+                <input id="outrosAdicionais" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" />
+              </div>
+              <div class="field">
+                <label for="remuneracaoTotalPreview">Valor Total de Remuneração (R$)</label>
+                <input id="remuneracaoTotalPreview" type="text" readonly />
+              </div>
+            </div>
+
+            <div class="section-divider">── FUNÇÕES OPERACIONAIS (FOP) ──</div>
+            <div class="form-grid" style="grid-template-columns: repeat(4, minmax(180px, 1fr));">
+              <div class="field"><label for="fop1">FOP 1</label><input id="fop1" list="fopList" placeholder="Selecione uma FOP" /></div>
+              <div class="field"><label for="fop2">FOP 2</label><input id="fop2" list="fopList" placeholder="Opcional" /></div>
+              <div class="field"><label for="fop3">FOP 3</label><input id="fop3" list="fopList" placeholder="Opcional" /></div>
+              <div class="field"><label for="fop4">FOP 4</label><input id="fop4" list="fopList" placeholder="Opcional" /></div>
+            </div>
+
+            <div class="section-divider">── CAPACITAÇÃO ──</div>
+            <div id="capacitacoesContainer"></div>
+            <div class="form-actions compact-actions">
+              <button type="button" class="btn btn-secondary" onclick="appendCapacitacaoItem()">+ Adicionar Capacitação</button>
+            </div>
+
+            <div class="section-divider">── CURSOS ──</div>
+            <div id="cursosContainer"></div>
+            <div class="form-actions compact-actions">
+              <button type="button" class="btn btn-secondary" onclick="appendCursoItem()">+ Adicionar Curso</button>
+            </div>
+
+            <div class="section-divider">── CURSOS PRETENDIDOS ──</div>
+            <div id="cursosPretendidosContainer"></div>
+            <div class="form-actions compact-actions">
+              <button type="button" class="btn btn-secondary" onclick="appendCursoPretendidoItem()">+ Adicionar Curso Pretendido</button>
+            </div>
+
+            <div class="section-divider">── FÉRIAS ──</div>
+            <div class="form-grid" style="grid-template-columns: repeat(3, minmax(220px, 1fr));">
+              <div class="field-group">
+                <label>Período 1 de Férias</label>
+                <div class="field"><input id="ferias1Inicio" type="date" /></div>
+                <div class="field"><input id="ferias1Fim" type="date" /></div>
+              </div>
+              <div class="field-group">
+                <label>Período 2 de Férias</label>
+                <div class="field"><input id="ferias2Inicio" type="date" /></div>
+                <div class="field"><input id="ferias2Fim" type="date" /></div>
+              </div>
+              <div class="field-group">
+                <label>Período 3 de Férias</label>
+                <div class="field"><input id="ferias3Inicio" type="date" /></div>
+                <div class="field"><input id="ferias3Fim" type="date" /></div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" type="submit">Salvar Militar</button>
+              <button class="btn btn-secondary" type="button" onclick="clearPersonnelForm()">Cancelar Edição</button>
+            </div>
+          </form>
+        </div>
+        <div class="card">
+          <h3 class="section-title">Efetivo Cadastrado</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ordem</th>
+                  <th>PT/GRAD</th>
+                  <th>Quadro</th>
+                  <th>Nome de Guerra</th>
+                  <th>Trigrama</th>
+                  <th>Nome Completo</th>
+                  <th>SARAM</th>
+                  <th>CPF</th>
+                  <th>ID Militar</th>
+                  <th>E-mail</th>
+                  <th>Remuneração Total</th>
+                  <th>Dependente</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="personnelTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    const tab3 = document.getElementById('tab3');
+    if (tab3) {
+      tab3.innerHTML = `
+        <div class="summary-cards" id="summaryCards"></div>
+        <div class="card">
+          <div class="board-topbar">
+            <div>
+              <h3 class="section-title" data-title-key="tab3" data-title-default="Quadro de Missões e Férias"></h3>
+              <div class="notice locked-note" id="boardReadonlyNotice" style="display:none;">Modo consulta. Faça login no canto superior esquerdo para liberar cadastro e edição.</div>
+            </div>
+            <div class="year-switcher">
+              <button class="btn btn-secondary btn-mini" type="button" onclick="incrementBoardYear(-1)">◄</button>
+              <select id="boardYearSelect" onchange="changeBoardYear(this.value)">
+                ${Array.from({ length: BOARD_YEAR_MAX - BOARD_YEAR_MIN + 1 }, (_, idx) => BOARD_YEAR_MIN + idx).map(year => `<option value="${year}">${year}</option>`).join('')}
+              </select>
+              <button class="btn btn-secondary btn-mini" type="button" onclick="incrementBoardYear(1)">►</button>
+              <span class="year-current" id="boardYearLabel"></span>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="legend-item"><span class="legend-swatch" style="background: var(--weekend);"></span>Sábado/Domingo</div>
+            <div class="legend-item"><span class="legend-swatch" style="background: var(--holiday);"></span>Feriado Nacional</div>
+            <div class="legend-item"><span class="legend-swatch" style="background: #000;"></span>Férias</div>
+            <div class="legend-item"><span class="legend-swatch" style="background: rgba(47,125,63,0.75);"></span>Escalado</div>
+            <div class="legend-item"><span class="legend-swatch" style="background: rgba(158,122,46,0.8);"></span>Comissionado</div>
+          </div>
+          <div class="board-wrap">
+            <table class="board-table" id="boardTable"></table>
+          </div>
+        </div>
+      `;
+    }
+
+    const tab7 = document.getElementById('tab7');
+    if (tab7) {
+      tab7.innerHTML = `
+        <div class="card">
+          <h3 class="section-title" data-title-key="tab7" data-title-default="Cadastro Financeiro"></h3>
+          <div class="financial-grid">
+            <div class="financial-block">
+              <h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Soldo Bruto por PT/GRAD</h4>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>PT/GRAD</th>
+                      <th>Soldo Bruto (R$)</th>
+                      <th>2% do Soldo (R$)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="financialSoldoBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="financial-block">
+              <h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Valores de Diária por Categoria</h4>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Grupo</th>
+                      <th>Postos</th>
+                      <th>Capitais Prioritárias</th>
+                      <th>Demais Capitais</th>
+                      <th>Demais Localidades</th>
+                    </tr>
+                  </thead>
+                  <tbody id="financialDiaryBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="financial-block">
+              <h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Percentuais de Adicional de Formação</h4>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Adicional</th>
+                      <th>Percentual (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="financialFormationBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    const tab8 = document.getElementById('tab8');
+    if (tab8) {
+      tab8.querySelector('.card').innerHTML = `
+        <h3 class="section-title" data-title-key="tab8" data-title-default="Custo da Missão"></h3>
+        <div class="toolbar">
+          <div class="field">
+            <label for="missionCostSelect">Selecione a Missão</label>
+            <select id="missionCostSelect" onchange="renderMissionCost()"></select>
+          </div>
+          <button class="btn btn-primary" type="button" id="printCustoBtn">Imprimir / Gerar PDF</button>
+        </div>
+        <div class="print-cost-area" id="custoPrintArea">
+          <h3 id="custoTitle">Custo da Missão</h3>
+          <div class="print-meta" id="custoMeta"></div>
+          <table>
+            <thead>
+              <tr>
+                <th>PT/GRAD</th>
+                <th>Quadro</th>
+                <th>Nome de Guerra</th>
+                <th>Trigrama</th>
+                <th>Nome Completo</th>
+                <th>SARAM</th>
+                <th>ID Militar</th>
+                <th>E-mail</th>
+                <th>Valor 2%</th>
+                <th>Valor em Diárias</th>
+              </tr>
+            </thead>
+            <tbody id="missionCostBody"></tbody>
+            <tfoot id="missionCostFoot"></tfoot>
+          </table>
+        </div>
+      `;
+    }
+
+    const tab9 = document.getElementById('tab9');
+    if (tab9) {
+      tab9.innerHTML = `
+        <div class="card">
+          <h3 class="section-title" data-title-key="tab9" data-title-default="Comissionamento"></h3>
+          <div class="toolbar">
+            <div class="field">
+              <label for="commissionedPersonSelect">Militar Comissionado</label>
+              <select id="commissionedPersonSelect" onchange="renderCommissionPanel()"></select>
+            </div>
+          </div>
+          <div id="commissionPanel"></div>
+        </div>
+      `;
+    }
+
+    const tab10 = document.getElementById('tab10');
+    if (tab10) {
+      const h3 = tab10.querySelector('h3');
+      if (h3) {
+        h3.setAttribute('data-title-key', 'tab10');
+        h3.setAttribute('data-title-default', 'Registro de Acessos');
+      }
+    }
+
+    const sectionTitles = {
+      tab2: 'Cadastro de Missões',
+      tab4: 'Dashboard por Missão',
+      tab5: 'Dashboard por Militar',
+      tab6: 'Consulta de Missão + Impressão PDF'
+    };
+    Object.entries(sectionTitles).forEach(([tabId, title]) => {
+      const heading = document.querySelector(`#${tabId} .section-title`);
+      if (heading) {
+        heading.setAttribute('data-title-key', tabId);
+        heading.setAttribute('data-title-default', title);
+      }
+    });
+
+    if (!document.getElementById('tab11')) {
+      tab10.insertAdjacentHTML('afterend', `
+        <section class="tab-content" id="tab11">
+          <div class="card">
+            <h3 class="section-title" data-title-key="tab11" data-title-default="Manning de Missões"></h3>
+            <div id="manningContainer"></div>
+          </div>
+        </section>
+        <section class="tab-content" id="tab12">
+          <div class="card">
+            <div class="subtab-bar">
+              <h3 class="section-title" data-title-key="tab12" data-title-default="IDPREP 1.1"></h3>
+              <div class="subtab-switch">
+                <button type="button" class="btn btn-secondary btn-mini" id="idprep11EfetivoBtn" onclick="setIdprep11Mode('efetivo')">Efetivo</button>
+                <button type="button" class="btn btn-secondary btn-mini" id="idprep11QuantBtn" onclick="setIdprep11Mode('quantitativo')">Quantitativo</button>
+              </div>
+            </div>
+            <div id="idprep11Container"></div>
+          </div>
+        </section>
+        <section class="tab-content" id="tab13">
+          <div class="card">
+            <div class="subtab-bar">
+              <h3 class="section-title" data-title-key="tab13" data-title-default="IDPREP 1.2"></h3>
+              <div class="subtab-switch">
+                <button type="button" class="btn btn-secondary btn-mini" id="idprep12EfetivoBtn" onclick="setIdprep12Mode('efetivo')">Efetivo</button>
+                <button type="button" class="btn btn-secondary btn-mini" id="idprep12QuantBtn" onclick="setIdprep12Mode('quantitativo')">Quantitativo</button>
+              </div>
+            </div>
+            <div id="idprep12Container"></div>
+          </div>
+        </section>
+        <section class="tab-content" id="tab14">
+          <div class="card">
+            <h3 class="section-title" data-title-key="tab14" data-title-default="Cursos"></h3>
+            <div class="toolbar">
+              <div class="field">
+                <label for="coursePersonSelect">Militar</label>
+                <select id="coursePersonSelect" onchange="renderCoursesTabView()"></select>
+              </div>
+            </div>
+            <div id="coursesContainerView"></div>
+          </div>
+        </section>
+      `);
+    }
+
+    if (!document.getElementById('fopList')) {
+      document.body.insertAdjacentHTML('beforeend', `
+        <datalist id="fopList"></datalist>
+        <datalist id="capacitationList"></datalist>
+      `);
+    }
+
+    if (!titleEditorCleanupAttached) {
+      document.addEventListener('click', (event) => {
+        const input = event.target.closest('.title-inline-input');
+        if (input) return;
+      });
+      titleEditorCleanupAttached = true;
+    }
+  }
+
+  function populateStaticListsEnhanced() {
+    document.getElementById('ptgradList').innerHTML = PTGRAD_OPTIONS.map(item => `<option value="${item}"></option>`).join('');
+    document.getElementById('quadroList').innerHTML = QUADRO_OPTIONS.map(item => `<option value="${item}"></option>`).join('');
+    document.getElementById('stateList').innerHTML = STATE_CITY_DATA.map(item => `<option value="${escapeHtml(item.sigla + ' - ' + item.nome)}"></option>`).join('');
+    const fopList = document.getElementById('fopList');
+    if (fopList) fopList.innerHTML = FOP_OPTIONS.map(item => `<option value="${escapeHtml(item)}"></option>`).join('');
+    const capList = document.getElementById('capacitationList');
+    if (capList) capList.innerHTML = CAPACITATION_OPTIONS.map(item => `<option value="${escapeHtml(item)}"></option>`).join('');
+  }
+  populateStaticLists = populateStaticListsEnhanced;
+
+  function getCourseYearOptions(selected) {
+    const currentYear = new Date().getFullYear() + 5;
+    let html = '<option value="">Ano</option>';
+    for (let year = 2000; year <= currentYear; year += 1) {
+      html += `<option value="${year}" ${String(selected) === String(year) ? 'selected' : ''}>${year}</option>`;
+    }
+    return html;
+  }
+
+  function renderCapacitacoesForm(values) {
+    const container = document.getElementById('capacitacoesContainer');
+    if (!container) return;
+    const list = Array.isArray(values) && values.length ? values : [];
+    container.innerHTML = list.length ? list.map((value, index) => `
+      <div class="dynamic-row">
+        <input list="capacitationList" type="text" class="capacitacao-item" value="${escapeHtml(value)}" placeholder="Selecione a capacitação" />
+        <button type="button" class="btn btn-danger btn-mini" onclick="removeCapacitacaoItem(${index})">×</button>
+      </div>
+    `).join('') : '<div class="empty">Nenhuma capacitação cadastrada no formulário.</div>';
+  }
+
+  function renderCursosForm(values) {
+    const container = document.getElementById('cursosContainer');
+    if (!container) return;
+    const list = Array.isArray(values) && values.length ? values : [];
+    container.innerHTML = list.length ? list.map((curso, index) => `
+      <div class="dynamic-row dynamic-row-wide">
+        <input type="text" class="curso-nome" value="${escapeHtml(curso?.nome || '')}" placeholder="Nome do curso" />
+        <select class="curso-ano">${getCourseYearOptions(curso?.ano || '')}</select>
+        <button type="button" class="btn btn-danger btn-mini" onclick="removeCursoItem(${index})">×</button>
+      </div>
+    `).join('') : '<div class="empty">Nenhum curso lançado no formulário.</div>';
+  }
+
+  function renderCursosPretendidosForm(values) {
+    const container = document.getElementById('cursosPretendidosContainer');
+    if (!container) return;
+    const list = Array.isArray(values) && values.length ? values : [];
+    container.innerHTML = list.length ? list.map((value, index) => `
+      <div class="dynamic-row">
+        <input type="text" class="curso-pretendido-item" value="${escapeHtml(value)}" placeholder="Nome do curso pretendido" />
+        <button type="button" class="btn btn-danger btn-mini" onclick="removeCursoPretendidoItem(${index})">×</button>
+      </div>
+    `).join('') : '<div class="empty">Nenhum curso pretendido informado no formulário.</div>';
+  }
+
+  function readCapacitacoesFromForm() {
+    return Array.from(document.querySelectorAll('#capacitacoesContainer .capacitacao-item')).map(input => input.value.trim()).filter(Boolean);
+  }
+
+  function readCursosFromForm() {
+    return Array.from(document.querySelectorAll('#cursosContainer .dynamic-row')).map(row => ({
+      nome: row.querySelector('.curso-nome')?.value.trim() || '',
+      ano: row.querySelector('.curso-ano')?.value || ''
+    })).filter(item => item.nome || item.ano);
+  }
+
+  function readCursosPretendidosFromForm() {
+    return Array.from(document.querySelectorAll('#cursosPretendidosContainer .curso-pretendido-item')).map(input => input.value.trim()).filter(Boolean);
+  }
+
+  window.appendCapacitacaoItem = function appendCapacitacaoItem(value = '') {
+    const list = readCapacitacoesFromForm();
+    list.push(value);
+    renderCapacitacoesForm(list);
+  };
+  window.removeCapacitacaoItem = function removeCapacitacaoItem(index) {
+    const list = readCapacitacoesFromForm();
+    list.splice(index, 1);
+    renderCapacitacoesForm(list);
+  };
+  window.appendCursoItem = function appendCursoItem(item = { nome: '', ano: '' }) {
+    const list = readCursosFromForm();
+    list.push(item);
+    renderCursosForm(list);
+  };
+  window.removeCursoItem = function removeCursoItem(index) {
+    const list = readCursosFromForm();
+    list.splice(index, 1);
+    renderCursosForm(list);
+  };
+  window.appendCursoPretendidoItem = function appendCursoPretendidoItem(value = '') {
+    const list = readCursosPretendidosFromForm();
+    list.push(value);
+    renderCursosPretendidosForm(list);
+  };
+  window.removeCursoPretendidoItem = function removeCursoPretendidoItem(index) {
+    const list = readCursosPretendidosFromForm();
+    list.splice(index, 1);
+    renderCursosPretendidosForm(list);
+  };
+
+  function refreshPersonnelFinancialReadonly() {
+    const ptgrad = normalizeText(document.getElementById('ptgrad')?.value || '');
+    const soldo = currencyToNumber(state.financial?.soldos?.[ptgrad]);
+    const soldoInput = document.getElementById('soldoBruto');
+    if (soldoInput) soldoInput.value = soldo || '';
+    const pseudoPerson = {
+      ptgrad,
+      adicionalFormacao: document.getElementById('adicionalFormacao')?.value || 'NIL',
+      cotaAeronavegante: currencyToNumber(document.getElementById('cotaAeronavegante')?.value),
+      cotaIncorporada: currencyToNumber(document.getElementById('cotaIncorporada')?.value),
+      outrosAdicionais: currencyToNumber(document.getElementById('outrosAdicionais')?.value),
+      soldoBruto: soldo
+    };
+    const preview = document.getElementById('remuneracaoTotalPreview');
+    if (preview) preview.value = formatMoney(getPersonnelTotalRemuneration(pseudoPerson));
+  }
+  window.refreshPersonnelFinancialReadonly = refreshPersonnelFinancialReadonly;
+
+  function toggleAdditionalPersonnelFields() {
+    const ptgrad = normalizeText(document.getElementById('ptgrad')?.value || '');
+    const show = canHaveAdditionalFields(ptgrad);
+    document.querySelectorAll('.additional-only-field').forEach(el => {
+      el.style.display = show ? '' : 'none';
+    });
+    if (!show) {
+      const adicional = document.getElementById('adicionalFormacao');
+      const aero = document.getElementById('cotaAeronavegante');
+      const incorp = document.getElementById('cotaIncorporada');
+      const outros = document.getElementById('outrosAdicionais');
+      if (adicional) adicional.value = 'NIL';
+      if (aero) aero.value = 0;
+      if (incorp) incorp.value = 0;
+      if (outros) outros.value = 0;
+    }
+    refreshPersonnelFinancialReadonly();
+  }
+
+  window.handlePersonnelPtgradInput = function handlePersonnelPtgradInput() {
+    validateExactPtgrad();
+    toggleAdditionalPersonnelFields();
+  };
+  window.handleTrigramaInput = function handleTrigramaInput() {
+    const input = document.getElementById('trigrama');
+    if (!input) return;
+    input.value = normalizeText(input.value).replace(/[^A-Z]/g, '').slice(0, 3);
+  };
+
+  clearPersonnelForm = function clearPersonnelFormEnhanced() {
+    const form = document.getElementById('personnelForm');
+    if (form) form.reset();
+    const editId = document.getElementById('personnelEditId');
+    if (editId) editId.value = '';
+    renderCapacitacoesForm([]);
+    renderCursosForm([]);
+    renderCursosPretendidosForm([]);
+    toggleAdditionalPersonnelFields();
+    refreshPersonnelFinancialReadonly();
+  };
+
+  handlePersonnelSubmit = function handlePersonnelSubmitEnhanced(event) {
+    event.preventDefault();
+    if (!requireAuth()) return;
+    validateExactPtgrad();
+    validateExactQuadro();
+    const ptgrad = normalizeText(document.getElementById('ptgrad').value);
+    const quadro = normalizeText(document.getElementById('quadro').value);
+    if (!PTGRAD_OPTIONS.includes(ptgrad)) {
+      alert('PT/GRAD inválido. Utilize um dos valores permitidos.');
+      return;
+    }
+    if (!QUADRO_OPTIONS.includes(quadro)) {
+      alert('Quadro inválido. Utilize uma das opções permitidas.');
+      return;
+    }
+    const payload = {
+      id: document.getElementById('personnelEditId').value || uid('mil'),
+      ptgrad,
+      quadro,
+      nomeGuerra: document.getElementById('nomeGuerra').value.trim(),
+      trigrama: normalizeText(document.getElementById('trigrama').value).slice(0, 3),
+      nomeCompleto: document.getElementById('nomeCompleto').value.trim(),
+      saram: digitsOnly(document.getElementById('saram').value),
+      cpf: digitsOnly(document.getElementById('cpf').value).slice(0, 11),
+      idMilitar: document.getElementById('idMilitar').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      soldoBruto: getPersonnelSoldo({ ptgrad }),
+      dependente: document.getElementById('dependente').checked,
+      adicionalFormacao: canHaveAdditionalFields(ptgrad) ? (document.getElementById('adicionalFormacao').value || 'NIL') : 'NIL',
+      cotaAeronavegante: canHaveAdditionalFields(ptgrad) ? currencyToNumber(document.getElementById('cotaAeronavegante').value) : 0,
+      cotaIncorporada: canHaveAdditionalFields(ptgrad) ? currencyToNumber(document.getElementById('cotaIncorporada').value) : 0,
+      outrosAdicionais: canHaveAdditionalFields(ptgrad) ? currencyToNumber(document.getElementById('outrosAdicionais').value) : 0,
+      fop1: String(document.getElementById('fop1').value || '').trim(),
+      fop2: String(document.getElementById('fop2').value || '').trim(),
+      fop3: String(document.getElementById('fop3').value || '').trim(),
+      fop4: String(document.getElementById('fop4').value || '').trim(),
+      capacitacoes: readCapacitacoesFromForm(),
+      cursos: readCursosFromForm(),
+      cursosPretendidos: readCursosPretendidosFromForm(),
+      ferias: [
+        { inicio: document.getElementById('ferias1Inicio').value, fim: document.getElementById('ferias1Fim').value },
+        { inicio: document.getElementById('ferias2Inicio').value, fim: document.getElementById('ferias2Fim').value },
+        { inicio: document.getElementById('ferias3Inicio').value, fim: document.getElementById('ferias3Fim').value }
+      ]
+    };
+    const editId = document.getElementById('personnelEditId').value;
+    if (editId) {
+      const index = state.personnel.findIndex(item => item.id === editId);
+      if (index >= 0) state.personnel[index] = payload;
+    } else {
+      state.personnel.push(payload);
+    }
+    saveState();
+    renderAll();
+    clearPersonnelForm();
+  };
+
+  editPersonnel = function editPersonnelEnhanced(id) {
+    if (!requireAuth()) return;
+    const person = state.personnel.find(item => item.id === id);
+    if (!person) return;
+    document.getElementById('personnelEditId').value = person.id;
+    document.getElementById('ptgrad').value = person.ptgrad || '';
+    document.getElementById('quadro').value = person.quadro || '';
+    document.getElementById('nomeGuerra').value = person.nomeGuerra || '';
+    document.getElementById('trigrama').value = person.trigrama || '';
+    document.getElementById('nomeCompleto').value = person.nomeCompleto || '';
+    document.getElementById('saram').value = person.saram || '';
+    document.getElementById('cpf').value = person.cpf || '';
+    document.getElementById('idMilitar').value = person.idMilitar || '';
+    document.getElementById('email').value = person.email || '';
+    document.getElementById('dependente').checked = !!person.dependente;
+    document.getElementById('adicionalFormacao').value = person.adicionalFormacao || 'NIL';
+    document.getElementById('cotaAeronavegante').value = currencyToNumber(person.cotaAeronavegante) || 0;
+    document.getElementById('cotaIncorporada').value = currencyToNumber(person.cotaIncorporada) || 0;
+    document.getElementById('outrosAdicionais').value = currencyToNumber(person.outrosAdicionais) || 0;
+    document.getElementById('fop1').value = person.fop1 || '';
+    document.getElementById('fop2').value = person.fop2 || '';
+    document.getElementById('fop3').value = person.fop3 || '';
+    document.getElementById('fop4').value = person.fop4 || '';
+    document.getElementById('ferias1Inicio').value = person.ferias?.[0]?.inicio || '';
+    document.getElementById('ferias1Fim').value = person.ferias?.[0]?.fim || '';
+    document.getElementById('ferias2Inicio').value = person.ferias?.[1]?.inicio || '';
+    document.getElementById('ferias2Fim').value = person.ferias?.[1]?.fim || '';
+    document.getElementById('ferias3Inicio').value = person.ferias?.[2]?.inicio || '';
+    document.getElementById('ferias3Fim').value = person.ferias?.[2]?.fim || '';
+    renderCapacitacoesForm(person.capacitacoes || []);
+    renderCursosForm(person.cursos || []);
+    renderCursosPretendidosForm(person.cursosPretendidos || []);
+    toggleAdditionalPersonnelFields();
+    setActiveTab('tab1');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  renderPersonnelTable = function renderPersonnelTableEnhanced() {
+    const tbody = document.getElementById('personnelTableBody');
+    if (!tbody) return;
+    if (!state.personnel.length) {
+      tbody.innerHTML = '<tr><td colspan="13" class="empty">Nenhum militar cadastrado.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = state.personnel.map((person, index) => `
+      <tr>
+        <td class="center">${index + 1}</td>
+        <td>${escapeHtml(person.ptgrad)}</td>
+        <td>${escapeHtml(person.quadro)}</td>
+        <td>${escapeHtml(person.nomeGuerra)}</td>
+        <td>${escapeHtml(person.trigrama)}</td>
+        <td>${escapeHtml(person.nomeCompleto)}</td>
+        <td>${escapeHtml(person.saram)}</td>
+        <td>${escapeHtml(person.cpf || '-')}</td>
+        <td>${escapeHtml(person.idMilitar)}</td>
+        <td>${escapeHtml(person.email)}</td>
+        <td class="money-cell">${formatMoney(getPersonnelTotalRemuneration(person))}</td>
+        <td class="center">${person.dependente ? 'SIM' : 'NÃO'}</td>
+        <td>
+          <div class="actions">
+            <button class="btn btn-secondary btn-mini" onclick="movePersonnel('${person.id}', -1)">▲</button>
+            <button class="btn btn-secondary btn-mini" onclick="movePersonnel('${person.id}', 1)">▼</button>
+            <button class="btn btn-primary btn-mini" onclick="editPersonnel('${person.id}')">Editar</button>
+            <button class="btn btn-danger btn-mini" onclick="deletePersonnel('${person.id}')">Excluir</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  };
+
+  renderFinancialTables = function renderFinancialTablesEnhanced() {
+    const soldoBody = document.getElementById('financialSoldoBody');
+    if (soldoBody) {
+      soldoBody.innerHTML = PTGRAD_OPTIONS.map(pt => `
+        <tr>
+          <td>${pt}</td>
+          <td><input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.soldos[pt])}" onchange="updateFinancialSoldo('${pt}', this.value)" /></td>
+          <td class="money-cell">${formatMoney(currencyToNumber(state.financial.soldos[pt]) * 0.02)}</td>
+        </tr>
+      `).join('');
+    }
+    const diaryBody = document.getElementById('financialDiaryBody');
+    if (diaryBody) {
+      diaryBody.innerHTML = Object.entries(DIARY_GROUPS).map(([key, group]) => `
+        <tr>
+          <td>${group.label}</td>
+          <td>${group.postos.join(', ')}</td>
+          <td><input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.diarias[key].priority)}" onchange="updateFinancialDaily('${key}','priority', this.value)" /></td>
+          <td><input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.diarias[key].capital)}" onchange="updateFinancialDaily('${key}','capital', this.value)" /></td>
+          <td><input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.diarias[key].other)}" onchange="updateFinancialDaily('${key}','other', this.value)" /></td>
+        </tr>
+      `).join('');
+    }
+    const formationBody = document.getElementById('financialFormationBody');
+    if (formationBody) {
+      formationBody.innerHTML = FORMATION_OPTIONS.map(option => `
+        <tr>
+          <td>${option}</td>
+          <td>${option === 'NIL'
+            ? '<input type="number" value="0" readonly />'
+            : `<input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.adicionaisFormacao[option])}" onchange="updateFormationPercent('${option}', this.value)" />`}</td>
+        </tr>
+      `).join('');
+    }
+  };
+
+  window.updateFormationPercent = function updateFormationPercent(option, value) {
+    if (!requireAuth()) return;
+    if (option === 'NIL') return;
+    state.financial.adicionaisFormacao[option] = currencyToNumber(value);
+    saveState();
+    renderAll();
+  };
+
+  updateFinancialSoldo = function updateFinancialSoldoEnhanced(pt, value) {
+    if (!requireAuth()) return;
+    state.financial.soldos[pt] = currencyToNumber(value);
+    state.personnel = normalizePersonnel(state.personnel);
+    saveState();
+    renderAll();
+  };
+
+  updateFinancialDaily = function updateFinancialDailyEnhanced(groupKey, type, value) {
+    if (!requireAuth()) return;
+    state.financial.diarias[groupKey][type] = currencyToNumber(value);
+    saveState();
+    renderAll();
+  };
+
+  function buildBoardHeaderEnhanced(days) {
+    const stickyLeft = getStickyLeftMap();
+    const monthCounts = days.reduce((acc, day) => {
+      acc[day.month] = (acc[day.month] || 0) + 1;
+      return acc;
+    }, {});
+    let row1 = `
+      <tr>
+        <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">PT/GRAD</th>
+        <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">Nome de Guerra</th>
+        <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">Trig.</th>
+    `;
+    state.missions.forEach(mission => {
+      row1 += `<th class="sticky-col mission-head" colspan="2" style="left:${stickyLeft[`m_${mission.id}_e`]}px;">${escapeHtml(mission.name)}</th>`;
+    });
+    MONTHS_PT.forEach((monthName, index) => {
+      row1 += `<th class="month-head" colspan="${monthCounts[index] || 0}">${monthName}</th>`;
+    });
+    row1 += '</tr>';
+
+    let row2 = '<tr>';
+    state.missions.forEach(mission => {
+      row2 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_e`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;"><div class="rotate-wrap">ESC</div></th>`;
+      row2 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_c`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;"><div class="rotate-wrap">COM</div></th>`;
+    });
+    days.forEach(day => {
+      const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
+      row2 += `<th class="day-head ${cls}" ${day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}"` : ''}>${day.day}</th>`;
+    });
+    row2 += '</tr>';
+
+    let row3 = '<tr>';
+    state.missions.forEach(mission => {
+      row3 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_e`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;">E</th>`;
+      row3 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_c`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;">C</th>`;
+    });
+    days.forEach(day => {
+      const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
+      row3 += `<th class="day-head ${cls}" ${day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}"` : ''}>${day.weekdayShort}</th>`;
+    });
+    row3 += '</tr>';
+
+    return `<thead>${row1}${row2}${row3}</thead>`;
+  }
+
+  renderBoard = function renderBoardEnhanced() {
+    const table = document.getElementById('boardTable');
+    if (!table) return;
+    const select = document.getElementById('boardYearSelect');
+    if (select) select.value = String(boardYearView);
+    const label = document.getElementById('boardYearLabel');
+    if (label) label.textContent = String(boardYearView);
+    if (!state.personnel.length) {
+      table.innerHTML = '<tbody><tr><td class="empty">Cadastre o efetivo para montar o quadro.</td></tr></tbody>';
+      return;
+    }
+    const days = getBoardDays(boardYearView);
+    const canEditBoard = isAuthenticated();
+    const stickyLeft = getStickyLeftMap();
+    const headerHtml = buildBoardHeaderEnhanced(days);
+    const bodyRows = state.personnel.map(person => {
+      let row = '<tr>';
+      row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">${escapeHtml(person.ptgrad)}</td>`;
+      row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">${escapeHtml(person.nomeGuerra)}</td>`;
+      row += `<td class="sticky-col sticky-person center" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">${escapeHtml(person.trigrama)}</td>`;
+      state.missions.forEach(mission => {
+        const assignment = getAssignment(mission.id, person.id);
+        row += `<td class="sticky-col mission-toggle-cell sticky-mission ${assignment.selected ? 'active-assigned' : ''}" style="left:${stickyLeft[`m_${mission.id}_e`]}px;">
+            <input type="checkbox" ${assignment.selected ? 'checked' : ''} ${canEditBoard ? '' : 'disabled'} onchange="toggleAssignment('${mission.id}','${person.id}','selected', this.checked)">
+          </td>`;
+        row += `<td class="sticky-col mission-toggle-cell sticky-mission ${assignment.commissioned && assignment.selected ? 'active-commissioned' : ''}" style="left:${stickyLeft[`m_${mission.id}_c`]}px;">
+            <input type="checkbox" ${assignment.commissioned && assignment.selected ? 'checked' : ''} ${canEditBoard && assignment.selected ? '' : 'disabled'} onchange="toggleAssignment('${mission.id}','${person.id}','commissioned', this.checked)">
+          </td>`;
+      });
+      days.forEach(day => {
+        let cellStyle = '';
+        let cellClass = 'cell-day';
+        if (personOnVacation(person, day.iso)) {
+          cellClass += ' vacation-cell';
+        } else {
+          const missionColor = state.missions.find(mission => missionAppliesToDay(person, mission, day.iso))?.color;
+          if (missionColor) cellStyle = `background:${missionColor};`;
+        }
+        row += `<td class="${cellClass}" style="${cellStyle}" ${day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}"` : ''}></td>`;
+      });
+      row += '</tr>';
+      return row;
+    }).join('');
+    table.innerHTML = headerHtml + `<tbody>${bodyRows}</tbody>`;
+  };
+
+  renderMissionCost = function renderMissionCostEnhanced() {
+    const select = document.getElementById('missionCostSelect');
+    const mission = state.missions.find(item => item.id === select?.value);
+    const body = document.getElementById('missionCostBody');
+    const foot = document.getElementById('missionCostFoot');
+    const meta = document.getElementById('custoMeta');
+    const title = document.getElementById('custoTitle');
+    if (!body || !foot || !meta || !title) return;
+    if (!mission) {
+      title.textContent = 'Custo da Missão';
+      meta.innerHTML = '';
+      body.innerHTML = '<tr><td colspan="10">Selecione uma missão.</td></tr>';
+      foot.innerHTML = '';
+      return;
+    }
+    const assigned = state.personnel.filter(person => isPersonAssignedToMission(person.id, mission.id));
+    const multiplier = getMissionMultiplier(mission);
+    const locality = getLocalityClass(mission);
+    let total2 = 0;
+    let totalDiarias = 0;
+    title.textContent = `Custo da Missão — ${mission.name}`;
+    meta.innerHTML = `
+      <div><strong>Período:</strong> ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+      <div><strong>Dias:</strong> ${getMissionDays(mission)} | <strong>Multiplicador:</strong> ${multiplier.toFixed(1).replace('.', ',')}</div>
+      <div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')} — ${escapeHtml(locality.label)}</div>
+    `;
+    body.innerHTML = assigned.length ? assigned.map(person => {
+      const valor2 = getPersonnel2Percent(person) * multiplier;
+      const diarias = getDiaryRate(person.ptgrad, mission) * multiplier;
+      total2 += valor2;
+      totalDiarias += diarias;
+      return `
+        <tr>
+          <td>${escapeHtml(person.ptgrad)}</td>
+          <td>${escapeHtml(person.quadro)}</td>
+          <td>${escapeHtml(person.nomeGuerra)}</td>
+          <td>${escapeHtml(person.trigrama)}</td>
+          <td>${escapeHtml(person.nomeCompleto)}</td>
+          <td>${escapeHtml(person.saram)}</td>
+          <td>${escapeHtml(person.idMilitar)}</td>
+          <td>${escapeHtml(person.email)}</td>
+          <td class="money-cell">${formatMoney(valor2)}</td>
+          <td class="money-cell">${formatMoney(diarias)}</td>
+        </tr>
+      `;
+    }).join('') : '<tr><td colspan="10">Nenhum militar escalado nesta missão.</td></tr>';
+    foot.innerHTML = `
+      <tr>
+        <th colspan="8" style="text-align:right;">Total dos 2%</th>
+        <th class="money-cell">${formatMoney(total2)}</th>
+        <th></th>
+      </tr>
+      <tr>
+        <th colspan="9" style="text-align:right;">Total em Diárias</th>
+        <th class="money-cell">${formatMoney(totalDiarias)}</th>
+      </tr>
+    `;
+  };
+
+  function missionMoneyTotalForPerson(person, mission) {
+    return getDiaryRate(person.ptgrad, mission) * getMissionMultiplier(mission);
+  }
+
+  function renderCommissionProcessForm(person, data) {
+    return `
+      <div class="process-grid">
+        <div class="field"><label>Proposta</label><input type="text" value="${escapeHtml(data.proposta)}" onchange="updateCommissionDataField('${person.id}','proposta', this.value)" /></div>
+        <div class="field"><label>Solicitação de Abertura</label><input type="text" value="${escapeHtml(data.solicitacaoAbertura)}" onchange="updateCommissionDataField('${person.id}','solicitacaoAbertura', this.value)" /></div>
+        <div class="field"><label>Autorização de Comissionamento</label><input type="text" value="${escapeHtml(data.autorizacaoComissionamento)}" onchange="updateCommissionDataField('${person.id}','autorizacaoComissionamento', this.value)" /></div>
+        <div class="field"><label>Portaria</label><input type="text" value="${escapeHtml(data.portaria)}" onchange="updateCommissionDataField('${person.id}','portaria', this.value)" /></div>
+        <div class="field"><label>Publicação de Portaria</label><input type="text" value="${escapeHtml(data.publicacaoPortaria)}" onchange="updateCommissionDataField('${person.id}','publicacaoPortaria', this.value)" /></div>
+        <div class="field"><label>PAG</label><input type="text" value="${escapeHtml(data.pag)}" onchange="updateCommissionDataField('${person.id}','pag', this.value)" /></div>
+        <div class="field"><label>Apostila</label><input type="text" value="${escapeHtml(data.apostila)}" onchange="updateCommissionDataField('${person.id}','apostila', this.value)" /></div>
+        <div class="field"><label>Publicação de Apostila</label><input type="text" value="${escapeHtml(data.publicacaoApostila)}" onchange="updateCommissionDataField('${person.id}','publicacaoApostila', this.value)" /></div>
+        <div class="field"><label>SILOMS</label><input type="text" value="${escapeHtml(data.siloms)}" onchange="updateCommissionDataField('${person.id}','siloms', this.value)" /></div>
+        <div class="field"><label>Data de Abertura</label><input type="date" value="${escapeHtml(data.dataAbertura)}" onchange="updateCommissionDataField('${person.id}','dataAbertura', this.value)" /></div>
+        <div class="field"><label>Situação</label>
+          <div class="toggle-pills">
+            <button type="button" class="pill ${data.situacao === 'ABERTO' ? 'active-open' : ''}" onclick="updateCommissionDataField('${person.id}','situacao','ABERTO')">ABERTO</button>
+            <button type="button" class="pill ${data.situacao === 'FECHADO' ? 'active-closed' : ''}" onclick="updateCommissionDataField('${person.id}','situacao','FECHADO')">FECHADO</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  window.updateAdditionalValue = function updateAdditionalValueEnhanced(missionId, personId, value) {
+    if (!requireAuth()) return;
+    const item = getAssignment(missionId, personId);
+    item.additional = currencyToNumber(value);
+    saveState();
+    renderCommissionPanel();
+    renderManningMissions();
+  };
+
+  renderCommissionPanel = function renderCommissionPanelEnhanced() {
+    const personId = document.getElementById('commissionedPersonSelect')?.value;
+    const container = document.getElementById('commissionPanel');
+    const person = state.personnel.find(item => item.id === personId);
+    if (!container) return;
+    if (!person) {
+      container.innerHTML = '<div class="empty">Selecione um militar comissionado.</div>';
+      return;
+    }
+    const missions = getCommissionedMissionsForPerson(person.id);
+    if (!missions.length) {
+      container.innerHTML = '<div class="empty">Este militar não possui missão comissionada marcada.</div>';
+      return;
+    }
+    const data = getCommissionDataEntry(person.id);
+    const totalRem = getPersonnelTotalRemuneration(person);
+    const totalAdicionaisMissoes = missions.reduce((acc, mission) => acc + currencyToNumber(getAssignment(mission.id, person.id).additional), 0);
+    const proposta = missions.reduce((acc, mission) => acc + missionMoneyTotalForPerson(person, mission), 0);
+    const executado = missions.filter(isMissionExecuted).reduce((acc, mission) => acc + missionMoneyTotalForPerson(person, mission), 0);
+    const planejado = missions.filter(mission => !isMissionExecuted(mission)).reduce((acc, mission) => acc + missionMoneyTotalForPerson(person, mission), 0);
+    const restam = proposta - executado - planejado;
+    const ida = data.idaManualEnabled ? currencyToNumber(data.idaManualValue) : totalRem;
+    const voltaBase = totalRem + totalAdicionaisMissoes;
+    const volta = data.voltaManualEnabled ? currencyToNumber(data.voltaManualValue) : voltaBase;
+    const diariaBruta = proposta;
+    const bateEconomicidade = diariaBruta >= (ida + volta);
+    container.innerHTML = `
+      <div class="commission-layout">
+        <div class="card commission-left">
+          <h4 class="section-title" style="font-size:15px;">Dados do Processo</h4>
+          ${renderCommissionProcessForm(person, data)}
+          <div class="metrics-grid">
+            <div class="metric-box"><span>PROPOSTA</span><strong>${formatMoney(proposta)}</strong></div>
+            <div class="metric-box"><span>EXECUTADO</span><strong>${formatMoney(executado)}</strong></div>
+            <div class="metric-box"><span>PLANEJADO</span><strong>${formatMoney(planejado)}</strong></div>
+            <div class="metric-box"><span>RESTAM</span><strong>${formatMoney(restam)}</strong></div>
+          </div>
+          <div class="financial-comparison">
+            <div class="field-inline">
+              <label><input type="checkbox" ${data.idaManualEnabled ? 'checked' : ''} onchange="updateCommissionDataField('${person.id}','idaManualEnabled', this.checked)" /> Editar valor</label>
+              <span>IDA</span>
+              <input type="number" step="0.01" value="${currencyToNumber(data.idaManualEnabled ? data.idaManualValue : ida)}" ${data.idaManualEnabled ? '' : 'readonly'} onchange="updateCommissionDataField('${person.id}','idaManualValue', this.value)" />
+            </div>
+            <div class="field-inline">
+              <label><input type="checkbox" ${data.voltaManualEnabled ? 'checked' : ''} onchange="updateCommissionDataField('${person.id}','voltaManualEnabled', this.checked)" /> Editar valor</label>
+              <span>VOLTA</span>
+              <input type="number" step="0.01" value="${currencyToNumber(data.voltaManualEnabled ? data.voltaManualValue : volta)}" ${data.voltaManualEnabled ? '' : 'readonly'} onchange="updateCommissionDataField('${person.id}','voltaManualValue', this.value)" />
+            </div>
+            <div class="metric-line"><span>AJUDA DE CUSTO</span><strong>${formatMoney(ida)}</strong></div>
+            <div class="metric-line"><span>AJUDA DE CUSTO + ETAPA</span><strong>${formatMoney(volta)}</strong></div>
+            <div class="metric-line"><span>Diária Bruta + ADC Desloc</span><strong>${formatMoney(diariaBruta)}</strong></div>
+            <div class="metric-line"><span>ECONOMICIDADE</span><span class="badge ${bateEconomicidade ? 'badge-ok' : 'badge-no'}">${bateEconomicidade ? 'BATE' : 'NÃO BATE'}</span></div>
+          </div>
+        </div>
+        <div class="card commission-right">
+          <h4 class="section-title" style="font-size:15px;">Missões do Militar</h4>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Missão</th>
+                  <th>Local</th>
+                  <th>Período</th>
+                  <th>Dias</th>
+                  <th>Adicionais</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${missions.map(mission => {
+                  const status = isMissionExecuted(mission) ? 'EXECUTADO' : 'PLANEJADO';
+                  const assignment = getAssignment(mission.id, person.id);
+                  return `
+                    <tr>
+                      <td>${escapeHtml(mission.name)}</td>
+                      <td>${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')}</td>
+                      <td>${formatDate(mission.start)} → ${formatDate(mission.end)}</td>
+                      <td>${getMissionDays(mission)} / ${getMissionMultiplier(mission).toFixed(1).replace('.', ',')}</td>
+                      <td><input type="number" step="0.01" min="0" value="${currencyToNumber(assignment.additional)}" onchange="updateAdditionalValue('${mission.id}','${person.id}', this.value)" /></td>
+                      <td><span class="badge ${status === 'EXECUTADO' ? 'badge-ok' : 'badge-no'}">${status}</span></td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
+  renderCommissionedSelect = function renderCommissionedSelectEnhanced() {
+    const commissionedPeople = state.personnel.filter(person => state.missions.some(mission => isPersonCommissionedInMission(person.id, mission.id)));
+    const select = document.getElementById('commissionedPersonSelect');
+    if (!select) return;
+    const prev = select.value;
+    select.innerHTML = ['<option value="">Selecione</option>'].concat(commissionedPeople.map(person => `<option value="${person.id}">${escapeHtml(person.ptgrad)} — ${escapeHtml(person.nomeGuerra)} — ${escapeHtml(person.trigrama)}</option>`)).join('');
+    if (commissionedPeople.some(person => person.id === prev)) select.value = prev;
+  };
+
+  function renderManningMissionCard(mission) {
+    const assigned = state.personnel.filter(person => isPersonAssignedToMission(person.id, mission.id));
+    const total2 = assigned.reduce((acc, person) => acc + getPersonnel2Percent(person) * getMissionMultiplier(mission), 0);
+    const totalDiarias = assigned.reduce((acc, person) => acc + getDiaryRate(person.ptgrad, mission) * getMissionMultiplier(mission), 0);
+    return `
+      <div class="mission-card mission-card-advanced">
+        <div class="mission-card-head" style="background:${mission.color};">
+          <strong>${escapeHtml(mission.name)}</strong>
+        </div>
+        <div class="mission-card-body">
+          <div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')}</div>
+          <div><strong>Período:</strong> ${formatDate(mission.start)} até ${formatDate(mission.end)} | <strong>Dias:</strong> ${getMissionDays(mission)}</div>
+          <div><strong>Custo total em 2%:</strong> ${formatMoney(total2)}</div>
+          <div><strong>Custo total em diárias:</strong> ${formatMoney(totalDiarias)}</div>
+          <div class="table-wrap" style="margin-top:8px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>PT/GRAD</th>
+                  <th>Nome de Guerra</th>
+                  <th>FOP</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${assigned.length ? assigned.map(person => {
+                  const assignment = getAssignment(mission.id, person.id);
+                  const availableFops = getPersonAvailableFops(person);
+                  const fopControl = assignment.fopManual
+                    ? `<input type="text" value="${escapeHtml(assignment.fop || '')}" onchange="updateAssignmentFop('${mission.id}','${person.id}', this.value)" placeholder="FOP livre" />`
+                    : `<select onchange="updateAssignmentFop('${mission.id}','${person.id}', this.value)">
+                        <option value="">Selecione</option>
+                        ${availableFops.map(fop => `<option value="${escapeHtml(fop)}" ${assignment.fop === fop ? 'selected' : ''}>${escapeHtml(fop)}</option>`).join('')}
+                      </select>`;
+                  return `
+                    <tr>
+                      <td>${escapeHtml(person.ptgrad)}</td>
+                      <td>${escapeHtml(person.nomeGuerra)}</td>
+                      <td>
+                        <div class="fop-pick-wrap">
+                          ${fopControl}
+                          <label class="manual-inline"><input type="checkbox" ${assignment.fopManual ? 'checked' : ''} onchange="updateAssignmentFopMode('${mission.id}','${person.id}', this.checked)" /> Editar manualmente</label>
+                        </div>
+                      </td>
+                      <td>${isPersonCommissionedInMission(person.id, mission.id) ? '<span class="badge badge-com">COM</span>' : '<span class="badge badge-ok">ESC</span>'}</td>
+                    </tr>
+                  `;
+                }).join('') : '<tr><td colspan="4">Nenhum militar escalado.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  window.updateAssignmentFop = function updateAssignmentFop(missionId, personId, value) {
+    if (!requireAuth()) return;
+    const item = getAssignment(missionId, personId);
+    item.fop = String(value || '').trim();
+    saveState();
+    renderManningMissions();
+  };
+
+  window.updateAssignmentFopMode = function updateAssignmentFopMode(missionId, personId, checked) {
+    if (!requireAuth()) return;
+    const item = getAssignment(missionId, personId);
+    item.fopManual = !!checked;
+    if (!checked) {
+      const person = state.personnel.find(p => p.id === personId);
+      const firstAvailable = getPersonAvailableFops(person)[0] || '';
+      if (!item.fop || !getPersonAvailableFops(person).includes(item.fop)) item.fop = firstAvailable;
+    }
+    saveState();
+    renderManningMissions();
+  };
+
+  function renderManningMissions() {
+    const container = document.getElementById('manningContainer');
+    if (!container) return;
+    if (!state.missions.length) {
+      container.innerHTML = '<div class="empty">Nenhuma missão cadastrada.</div>';
+      return;
+    }
+    container.innerHTML = `<div class="cards-grid">${state.missions.map(renderManningMissionCard).join('')}</div>`;
+  }
+
+  window.setIdprep11Mode = function setIdprep11Mode(mode) {
+    idprep11Mode = mode === 'quantitativo' ? 'quantitativo' : 'efetivo';
+    renderIdprep11();
+  };
+
+  window.setIdprep12Mode = function setIdprep12Mode(mode) {
+    idprep12Mode = mode === 'quantitativo' ? 'quantitativo' : 'efetivo';
+    renderIdprep12();
+  };
+
+  window.updateFopNecessario = function updateFopNecessario(fop, value) {
+    if (!requireAuth()) return;
+    state.config.fopNecessario[fop] = currencyToNumber(value);
+    saveState();
+    renderIdprep11();
+  };
+
+  window.updateCapacitacaoNecessario = function updateCapacitacaoNecessario(cap, value) {
+    if (!requireAuth()) return;
+    state.config.capacitacaoNecessario[cap] = currencyToNumber(value);
+    saveState();
+    renderIdprep12();
+  };
+
+  function renderIdprep11() {
+    const container = document.getElementById('idprep11Container');
+    if (!container) return;
+    document.getElementById('idprep11EfetivoBtn')?.classList.toggle('btn-primary', idprep11Mode === 'efetivo');
+    document.getElementById('idprep11QuantBtn')?.classList.toggle('btn-primary', idprep11Mode === 'quantitativo');
+    if (idprep11Mode === 'efetivo') {
+      container.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>PT/GRAD</th><th>Nome de Guerra</th><th>FOP 1</th><th>FOP 2</th><th>FOP 3</th><th>FOP 4</th></tr>
+            </thead>
+            <tbody>
+              ${state.personnel.length ? state.personnel.map(person => `
+                <tr>
+                  <td>${escapeHtml(person.ptgrad)}</td>
+                  <td>${escapeHtml(person.nomeGuerra)}</td>
+                  <td>${escapeHtml(person.fop1 || '—')}</td>
+                  <td>${escapeHtml(person.fop2 || '—')}</td>
+                  <td>${escapeHtml(person.fop3 || '—')}</td>
+                  <td>${escapeHtml(person.fop4 || '—')}</td>
+                </tr>
+              `).join('') : '<tr><td colspan="6">Nenhum militar cadastrado.</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      `;
+      return;
+    }
+    const countMap = {};
+    state.personnel.forEach(person => {
+      [person.fop1, person.fop2, person.fop3, person.fop4].filter(Boolean).forEach(fop => {
+        countMap[fop] = (countMap[fop] || 0) + 1;
+      });
+    });
+    const rows = Object.entries(countMap).filter(([, qty]) => qty > 0).sort((a, b) => b[1] - a[1]);
+    container.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>FOP</th><th>Quantidade</th><th>Necessário</th></tr>
+          </thead>
+          <tbody>
+            ${rows.length ? rows.map(([fop, qty]) => {
+              const need = currencyToNumber(state.config.fopNecessario[fop]);
+              return `
+                <tr>
+                  <td>${escapeHtml(fop)}</td>
+                  <td class="center ${qty < need ? 'cell-alert' : ''}">${qty}</td>
+                  <td><input type="number" step="1" min="0" value="${need}" onchange="updateFopNecessario('${escapeHtml(fop)}', this.value)" /></td>
+                </tr>
+              `;
+            }).join('') : '<tr><td colspan="3">Nenhuma FOP cadastrada.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function renderIdprep12() {
+    const container = document.getElementById('idprep12Container');
+    if (!container) return;
+    document.getElementById('idprep12EfetivoBtn')?.classList.toggle('btn-primary', idprep12Mode === 'efetivo');
+    document.getElementById('idprep12QuantBtn')?.classList.toggle('btn-primary', idprep12Mode === 'quantitativo');
+    if (idprep12Mode === 'efetivo') {
+      const maxCols = Math.max(0, ...state.personnel.map(person => (person.capacitacoes || []).length));
+      container.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>PT/GRAD</th>
+                <th>Nome de Guerra</th>
+                ${Array.from({ length: maxCols || 1 }, (_, idx) => `<th>Capacitação ${idx + 1}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${state.personnel.length ? state.personnel.map(person => `
+                <tr>
+                  <td>${escapeHtml(person.ptgrad)}</td>
+                  <td>${escapeHtml(person.nomeGuerra)}</td>
+                  ${Array.from({ length: maxCols || 1 }, (_, idx) => `<td>${escapeHtml(person.capacitacoes?.[idx] || '—')}</td>`).join('')}
+                </tr>
+              `).join('') : `<tr><td colspan="${2 + (maxCols || 1)}">Nenhum militar cadastrado.</td></tr>`}
+            </tbody>
+          </table>
+        </div>
+      `;
+      return;
+    }
+    const countMap = {};
+    state.personnel.forEach(person => {
+      (person.capacitacoes || []).filter(Boolean).forEach(cap => {
+        countMap[cap] = (countMap[cap] || 0) + 1;
+      });
+    });
+    const rows = Object.entries(countMap).filter(([, qty]) => qty > 0).sort((a, b) => b[1] - a[1]);
+    container.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Capacitação</th><th>Quantidade</th><th>Necessário</th></tr>
+          </thead>
+          <tbody>
+            ${rows.length ? rows.map(([cap, qty]) => {
+              const need = currencyToNumber(state.config.capacitacaoNecessario[cap]);
+              return `
+                <tr>
+                  <td>${escapeHtml(cap)}</td>
+                  <td class="center ${qty < need ? 'cell-alert' : ''}">${qty}</td>
+                  <td><input type="number" step="1" min="0" value="${need}" onchange="updateCapacitacaoNecessario('${escapeHtml(cap)}', this.value)" /></td>
+                </tr>
+              `;
+            }).join('') : '<tr><td colspan="3">Nenhuma capacitação cadastrada.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function renderCoursesTabView() {
+    const select = document.getElementById('coursePersonSelect');
+    const container = document.getElementById('coursesContainerView');
+    if (!select || !container) return;
+    const person = state.personnel.find(item => item.id === select.value);
+    if (!person) {
+      container.innerHTML = '<div class="empty">Selecione um militar.</div>';
+      return;
+    }
+    container.innerHTML = `
+      <div class="two-col">
+        <div class="card">
+          <h4 class="section-title" style="font-size:15px;">Cursos realizados</h4>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nome do Curso</th><th>Ano</th></tr></thead>
+              <tbody>
+                ${(person.cursos || []).length ? (person.cursos || []).map(curso => `<tr><td>${escapeHtml(curso.nome || '—')}</td><td>${escapeHtml(curso.ano || '—')}</td></tr>`).join('') : '<tr><td colspan="2">Nenhum curso registrado.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <h4 class="section-title" style="font-size:15px;">Cursos pretendidos</h4>
+          ${(person.cursosPretendidos || []).length ? `<ul class="mission-list">${person.cursosPretendidos.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<div class="empty">Nenhum curso pretendido informado.</div>'}
+        </div>
+      </div>
+    `;
+  }
+  window.renderCoursesTabView = renderCoursesTabView;
+
+  renderMissionSelects = function renderMissionSelectsEnhanced() {
+    const options = [`<option value="">Selecione</option>`].concat(state.missions.map(mission => `<option value="${mission.id}">${escapeHtml(mission.name)}</option>`));
+    const querySelect = document.getElementById('missionQuerySelect');
+    const costSelect = document.getElementById('missionCostSelect');
+    if (querySelect) {
+      const prev = querySelect.value;
+      querySelect.innerHTML = options.join('');
+      if (state.missions.some(mission => mission.id === prev)) querySelect.value = prev;
+    }
+    if (costSelect) {
+      const prev = costSelect.value;
+      costSelect.innerHTML = options.join('');
+      if (state.missions.some(mission => mission.id === prev)) costSelect.value = prev;
+    }
+    const courseSelect = document.getElementById('coursePersonSelect');
+    if (courseSelect) {
+      const prev = courseSelect.value;
+      courseSelect.innerHTML = ['<option value="">Selecione</option>'].concat(state.personnel.map(person => `<option value="${person.id}">${escapeHtml(person.ptgrad)} — ${escapeHtml(person.nomeGuerra)}</option>`)).join('');
+      if (state.personnel.some(person => person.id === prev)) courseSelect.value = prev;
+    }
+  };
+
+  renderMenu = function renderMenuEnhanced() {
+    renderAuthPanel();
+    const currentActive = document.querySelector('.tab-content.active')?.id || PUBLIC_TAB_ID;
+    const current = !isAuthenticated() && currentActive !== PUBLIC_TAB_ID ? PUBLIC_TAB_ID : currentActive;
+    document.getElementById('menuList').innerHTML = getVisibleTabs().map(tab => {
+      const label = getTabTitle(tab.id);
+      return `
+        <button class="menu-item ${tab.id === current ? 'active' : ''}" data-tab="${tab.id}">
+          <span>${escapeHtml(label)}</span>
+          ${isAuthenticated() ? `<span class="menu-item-edit" onclick="startMenuTitleEdit('${tab.id}', event)">✏️</span>` : ''}
+        </button>
+      `;
+    }).join('');
+    const meta = TAB_META.find(item => item.id === current) || TAB_META.find(item => item.id === PUBLIC_TAB_ID);
+    document.getElementById('headerSubtitle').textContent = meta?.subtitle || '';
+    const readonly = document.getElementById('boardReadonlyNotice');
+    if (readonly) readonly.style.display = isAuthenticated() ? 'none' : 'block';
+    renderLogoPanel();
+    renderEditableStaticTitles();
+  };
+
+  renderAll = function renderAllEnhanced() {
+    ensureEnhancedDom();
+    renderMenu();
+    renderPersonnelTable();
+    renderMissionTable();
+    renderSummaryCards();
+    renderBoard();
+    ensureHolidayData(boardYearView).then(() => renderBoard());
+    renderMissionDashboard();
+    renderPersonMissionMatrix();
+    renderMissionSelects();
+    renderMissionQuery();
+    renderFinancialTables();
+    renderMissionCost();
+    renderCommissionedSelect();
+    renderCommissionPanel();
+    renderManningMissions();
+    renderIdprep11();
+    renderIdprep12();
+    renderCoursesTabView();
+    renderAccessLog();
+    toggleAdditionalPersonnelFields();
+  };
+
+  // ==============================
+  // Atualiza objeto público usado pelo Firebase
+  // ==============================
+  window.CIAOP = {
+    getState: () => JSON.parse(JSON.stringify(state)),
+    applyPrivateCloudState,
+    applyPublicCloudState,
+    applyCloudAccessLogs,
+    getPrivateCloudPayload,
+    getPublicCloudPayload,
+    applyAuthContext,
+    setCloudMode,
+    markFirebaseReady
+  };
+
+  // ==============================
+  // Reidratação e render inicial após o patch
+  // ==============================
+  state = normalizeStateData(state || {});
+  writeLocalCache();
+  ensureEnhancedDom();
+  populateStaticLists();
+  clearPersonnelForm();
+  renderAll();
+})();
+
   </script>
 
   <script type="module">
