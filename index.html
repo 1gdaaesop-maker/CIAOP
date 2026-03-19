@@ -736,6 +736,41 @@
     }
   }
 
+
+  /* ===== Patch final ===== */
+  .money-readonly { background: rgba(255,255,255,0.06); color: var(--text); }
+  .course-dual-grid, .commission-layout { display:grid; grid-template-columns: minmax(320px,1fr) minmax(420px,1.4fr); gap:14px; }
+  .course-search-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+  .metrics-grid { display:grid; grid-template-columns: repeat(4, minmax(110px,1fr)); gap:8px; margin:12px 0; }
+  .metric-box { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,.08); padding:10px; border-radius:10px; display:flex; flex-direction:column; gap:4px; }
+  .metric-box span { font-size:11px; opacity:.8; }
+  .metric-box strong { font-size:16px; }
+  .financial-comparison .field-inline { display:grid; grid-template-columns: 150px 80px 1fr; align-items:center; gap:8px; margin-bottom:8px; }
+  .financial-comparison .metric-line { display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-top:1px solid rgba(255,255,255,.08); }
+  .mission-card-header { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
+  .mission-meta-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap:8px; margin-bottom:10px; }
+  .subtab-switch { display:flex; gap:6px; }
+  .list-card ul { margin: 0; padding-left: 18px; }
+  .list-card li { margin: 4px 0; }
+  .board-topbar { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
+  .year-switcher { display:flex; align-items:center; gap:8px; }
+  .year-current { font-weight:700; min-width:42px; text-align:center; }
+  .print-mission-toolbar { display:flex; justify-content:flex-end; margin-bottom:8px; }
+  body.print-mission #manningContainer .mission-card { display:none !important; }
+  body.print-mission #manningContainer .mission-card.print-target { display:block !important; }
+  @media print {
+    body.print-mission .menu-dropdown,
+    body.print-mission .header,
+    body.print-mission .toolbar,
+    body.print-mission .notice,
+    body.print-mission .summary-cards,
+    body.print-mission .legend,
+    body.print-mission .board-topbar,
+    body.print-mission .print-mission-toolbar { display:none !important; }
+    body.print-mission #manningContainer .mission-card { display:none !important; }
+    body.print-mission #manningContainer .mission-card.print-target { display:block !important; border:none !important; box-shadow:none !important; }
+  }
+
 </style>
 </head>
 <body>
@@ -2548,6 +2583,7 @@
   // Extensões e evolução do sistema
   // ==============================
   const FORMATION_OPTIONS = ['NIL', 'Especialização', 'Aperfeiçoamento', 'Altos Estudos I', 'Altos Estudos II'];
+  const HABILITACAO_OPTIONS = [...FORMATION_OPTIONS];
   const FOP_OPTIONS = [
     'ADJ OF CT', 'AJOLAAE', 'AT', 'AUX COM', 'AUX LOG', 'AUX REOP', 'AUX RADAR', 'ENC SUB ARM',
     'CMT BIA DAAE', 'CMT DAAE', 'CMT SEC TIR', 'CMT UTIR', 'ENC COM', 'ENC ELT', 'ENC LOG', 'LOCADOR',
@@ -2570,8 +2606,8 @@
     { id: 'tab4', label: '4. Dashboard por Missão', subtitle: 'Resumo operacional e efetivo escalado por missão.' },
     { id: 'tab5', label: '5. Dashboard por Militar', subtitle: 'Visão matricial de militares versus missões.' },
     { id: 'tab6', label: '6. Consulta de Missão + PDF', subtitle: 'Consulta de escalados com impressão formatada.' },
-    { id: 'tab7', label: '7. Cadastro Financeiro', subtitle: 'Soldos, diárias e percentuais de adicional de formação.' },
-    { id: 'tab8', label: '8. Custo da Missão', subtitle: 'Cálculo financeiro por missão com base na remuneração total.' },
+    { id: 'tab7', label: '7. Cadastro Financeiro', subtitle: 'Soldos, diárias e percentuais de habilitação e formação.' },
+    { id: 'tab8', label: '8. Custo da Missão', subtitle: 'Cálculo financeiro por missão com 2% sobre soldo bruto e diárias por localidade.' },
     { id: 'tab9', label: '9. Comissionamento', subtitle: 'Painel acumulado de economicidade por militar comissionado.' },
     { id: 'tab11', label: '10. Manning de Missões', subtitle: 'Distribuição operacional e FOP escolhida para cada militar escalado.' },
     { id: 'tab12', label: '11. IDPREP 1.1', subtitle: 'Panorama e quantitativo das FOPs cadastradas no efetivo.' },
@@ -2652,6 +2688,13 @@
     return {
       soldos,
       diarias,
+      adicionaisHabilitacao: {
+        NIL: 0,
+        'Especialização': 0,
+        'Aperfeiçoamento': 0,
+        'Altos Estudos I': 0,
+        'Altos Estudos II': 0
+      },
       adicionaisFormacao: {
         NIL: 0,
         'Especialização': 0,
@@ -2678,7 +2721,10 @@
         email: String(item.email || '').trim(),
         soldoBruto: currencyToNumber(item.soldoBruto),
         dependente: !!item.dependente,
+        adicionalHabilitacao: HABILITACAO_OPTIONS.includes(item.adicionalHabilitacao) ? item.adicionalHabilitacao : 'NIL',
         adicionalFormacao: FORMATION_OPTIONS.includes(item.adicionalFormacao) ? item.adicionalFormacao : 'NIL',
+        adicionalMilitar: currencyToNumber(item.adicionalMilitar),
+        adicionalDisponibilidade: currencyToNumber(item.adicionalDisponibilidade),
         cotaAeronavegante: currencyToNumber(item.cotaAeronavegante),
         cotaIncorporada: currencyToNumber(item.cotaIncorporada),
         outrosAdicionais: currencyToNumber(item.outrosAdicionais),
@@ -2731,6 +2777,9 @@
       base.diarias[group].priority = currencyToNumber(incoming.diarias?.[group]?.priority);
       base.diarias[group].capital = currencyToNumber(incoming.diarias?.[group]?.capital);
       base.diarias[group].other = currencyToNumber(incoming.diarias?.[group]?.other);
+    });
+    HABILITACAO_OPTIONS.forEach(option => {
+      base.adicionaisHabilitacao[option] = option === 'NIL' ? 0 : currencyToNumber(incoming.adicionaisHabilitacao?.[option]);
     });
     FORMATION_OPTIONS.forEach(option => {
       base.adicionaisFormacao[option] = option === 'NIL' ? 0 : currencyToNumber(incoming.adicionaisFormacao?.[option]);
@@ -2966,8 +3015,7 @@
   };
 
   function canHaveAdditionalFields(personOrPt) {
-    const pt = normalizeText(typeof personOrPt === 'string' ? personOrPt : personOrPt?.ptgrad);
-    return !['CB', 'S1', 'S2'].includes(pt);
+    return true;
   }
 
   getPersonnelSoldo = function getPersonnelSoldoEnhanced(person) {
@@ -2976,6 +3024,11 @@
     return currencyToNumber(person?.soldoBruto);
   };
 
+  function getHabilitacaoPercent(person) {
+    const label = HABILITACAO_OPTIONS.includes(person?.adicionalHabilitacao) ? person.adicionalHabilitacao : 'NIL';
+    return currencyToNumber(state.financial?.adicionaisHabilitacao?.[label]) / 100;
+  }
+
   function getFormationPercent(person) {
     const label = FORMATION_OPTIONS.includes(person?.adicionalFormacao) ? person.adicionalFormacao : 'NIL';
     return currencyToNumber(state.financial?.adicionaisFormacao?.[label]) / 100;
@@ -2983,16 +3036,18 @@
 
   function getPersonnelTotalRemuneration(person) {
     const soldo = getPersonnelSoldo(person);
-    if (!canHaveAdditionalFields(person)) return soldo;
     return soldo
+      + (soldo * getHabilitacaoPercent(person))
       + (soldo * getFormationPercent(person))
+      + currencyToNumber(person?.adicionalMilitar)
+      + currencyToNumber(person?.adicionalDisponibilidade)
       + currencyToNumber(person?.cotaAeronavegante)
       + currencyToNumber(person?.cotaIncorporada)
       + currencyToNumber(person?.outrosAdicionais);
   }
 
   getPersonnel2Percent = function getPersonnel2PercentEnhanced(person) {
-    return getPersonnelTotalRemuneration(person) * 0.02;
+    return getPersonnelSoldo(person) * 0.02;
   };
 
   getAssignment = function getAssignmentEnhanced(missionId, personId) {
@@ -3177,80 +3232,30 @@
             <input type="hidden" id="personnelEditId" />
 
             <div class="section-divider">── DADOS PESSOAIS ──</div>
-            <div class="form-grid">
-              <div class="field">
-                <label for="ptgrad">PT/GRAD</label>
-                <input id="ptgrad" list="ptgradList" placeholder="Digite e selecione" required oninput="handlePersonnelPtgradInput()" onchange="handlePersonnelPtgradInput()" />
-              </div>
-              <div class="field">
-                <label for="quadro">Quadro</label>
-                <input id="quadro" list="quadroList" placeholder="INF, SGS, BCO..." required onchange="validateExactQuadro()" />
-              </div>
-              <div class="field">
-                <label for="nomeGuerra">Nome de Guerra</label>
-                <input id="nomeGuerra" type="text" placeholder="Ex: SILVA" required />
-              </div>
-              <div class="field">
-                <label for="trigrama">Trigrama</label>
-                <input id="trigrama" type="text" maxlength="3" placeholder="ABC" oninput="handleTrigramaInput()" required />
-              </div>
-              <div class="field">
-                <label for="nomeCompleto">Nome Completo</label>
-                <input id="nomeCompleto" type="text" placeholder="Nome completo" required />
-              </div>
-              <div class="field">
-                <label for="saram">SARAM</label>
-                <input id="saram" type="text" inputmode="numeric" placeholder="Ex: 6494617" oninput="sanitizeNumericInput('saram')" />
-              </div>
-              <div class="field">
-                <label for="cpf">CPF</label>
-                <input id="cpf" type="text" inputmode="numeric" maxlength="11" placeholder="Ex: 10119424678" oninput="sanitizeNumericInput('cpf', 11)" />
-              </div>
-              <div class="field">
-                <label for="idMilitar">ID Militar</label>
-                <input id="idMilitar" type="text" placeholder="Identificação" />
-              </div>
-              <div class="field">
-                <label for="email">E-mail</label>
-                <input id="email" type="email" placeholder="militar@dominio.mil.br" />
-              </div>
-              <div class="field">
-                <label>Dependente</label>
-                <div class="toggle-line">
-                  <input id="dependente" type="checkbox" />
-                  <span>Possui Dependente?</span>
-                </div>
-              </div>
+            <div class="form-grid compact">
+              <div class="field"><label for="ptgrad">PT/GRAD</label><input id="ptgrad" list="ptgradList" placeholder="Digite e selecione" required oninput="handlePersonnelPtgradInput()" onchange="handlePersonnelPtgradInput()" /></div>
+              <div class="field"><label for="quadro">Quadro</label><input id="quadro" list="quadroList" placeholder="INF, SGS, BCO..." required onchange="validateExactQuadro()" /></div>
+              <div class="field"><label for="nomeGuerra">Nome de Guerra</label><input id="nomeGuerra" type="text" placeholder="Ex: SILVA" required /></div>
+              <div class="field"><label for="trigrama">Trigrama</label><input id="trigrama" type="text" maxlength="3" placeholder="ABC" oninput="handleTrigramaInput()" required /></div>
+              <div class="field"><label for="nomeCompleto">Nome Completo</label><input id="nomeCompleto" type="text" placeholder="Nome completo" required /></div>
+              <div class="field"><label for="saram">SARAM</label><input id="saram" type="text" inputmode="numeric" placeholder="Ex: 6494617" oninput="sanitizeNumericInput('saram')" /></div>
+              <div class="field"><label for="cpf">CPF</label><input id="cpf" type="text" inputmode="numeric" maxlength="11" placeholder="Ex: 10119424678" oninput="sanitizeNumericInput('cpf', 11)" /></div>
+              <div class="field"><label for="idMilitar">ID Militar</label><input id="idMilitar" type="text" placeholder="Identificação" /></div>
+              <div class="field"><label for="email">E-mail</label><input id="email" type="email" placeholder="militar@dominio.mil.br" /></div>
+              <div class="field"><label>Dependente</label><div class="toggle-line"><input id="dependente" type="checkbox" /><span>Possui Dependente?</span></div></div>
             </div>
 
             <div class="section-divider">── FINANCEIRO ──</div>
-            <div class="form-grid">
-              <div class="field">
-                <label for="soldoBruto">Soldo Bruto (R$)</label>
-                <input id="soldoBruto" type="number" step="0.01" min="0" readonly />
-              </div>
-              <div class="field additional-only-field">
-                <label for="adicionalFormacao">Adicional de Formação</label>
-                <select id="adicionalFormacao">
-                  ${FORMATION_OPTIONS.map(option => `<option value="${option}">${option}</option>`).join('')}
-                </select>
-              </div>
-              <div class="field additional-only-field">
-                <label for="cotaAeronavegante">Cota Aeronavegante (R$)</label>
-                <input id="cotaAeronavegante" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" />
-              </div>
-              <div class="field additional-only-field">
-                <label for="cotaIncorporada">Cota Incorporada (R$)</label>
-                <input id="cotaIncorporada" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" />
-              </div>
-              <div class="field additional-only-field">
-                <label for="outrosAdicionais">Outros Adicionais (R$)</label>
-                <input id="outrosAdicionais" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" />
-              </div>
-              <div class="field">
-                <label for="remuneracaoTotalPreview">Valor Total de Remuneração (R$)</label>
-                <input id="remuneracaoTotalPreview" type="text" readonly />
-              </div>
+            <div class="form-grid compact">
+              <div class="field"><label for="soldoBruto">Soldo Bruto (R$)</label><input id="soldoBruto" type="number" step="0.01" min="0" readonly class="money-readonly" /></div>
+              <div class="field"><label for="adicionalHabilitacao">Adicional de Habilitação</label><select id="adicionalHabilitacao" onchange="refreshPersonnelFinancialReadonly()">${HABILITACAO_OPTIONS.map(option => `<option value="${option}">${option}</option>`).join('')}</select></div>
+              <div class="field"><label for="adicionalFormacao">Adicional de Formação</label><select id="adicionalFormacao" onchange="refreshPersonnelFinancialReadonly()">${FORMATION_OPTIONS.map(option => `<option value="${option}">${option}</option>`).join('')}</select></div>
+              <div class="field"><label for="adicionalMilitar">Adicional Militar (R$)</label><input id="adicionalMilitar" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="adicionalDisponibilidade">Adicional Disponibilidade (R$)</label><input id="adicionalDisponibilidade" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="cotaAeronavegante">Cota Aeronavegante (R$)</label><input id="cotaAeronavegante" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="cotaIncorporada">Cota Incorporada (R$)</label><input id="cotaIncorporada" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="outrosAdicionais">Outros Adicionais (R$)</label><input id="outrosAdicionais" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="remuneracaoTotalPreview">Soldo Total (R$)</label><input id="remuneracaoTotalPreview" type="text" readonly class="money-readonly" /></div>
             </div>
 
             <div class="section-divider">── FUNÇÕES OPERACIONAIS (FOP) ──</div>
@@ -3263,39 +3268,21 @@
 
             <div class="section-divider">── CAPACITAÇÃO ──</div>
             <div id="capacitacoesContainer"></div>
-            <div class="form-actions compact-actions">
-              <button type="button" class="btn btn-secondary" onclick="appendCapacitacaoItem()">+ Adicionar Capacitação</button>
-            </div>
+            <div class="form-actions compact-actions"><button type="button" class="btn btn-secondary" onclick="appendCapacitacaoItem()">+ Adicionar Capacitação</button></div>
 
             <div class="section-divider">── CURSOS ──</div>
             <div id="cursosContainer"></div>
-            <div class="form-actions compact-actions">
-              <button type="button" class="btn btn-secondary" onclick="appendCursoItem()">+ Adicionar Curso</button>
-            </div>
+            <div class="form-actions compact-actions"><button type="button" class="btn btn-secondary" onclick="appendCursoItem()">+ Adicionar Curso</button></div>
 
             <div class="section-divider">── CURSOS PRETENDIDOS ──</div>
             <div id="cursosPretendidosContainer"></div>
-            <div class="form-actions compact-actions">
-              <button type="button" class="btn btn-secondary" onclick="appendCursoPretendidoItem()">+ Adicionar Curso Pretendido</button>
-            </div>
+            <div class="form-actions compact-actions"><button type="button" class="btn btn-secondary" onclick="appendCursoPretendidoItem()">+ Adicionar Curso Pretendido</button></div>
 
             <div class="section-divider">── FÉRIAS ──</div>
             <div class="form-grid" style="grid-template-columns: repeat(3, minmax(220px, 1fr));">
-              <div class="field-group">
-                <label>Período 1 de Férias</label>
-                <div class="field"><input id="ferias1Inicio" type="date" /></div>
-                <div class="field"><input id="ferias1Fim" type="date" /></div>
-              </div>
-              <div class="field-group">
-                <label>Período 2 de Férias</label>
-                <div class="field"><input id="ferias2Inicio" type="date" /></div>
-                <div class="field"><input id="ferias2Fim" type="date" /></div>
-              </div>
-              <div class="field-group">
-                <label>Período 3 de Férias</label>
-                <div class="field"><input id="ferias3Inicio" type="date" /></div>
-                <div class="field"><input id="ferias3Fim" type="date" /></div>
-              </div>
+              <div class="field-group"><label>Período 1 de Férias</label><div class="field"><input id="ferias1Inicio" type="date" /></div><div class="field"><input id="ferias1Fim" type="date" /></div></div>
+              <div class="field-group"><label>Período 2 de Férias</label><div class="field"><input id="ferias2Inicio" type="date" /></div><div class="field"><input id="ferias2Fim" type="date" /></div></div>
+              <div class="field-group"><label>Período 3 de Férias</label><div class="field"><input id="ferias3Inicio" type="date" /></div><div class="field"><input id="ferias3Fim" type="date" /></div></div>
             </div>
 
             <div class="form-actions">
@@ -3310,19 +3297,7 @@
             <table>
               <thead>
                 <tr>
-                  <th>Ordem</th>
-                  <th>PT/GRAD</th>
-                  <th>Quadro</th>
-                  <th>Nome de Guerra</th>
-                  <th>Trigrama</th>
-                  <th>Nome Completo</th>
-                  <th>SARAM</th>
-                  <th>CPF</th>
-                  <th>ID Militar</th>
-                  <th>E-mail</th>
-                  <th>Remuneração Total</th>
-                  <th>Dependente</th>
-                  <th>Ações</th>
+                  <th>Ordem</th><th>PT/GRAD</th><th>Quadro</th><th>Nome de Guerra</th><th>Trigrama</th><th>Nome Completo</th><th>SARAM</th><th>CPF</th><th>ID Militar</th><th>E-mail</th><th>Soldo Bruto</th><th>Soldo Total</th><th>Dependente</th><th>Ações</th>
                 </tr>
               </thead>
               <tbody id="personnelTableBody"></tbody>
@@ -3344,9 +3319,7 @@
             </div>
             <div class="year-switcher">
               <button class="btn btn-secondary btn-mini" type="button" onclick="incrementBoardYear(-1)">◄</button>
-              <select id="boardYearSelect" onchange="changeBoardYear(this.value)">
-                ${Array.from({ length: BOARD_YEAR_MAX - BOARD_YEAR_MIN + 1 }, (_, idx) => BOARD_YEAR_MIN + idx).map(year => `<option value="${year}">${year}</option>`).join('')}
-              </select>
+              <select id="boardYearSelect" onchange="changeBoardYear(this.value)">${Array.from({ length: BOARD_YEAR_MAX - BOARD_YEAR_MIN + 1 }, (_, idx) => BOARD_YEAR_MIN + idx).map(year => `<option value="${year}">${year}</option>`).join('')}</select>
               <button class="btn btn-secondary btn-mini" type="button" onclick="incrementBoardYear(1)">►</button>
               <span class="year-current" id="boardYearLabel"></span>
             </div>
@@ -3358,9 +3331,7 @@
             <div class="legend-item"><span class="legend-swatch" style="background: rgba(47,125,63,0.75);"></span>Escalado</div>
             <div class="legend-item"><span class="legend-swatch" style="background: rgba(158,122,46,0.8);"></span>Comissionado</div>
           </div>
-          <div class="board-wrap">
-            <table class="board-table" id="boardTable"></table>
-          </div>
+          <div class="board-wrap"><table class="board-table" id="boardTable"></table></div>
         </div>
       `;
     }
@@ -3371,52 +3342,10 @@
         <div class="card">
           <h3 class="section-title" data-title-key="tab7" data-title-default="Cadastro Financeiro"></h3>
           <div class="financial-grid">
-            <div class="financial-block">
-              <h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Soldo Bruto por PT/GRAD</h4>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>PT/GRAD</th>
-                      <th>Soldo Bruto (R$)</th>
-                      <th>2% do Soldo (R$)</th>
-                    </tr>
-                  </thead>
-                  <tbody id="financialSoldoBody"></tbody>
-                </table>
-              </div>
-            </div>
-            <div class="financial-block">
-              <h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Valores de Diária por Categoria</h4>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Grupo</th>
-                      <th>Postos</th>
-                      <th>Capitais Prioritárias</th>
-                      <th>Demais Capitais</th>
-                      <th>Demais Localidades</th>
-                    </tr>
-                  </thead>
-                  <tbody id="financialDiaryBody"></tbody>
-                </table>
-              </div>
-            </div>
-            <div class="financial-block">
-              <h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Percentuais de Adicional de Formação</h4>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Adicional</th>
-                      <th>Percentual (%)</th>
-                    </tr>
-                  </thead>
-                  <tbody id="financialFormationBody"></tbody>
-                </table>
-              </div>
-            </div>
+            <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Soldo Bruto por PT/GRAD</h4><div class="table-wrap"><table><thead><tr><th>PT/GRAD</th><th>Soldo Bruto (R$)</th><th>2% do Soldo (R$)</th></tr></thead><tbody id="financialSoldoBody"></tbody></table></div></div>
+            <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Valores de Diária por Categoria</h4><div class="table-wrap"><table><thead><tr><th>Grupo</th><th>Postos</th><th>Capitais Prioritárias</th><th>Demais Capitais</th><th>Demais Localidades</th></tr></thead><tbody id="financialDiaryBody"></tbody></table></div></div>
+            <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Percentuais de Adicional de Habilitação</h4><div class="table-wrap"><table><thead><tr><th>Adicional</th><th>Percentual (%)</th></tr></thead><tbody id="financialHabilitacaoBody"></tbody></table></div></div>
+            <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Percentuais de Adicional de Formação</h4><div class="table-wrap"><table><thead><tr><th>Adicional</th><th>Percentual (%)</th></tr></thead><tbody id="financialFormationBody"></tbody></table></div></div>
           </div>
         </div>
       `;
@@ -3427,30 +3356,14 @@
       tab8.querySelector('.card').innerHTML = `
         <h3 class="section-title" data-title-key="tab8" data-title-default="Custo da Missão"></h3>
         <div class="toolbar">
-          <div class="field">
-            <label for="missionCostSelect">Selecione a Missão</label>
-            <select id="missionCostSelect" onchange="renderMissionCost()"></select>
-          </div>
+          <div class="field"><label for="missionCostSelect">Selecione a Missão</label><select id="missionCostSelect" onchange="renderMissionCost()"></select></div>
           <button class="btn btn-primary" type="button" id="printCustoBtn">Imprimir / Gerar PDF</button>
         </div>
         <div class="print-cost-area" id="custoPrintArea">
           <h3 id="custoTitle">Custo da Missão</h3>
           <div class="print-meta" id="custoMeta"></div>
           <table>
-            <thead>
-              <tr>
-                <th>PT/GRAD</th>
-                <th>Quadro</th>
-                <th>Nome de Guerra</th>
-                <th>Trigrama</th>
-                <th>Nome Completo</th>
-                <th>SARAM</th>
-                <th>ID Militar</th>
-                <th>E-mail</th>
-                <th>Valor 2%</th>
-                <th>Valor em Diárias</th>
-              </tr>
-            </thead>
+            <thead><tr><th>PT/GRAD</th><th>Quadro</th><th>Nome de Guerra</th><th>Trigrama</th><th>Nome Completo</th><th>SARAM</th><th>ID Militar</th><th>E-mail</th><th>Valor 2%</th><th>Valor em Diárias</th></tr></thead>
             <tbody id="missionCostBody"></tbody>
             <tfoot id="missionCostFoot"></tfoot>
           </table>
@@ -3463,12 +3376,7 @@
       tab9.innerHTML = `
         <div class="card">
           <h3 class="section-title" data-title-key="tab9" data-title-default="Comissionamento"></h3>
-          <div class="toolbar">
-            <div class="field">
-              <label for="commissionedPersonSelect">Militar Comissionado</label>
-              <select id="commissionedPersonSelect" onchange="renderCommissionPanel()"></select>
-            </div>
-          </div>
+          <div class="toolbar"><div class="field"><label for="commissionedPersonSelect">Militar Comissionado</label><select id="commissionedPersonSelect" onchange="renderCommissionPanel()"></select></div></div>
           <div id="commissionPanel"></div>
         </div>
       `;
@@ -3483,12 +3391,7 @@
       }
     }
 
-    const sectionTitles = {
-      tab2: 'Cadastro de Missões',
-      tab4: 'Dashboard por Missão',
-      tab5: 'Dashboard por Militar',
-      tab6: 'Consulta de Missão + Impressão PDF'
-    };
+    const sectionTitles = { tab2: 'Cadastro de Missões', tab4: 'Dashboard por Missão', tab5: 'Dashboard por Militar', tab6: 'Consulta de Missão + Impressão PDF' };
     Object.entries(sectionTitles).forEach(([tabId, title]) => {
       const heading = document.querySelector(`#${tabId} .section-title`);
       if (heading) {
@@ -3499,64 +3402,16 @@
 
     if (!document.getElementById('tab11')) {
       tab10.insertAdjacentHTML('afterend', `
-        <section class="tab-content" id="tab11">
-          <div class="card">
-            <h3 class="section-title" data-title-key="tab11" data-title-default="Manning de Missões"></h3>
-            <div id="manningContainer"></div>
-          </div>
-        </section>
-        <section class="tab-content" id="tab12">
-          <div class="card">
-            <div class="subtab-bar">
-              <h3 class="section-title" data-title-key="tab12" data-title-default="IDPREP 1.1"></h3>
-              <div class="subtab-switch">
-                <button type="button" class="btn btn-secondary btn-mini" id="idprep11EfetivoBtn" onclick="setIdprep11Mode('efetivo')">Efetivo</button>
-                <button type="button" class="btn btn-secondary btn-mini" id="idprep11QuantBtn" onclick="setIdprep11Mode('quantitativo')">Quantitativo</button>
-              </div>
-            </div>
-            <div id="idprep11Container"></div>
-          </div>
-        </section>
-        <section class="tab-content" id="tab13">
-          <div class="card">
-            <div class="subtab-bar">
-              <h3 class="section-title" data-title-key="tab13" data-title-default="IDPREP 1.2"></h3>
-              <div class="subtab-switch">
-                <button type="button" class="btn btn-secondary btn-mini" id="idprep12EfetivoBtn" onclick="setIdprep12Mode('efetivo')">Efetivo</button>
-                <button type="button" class="btn btn-secondary btn-mini" id="idprep12QuantBtn" onclick="setIdprep12Mode('quantitativo')">Quantitativo</button>
-              </div>
-            </div>
-            <div id="idprep12Container"></div>
-          </div>
-        </section>
-        <section class="tab-content" id="tab14">
-          <div class="card">
-            <h3 class="section-title" data-title-key="tab14" data-title-default="Cursos"></h3>
-            <div class="toolbar">
-              <div class="field">
-                <label for="coursePersonSelect">Militar</label>
-                <select id="coursePersonSelect" onchange="renderCoursesTabView()"></select>
-              </div>
-            </div>
-            <div id="coursesContainerView"></div>
-          </div>
-        </section>
+        <section class="tab-content" id="tab11"><div class="card"><h3 class="section-title" data-title-key="tab11" data-title-default="Manning de Missões"></h3><div id="manningContainer"></div></div></section>
+        <section class="tab-content" id="tab12"><div class="card"><div class="subtab-bar"><h3 class="section-title" data-title-key="tab12" data-title-default="IDPREP 1.1"></h3><div class="subtab-switch"><button type="button" class="btn btn-secondary btn-mini" id="idprep11EfetivoBtn" onclick="setIdprep11Mode('efetivo')">Efetivo</button><button type="button" class="btn btn-secondary btn-mini" id="idprep11QuantBtn" onclick="setIdprep11Mode('quantitativo')">Quantitativo</button></div></div><div id="idprep11Container"></div></div></section>
+        <section class="tab-content" id="tab13"><div class="card"><div class="subtab-bar"><h3 class="section-title" data-title-key="tab13" data-title-default="IDPREP 1.2"></h3><div class="subtab-switch"><button type="button" class="btn btn-secondary btn-mini" id="idprep12EfetivoBtn" onclick="setIdprep12Mode('efetivo')">Efetivo</button><button type="button" class="btn btn-secondary btn-mini" id="idprep12QuantBtn" onclick="setIdprep12Mode('quantitativo')">Quantitativo</button></div></div><div id="idprep12Container"></div></div></section>
+        <section class="tab-content" id="tab14"><div class="card"><h3 class="section-title" data-title-key="tab14" data-title-default="Cursos"></h3><div class="course-search-grid"><div class="field"><label for="coursePersonSelect">Busca por militar</label><select id="coursePersonSelect" onchange="renderCoursesTabView()"></select></div><div class="field"><label for="courseLookupInput">Busca por curso</label><input id="courseLookupInput" list="courseLookupList" placeholder="Digite ou selecione um curso" oninput="renderCoursesTabView()" /></div></div><div id="coursesContainerView"></div></div></section>
       `);
-    }
-
-    if (!document.getElementById('fopList')) {
-      document.body.insertAdjacentHTML('beforeend', `
-        <datalist id="fopList"></datalist>
-        <datalist id="capacitationList"></datalist>
-      `);
-    }
-
-    if (!titleEditorCleanupAttached) {
-      document.addEventListener('click', (event) => {
-        const input = event.target.closest('.title-inline-input');
-        if (input) return;
-      });
-      titleEditorCleanupAttached = true;
+    } else {
+      const tab14 = document.getElementById('tab14');
+      if (tab14) {
+        tab14.innerHTML = `<div class="card"><h3 class="section-title" data-title-key="tab14" data-title-default="Cursos"></h3><div class="course-search-grid"><div class="field"><label for="coursePersonSelect">Busca por militar</label><select id="coursePersonSelect" onchange="renderCoursesTabView()"></select></div><div class="field"><label for="courseLookupInput">Busca por curso</label><input id="courseLookupInput" list="courseLookupList" placeholder="Digite ou selecione um curso" oninput="renderCoursesTabView()" /></div></div><div id="coursesContainerView"></div></div>`;
+      }
     }
   }
 
@@ -3564,6 +3419,9 @@
     document.getElementById('ptgradList').innerHTML = PTGRAD_OPTIONS.map(item => `<option value="${item}"></option>`).join('');
     document.getElementById('quadroList').innerHTML = QUADRO_OPTIONS.map(item => `<option value="${item}"></option>`).join('');
     document.getElementById('stateList').innerHTML = STATE_CITY_DATA.map(item => `<option value="${escapeHtml(item.sigla + ' - ' + item.nome)}"></option>`).join('');
+    if (!document.getElementById('fopList')) document.body.insertAdjacentHTML('beforeend', '<datalist id="fopList"></datalist>');
+    if (!document.getElementById('capacitationList')) document.body.insertAdjacentHTML('beforeend', '<datalist id="capacitationList"></datalist>');
+    if (!document.getElementById('courseLookupList')) document.body.insertAdjacentHTML('beforeend', '<datalist id="courseLookupList"></datalist>');
     const fopList = document.getElementById('fopList');
     if (fopList) fopList.innerHTML = FOP_OPTIONS.map(item => `<option value="${escapeHtml(item)}"></option>`).join('');
     const capList = document.getElementById('capacitationList');
@@ -3586,7 +3444,10 @@
     const list = Array.isArray(values) && values.length ? values : [];
     container.innerHTML = list.length ? list.map((value, index) => `
       <div class="dynamic-row">
-        <input list="capacitationList" type="text" class="capacitacao-item" value="${escapeHtml(value)}" placeholder="Selecione a capacitação" />
+        <select class="capacitacao-item">
+          <option value="">Selecione</option>
+          ${CAPACITATION_OPTIONS.map(item => `<option value="${item}" ${value === item ? 'selected' : ''}>${item}</option>`).join('')}
+        </select>
         <button type="button" class="btn btn-danger btn-mini" onclick="removeCapacitacaoItem(${index})">×</button>
       </div>
     `).join('') : '<div class="empty">Nenhuma capacitação cadastrada no formulário.</div>';
@@ -3614,11 +3475,11 @@
         <input type="text" class="curso-pretendido-item" value="${escapeHtml(value)}" placeholder="Nome do curso pretendido" />
         <button type="button" class="btn btn-danger btn-mini" onclick="removeCursoPretendidoItem(${index})">×</button>
       </div>
-    `).join('') : '<div class="empty">Nenhum curso pretendido informado no formulário.</div>';
+    `).join('') : '<div class="empty">Nenhum curso pretendido lançado no formulário.</div>';
   }
 
   function readCapacitacoesFromForm() {
-    return Array.from(document.querySelectorAll('#capacitacoesContainer .capacitacao-item')).map(input => input.value.trim()).filter(Boolean);
+    return Array.from(document.querySelectorAll('#capacitacoesContainer .capacitacao-item')).map(input => input.value.trim()).filter(value => CAPACITATION_OPTIONS.includes(value));
   }
 
   function readCursosFromForm() {
@@ -3670,11 +3531,14 @@
     if (soldoInput) soldoInput.value = soldo || '';
     const pseudoPerson = {
       ptgrad,
+      soldoBruto: soldo,
+      adicionalHabilitacao: document.getElementById('adicionalHabilitacao')?.value || 'NIL',
       adicionalFormacao: document.getElementById('adicionalFormacao')?.value || 'NIL',
+      adicionalMilitar: currencyToNumber(document.getElementById('adicionalMilitar')?.value),
+      adicionalDisponibilidade: currencyToNumber(document.getElementById('adicionalDisponibilidade')?.value),
       cotaAeronavegante: currencyToNumber(document.getElementById('cotaAeronavegante')?.value),
       cotaIncorporada: currencyToNumber(document.getElementById('cotaIncorporada')?.value),
-      outrosAdicionais: currencyToNumber(document.getElementById('outrosAdicionais')?.value),
-      soldoBruto: soldo
+      outrosAdicionais: currencyToNumber(document.getElementById('outrosAdicionais')?.value)
     };
     const preview = document.getElementById('remuneracaoTotalPreview');
     if (preview) preview.value = formatMoney(getPersonnelTotalRemuneration(pseudoPerson));
@@ -3682,33 +3546,28 @@
   window.refreshPersonnelFinancialReadonly = refreshPersonnelFinancialReadonly;
 
   function toggleAdditionalPersonnelFields() {
-    const ptgrad = normalizeText(document.getElementById('ptgrad')?.value || '');
-    const show = canHaveAdditionalFields(ptgrad);
     document.querySelectorAll('.additional-only-field').forEach(el => {
-      el.style.display = show ? '' : 'none';
+      el.style.display = '';
     });
-    if (!show) {
-      const adicional = document.getElementById('adicionalFormacao');
-      const aero = document.getElementById('cotaAeronavegante');
-      const incorp = document.getElementById('cotaIncorporada');
-      const outros = document.getElementById('outrosAdicionais');
-      if (adicional) adicional.value = 'NIL';
-      if (aero) aero.value = 0;
-      if (incorp) incorp.value = 0;
-      if (outros) outros.value = 0;
-    }
     refreshPersonnelFinancialReadonly();
   }
 
   window.handlePersonnelPtgradInput = function handlePersonnelPtgradInput() {
     validateExactPtgrad();
-    toggleAdditionalPersonnelFields();
+    refreshPersonnelFinancialReadonly();
   };
   window.handleTrigramaInput = function handleTrigramaInput() {
     const input = document.getElementById('trigrama');
     if (!input) return;
     input.value = normalizeText(input.value).replace(/[^A-Z]/g, '').slice(0, 3);
   };
+
+  function validateOfficialListValue(value, officialList, label) {
+    const normalized = String(value || '').trim();
+    if (!normalized) return '';
+    if (!officialList.includes(normalized)) throw new Error(`${label} inválido. Utilize apenas valores da lista oficial.`);
+    return normalized;
+  }
 
   clearPersonnelForm = function clearPersonnelFormEnhanced() {
     const form = document.getElementById('personnelForm');
@@ -3718,65 +3577,65 @@
     renderCapacitacoesForm([]);
     renderCursosForm([]);
     renderCursosPretendidosForm([]);
-    toggleAdditionalPersonnelFields();
     refreshPersonnelFinancialReadonly();
   };
 
   handlePersonnelSubmit = function handlePersonnelSubmitEnhanced(event) {
     event.preventDefault();
     if (!requireAuth()) return;
-    validateExactPtgrad();
-    validateExactQuadro();
-    const ptgrad = normalizeText(document.getElementById('ptgrad').value);
-    const quadro = normalizeText(document.getElementById('quadro').value);
-    if (!PTGRAD_OPTIONS.includes(ptgrad)) {
-      alert('PT/GRAD inválido. Utilize um dos valores permitidos.');
-      return;
+    try {
+      validateExactPtgrad();
+      validateExactQuadro();
+      const ptgrad = normalizeText(document.getElementById('ptgrad').value);
+      const quadro = normalizeText(document.getElementById('quadro').value);
+      if (!PTGRAD_OPTIONS.includes(ptgrad)) throw new Error('PT/GRAD inválido. Utilize um dos valores permitidos.');
+      if (!QUADRO_OPTIONS.includes(quadro)) throw new Error('Quadro inválido. Utilize uma das opções permitidas.');
+      const payload = {
+        id: document.getElementById('personnelEditId').value || uid('mil'),
+        ptgrad,
+        quadro,
+        nomeGuerra: document.getElementById('nomeGuerra').value.trim(),
+        trigrama: normalizeText(document.getElementById('trigrama').value).slice(0, 3),
+        nomeCompleto: document.getElementById('nomeCompleto').value.trim(),
+        saram: digitsOnly(document.getElementById('saram').value),
+        cpf: digitsOnly(document.getElementById('cpf').value).slice(0, 11),
+        idMilitar: document.getElementById('idMilitar').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        soldoBruto: getPersonnelSoldo({ ptgrad }),
+        dependente: document.getElementById('dependente').checked,
+        adicionalHabilitacao: document.getElementById('adicionalHabilitacao').value || 'NIL',
+        adicionalFormacao: document.getElementById('adicionalFormacao').value || 'NIL',
+        adicionalMilitar: currencyToNumber(document.getElementById('adicionalMilitar').value),
+        adicionalDisponibilidade: currencyToNumber(document.getElementById('adicionalDisponibilidade').value),
+        cotaAeronavegante: currencyToNumber(document.getElementById('cotaAeronavegante').value),
+        cotaIncorporada: currencyToNumber(document.getElementById('cotaIncorporada').value),
+        outrosAdicionais: currencyToNumber(document.getElementById('outrosAdicionais').value),
+        fop1: validateOfficialListValue(document.getElementById('fop1').value, FOP_OPTIONS, 'FOP 1'),
+        fop2: validateOfficialListValue(document.getElementById('fop2').value, FOP_OPTIONS, 'FOP 2'),
+        fop3: validateOfficialListValue(document.getElementById('fop3').value, FOP_OPTIONS, 'FOP 3'),
+        fop4: validateOfficialListValue(document.getElementById('fop4').value, FOP_OPTIONS, 'FOP 4'),
+        capacitacoes: readCapacitacoesFromForm(),
+        cursos: readCursosFromForm(),
+        cursosPretendidos: readCursosPretendidosFromForm(),
+        ferias: [
+          { inicio: document.getElementById('ferias1Inicio').value, fim: document.getElementById('ferias1Fim').value },
+          { inicio: document.getElementById('ferias2Inicio').value, fim: document.getElementById('ferias2Fim').value },
+          { inicio: document.getElementById('ferias3Inicio').value, fim: document.getElementById('ferias3Fim').value }
+        ]
+      };
+      const editId = document.getElementById('personnelEditId').value;
+      if (editId) {
+        const index = state.personnel.findIndex(item => item.id === editId);
+        if (index >= 0) state.personnel[index] = payload;
+      } else {
+        state.personnel.push(payload);
+      }
+      saveState();
+      renderAll();
+      clearPersonnelForm();
+    } catch (error) {
+      alert(error.message || 'Falha ao salvar o militar.');
     }
-    if (!QUADRO_OPTIONS.includes(quadro)) {
-      alert('Quadro inválido. Utilize uma das opções permitidas.');
-      return;
-    }
-    const payload = {
-      id: document.getElementById('personnelEditId').value || uid('mil'),
-      ptgrad,
-      quadro,
-      nomeGuerra: document.getElementById('nomeGuerra').value.trim(),
-      trigrama: normalizeText(document.getElementById('trigrama').value).slice(0, 3),
-      nomeCompleto: document.getElementById('nomeCompleto').value.trim(),
-      saram: digitsOnly(document.getElementById('saram').value),
-      cpf: digitsOnly(document.getElementById('cpf').value).slice(0, 11),
-      idMilitar: document.getElementById('idMilitar').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      soldoBruto: getPersonnelSoldo({ ptgrad }),
-      dependente: document.getElementById('dependente').checked,
-      adicionalFormacao: canHaveAdditionalFields(ptgrad) ? (document.getElementById('adicionalFormacao').value || 'NIL') : 'NIL',
-      cotaAeronavegante: canHaveAdditionalFields(ptgrad) ? currencyToNumber(document.getElementById('cotaAeronavegante').value) : 0,
-      cotaIncorporada: canHaveAdditionalFields(ptgrad) ? currencyToNumber(document.getElementById('cotaIncorporada').value) : 0,
-      outrosAdicionais: canHaveAdditionalFields(ptgrad) ? currencyToNumber(document.getElementById('outrosAdicionais').value) : 0,
-      fop1: String(document.getElementById('fop1').value || '').trim(),
-      fop2: String(document.getElementById('fop2').value || '').trim(),
-      fop3: String(document.getElementById('fop3').value || '').trim(),
-      fop4: String(document.getElementById('fop4').value || '').trim(),
-      capacitacoes: readCapacitacoesFromForm(),
-      cursos: readCursosFromForm(),
-      cursosPretendidos: readCursosPretendidosFromForm(),
-      ferias: [
-        { inicio: document.getElementById('ferias1Inicio').value, fim: document.getElementById('ferias1Fim').value },
-        { inicio: document.getElementById('ferias2Inicio').value, fim: document.getElementById('ferias2Fim').value },
-        { inicio: document.getElementById('ferias3Inicio').value, fim: document.getElementById('ferias3Fim').value }
-      ]
-    };
-    const editId = document.getElementById('personnelEditId').value;
-    if (editId) {
-      const index = state.personnel.findIndex(item => item.id === editId);
-      if (index >= 0) state.personnel[index] = payload;
-    } else {
-      state.personnel.push(payload);
-    }
-    saveState();
-    renderAll();
-    clearPersonnelForm();
   };
 
   editPersonnel = function editPersonnelEnhanced(id) {
@@ -3794,7 +3653,10 @@
     document.getElementById('idMilitar').value = person.idMilitar || '';
     document.getElementById('email').value = person.email || '';
     document.getElementById('dependente').checked = !!person.dependente;
+    document.getElementById('adicionalHabilitacao').value = person.adicionalHabilitacao || 'NIL';
     document.getElementById('adicionalFormacao').value = person.adicionalFormacao || 'NIL';
+    document.getElementById('adicionalMilitar').value = currencyToNumber(person.adicionalMilitar) || 0;
+    document.getElementById('adicionalDisponibilidade').value = currencyToNumber(person.adicionalDisponibilidade) || 0;
     document.getElementById('cotaAeronavegante').value = currencyToNumber(person.cotaAeronavegante) || 0;
     document.getElementById('cotaIncorporada').value = currencyToNumber(person.cotaIncorporada) || 0;
     document.getElementById('outrosAdicionais').value = currencyToNumber(person.outrosAdicionais) || 0;
@@ -3811,7 +3673,7 @@
     renderCapacitacoesForm(person.capacitacoes || []);
     renderCursosForm(person.cursos || []);
     renderCursosPretendidosForm(person.cursosPretendidos || []);
-    toggleAdditionalPersonnelFields();
+    refreshPersonnelFinancialReadonly();
     setActiveTab('tab1');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -3820,7 +3682,7 @@
     const tbody = document.getElementById('personnelTableBody');
     if (!tbody) return;
     if (!state.personnel.length) {
-      tbody.innerHTML = '<tr><td colspan="13" class="empty">Nenhum militar cadastrado.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="14" class="empty">Nenhum militar cadastrado.</td></tr>';
       return;
     }
     tbody.innerHTML = state.personnel.map((person, index) => `
@@ -3835,6 +3697,7 @@
         <td>${escapeHtml(person.cpf || '-')}</td>
         <td>${escapeHtml(person.idMilitar)}</td>
         <td>${escapeHtml(person.email)}</td>
+        <td class="money-cell">${formatMoney(getPersonnelSoldo(person))}</td>
         <td class="money-cell">${formatMoney(getPersonnelTotalRemuneration(person))}</td>
         <td class="center">${person.dependente ? 'SIM' : 'NÃO'}</td>
         <td>
@@ -3872,22 +3735,35 @@
         </tr>
       `).join('');
     }
+    const habBody = document.getElementById('financialHabilitacaoBody');
+    if (habBody) {
+      habBody.innerHTML = HABILITACAO_OPTIONS.map(option => `
+        <tr>
+          <td>${option}</td>
+          <td>${option === 'NIL' ? '<input type="number" value="0" readonly />' : `<input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.adicionaisHabilitacao[option])}" onchange="updateHabilitacaoPercent('${option}', this.value)" />`}</td>
+        </tr>
+      `).join('');
+    }
     const formationBody = document.getElementById('financialFormationBody');
     if (formationBody) {
       formationBody.innerHTML = FORMATION_OPTIONS.map(option => `
         <tr>
           <td>${option}</td>
-          <td>${option === 'NIL'
-            ? '<input type="number" value="0" readonly />'
-            : `<input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.adicionaisFormacao[option])}" onchange="updateFormationPercent('${option}', this.value)" />`}</td>
+          <td>${option === 'NIL' ? '<input type="number" value="0" readonly />' : `<input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.adicionaisFormacao[option])}" onchange="updateFormationPercent('${option}', this.value)" />`}</td>
         </tr>
       `).join('');
     }
   };
 
+  window.updateHabilitacaoPercent = function updateHabilitacaoPercent(option, value) {
+    if (!requireAuth() || option === 'NIL') return;
+    state.financial.adicionaisHabilitacao[option] = currencyToNumber(value);
+    saveState();
+    renderAll();
+  };
+
   window.updateFormationPercent = function updateFormationPercent(option, value) {
-    if (!requireAuth()) return;
-    if (option === 'NIL') return;
+    if (!requireAuth() || option === 'NIL') return;
     state.financial.adicionaisFormacao[option] = currencyToNumber(value);
     saveState();
     renderAll();
@@ -3896,7 +3772,6 @@
   updateFinancialSoldo = function updateFinancialSoldoEnhanced(pt, value) {
     if (!requireAuth()) return;
     state.financial.soldos[pt] = currencyToNumber(value);
-    state.personnel = normalizePersonnel(state.personnel);
     saveState();
     renderAll();
   };
@@ -4046,15 +3921,8 @@
       `;
     }).join('') : '<tr><td colspan="10">Nenhum militar escalado nesta missão.</td></tr>';
     foot.innerHTML = `
-      <tr>
-        <th colspan="8" style="text-align:right;">Total dos 2%</th>
-        <th class="money-cell">${formatMoney(total2)}</th>
-        <th></th>
-      </tr>
-      <tr>
-        <th colspan="9" style="text-align:right;">Total em Diárias</th>
-        <th class="money-cell">${formatMoney(totalDiarias)}</th>
-      </tr>
+      <tr><th colspan="8" style="text-align:right;">Total dos 2%</th><th class="money-cell">${formatMoney(total2)}</th><th></th></tr>
+      <tr><th colspan="9" style="text-align:right;">Total em Diárias</th><th class="money-cell">${formatMoney(totalDiarias)}</th></tr>
     `;
   };
 
@@ -4075,12 +3943,7 @@
         <div class="field"><label>Publicação de Apostila</label><input type="text" value="${escapeHtml(data.publicacaoApostila)}" onchange="updateCommissionDataField('${person.id}','publicacaoApostila', this.value)" /></div>
         <div class="field"><label>SILOMS</label><input type="text" value="${escapeHtml(data.siloms)}" onchange="updateCommissionDataField('${person.id}','siloms', this.value)" /></div>
         <div class="field"><label>Data de Abertura</label><input type="date" value="${escapeHtml(data.dataAbertura)}" onchange="updateCommissionDataField('${person.id}','dataAbertura', this.value)" /></div>
-        <div class="field"><label>Situação</label>
-          <div class="toggle-pills">
-            <button type="button" class="pill ${data.situacao === 'ABERTO' ? 'active-open' : ''}" onclick="updateCommissionDataField('${person.id}','situacao','ABERTO')">ABERTO</button>
-            <button type="button" class="pill ${data.situacao === 'FECHADO' ? 'active-closed' : ''}" onclick="updateCommissionDataField('${person.id}','situacao','FECHADO')">FECHADO</button>
-          </div>
-        </div>
+        <div class="field"><label>Situação</label><div class="toggle-pills"><button type="button" class="pill ${data.situacao === 'ABERTO' ? 'active-open' : ''}" onclick="updateCommissionDataField('${person.id}','situacao','ABERTO')">ABERTO</button><button type="button" class="pill ${data.situacao === 'FECHADO' ? 'active-closed' : ''}" onclick="updateCommissionDataField('${person.id}','situacao','FECHADO')">FECHADO</button></div></div>
       </div>
     `;
   }
@@ -4109,61 +3972,50 @@
       return;
     }
     const data = getCommissionDataEntry(person.id);
-    const totalRem = getPersonnelTotalRemuneration(person);
-    const totalAdicionaisMissoes = missions.reduce((acc, mission) => acc + currencyToNumber(getAssignment(mission.id, person.id).additional), 0);
-    const proposta = missions.reduce((acc, mission) => acc + missionMoneyTotalForPerson(person, mission), 0);
-    const executado = missions.filter(isMissionExecuted).reduce((acc, mission) => acc + missionMoneyTotalForPerson(person, mission), 0);
-    const planejado = missions.filter(mission => !isMissionExecuted(mission)).reduce((acc, mission) => acc + missionMoneyTotalForPerson(person, mission), 0);
-    const restam = proposta - executado - planejado;
-    const ida = data.idaManualEnabled ? currencyToNumber(data.idaManualValue) : totalRem;
-    const voltaBase = totalRem + totalAdicionaisMissoes;
+    const soldoTotal = getPersonnelTotalRemuneration(person);
+    const totalDiasProposta = missions.reduce((acc, mission) => acc + getMissionDays(mission), 0);
+    const totalDiasExecutado = missions.filter(isMissionExecuted).reduce((acc, mission) => acc + getMissionDays(mission), 0);
+    const totalDiasPlanejado = missions.filter(mission => !isMissionExecuted(mission)).reduce((acc, mission) => acc + getMissionDays(mission), 0);
+    const restam = totalDiasProposta - totalDiasExecutado - totalDiasPlanejado;
+    const adicionaisMissoes = missions.reduce((acc, mission) => acc + currencyToNumber(getAssignment(mission.id, person.id).additional), 0);
+    const diariaBruta = missions.reduce((acc, mission) => acc + missionMoneyTotalForPerson(person, mission), 0);
+    const diariaBrutaAdc = diariaBruta + adicionaisMissoes;
+    const idaBase = person.dependente ? soldoTotal : soldoTotal / 2;
+    const voltaBase = (person.dependente ? soldoTotal : soldoTotal / 2) + adicionaisMissoes;
+    const ida = data.idaManualEnabled ? currencyToNumber(data.idaManualValue) : idaBase;
     const volta = data.voltaManualEnabled ? currencyToNumber(data.voltaManualValue) : voltaBase;
-    const diariaBruta = proposta;
-    const bateEconomicidade = diariaBruta >= (ida + volta);
+    const bateEconomicidade = diariaBrutaAdc >= (ida + volta);
     container.innerHTML = `
       <div class="commission-layout">
         <div class="card commission-left">
           <h4 class="section-title" style="font-size:15px;">Dados do Processo</h4>
           ${renderCommissionProcessForm(person, data)}
           <div class="metrics-grid">
-            <div class="metric-box"><span>PROPOSTA</span><strong>${formatMoney(proposta)}</strong></div>
-            <div class="metric-box"><span>EXECUTADO</span><strong>${formatMoney(executado)}</strong></div>
-            <div class="metric-box"><span>PLANEJADO</span><strong>${formatMoney(planejado)}</strong></div>
-            <div class="metric-box"><span>RESTAM</span><strong>${formatMoney(restam)}</strong></div>
+            <div class="metric-box"><span>PROPOSTA</span><strong>${totalDiasProposta}</strong></div>
+            <div class="metric-box"><span>EXECUTADO</span><strong>${totalDiasExecutado}</strong></div>
+            <div class="metric-box"><span>PLANEJADO</span><strong>${totalDiasPlanejado}</strong></div>
+            <div class="metric-box"><span>RESTAM</span><strong>${restam}</strong></div>
           </div>
           <div class="financial-comparison">
-            <div class="field-inline">
-              <label><input type="checkbox" ${data.idaManualEnabled ? 'checked' : ''} onchange="updateCommissionDataField('${person.id}','idaManualEnabled', this.checked)" /> Editar valor</label>
-              <span>IDA</span>
-              <input type="number" step="0.01" value="${currencyToNumber(data.idaManualEnabled ? data.idaManualValue : ida)}" ${data.idaManualEnabled ? '' : 'readonly'} onchange="updateCommissionDataField('${person.id}','idaManualValue', this.value)" />
-            </div>
-            <div class="field-inline">
-              <label><input type="checkbox" ${data.voltaManualEnabled ? 'checked' : ''} onchange="updateCommissionDataField('${person.id}','voltaManualEnabled', this.checked)" /> Editar valor</label>
-              <span>VOLTA</span>
-              <input type="number" step="0.01" value="${currencyToNumber(data.voltaManualEnabled ? data.voltaManualValue : volta)}" ${data.voltaManualEnabled ? '' : 'readonly'} onchange="updateCommissionDataField('${person.id}','voltaManualValue', this.value)" />
-            </div>
+            <div class="field-inline"><label><input type="checkbox" ${data.idaManualEnabled ? 'checked' : ''} onchange="updateCommissionDataField('${person.id}','idaManualEnabled', this.checked)" /> Editar valor</label><span>IDA</span><input type="number" step="0.01" value="${currencyToNumber(data.idaManualEnabled ? data.idaManualValue : ida)}" ${data.idaManualEnabled ? '' : 'readonly'} onchange="updateCommissionDataField('${person.id}','idaManualValue', this.value)" /></div>
+            <div class="field-inline"><label><input type="checkbox" ${data.voltaManualEnabled ? 'checked' : ''} onchange="updateCommissionDataField('${person.id}','voltaManualEnabled', this.checked)" /> Editar valor</label><span>VOLTA</span><input type="number" step="0.01" value="${currencyToNumber(data.voltaManualEnabled ? data.voltaManualValue : volta)}" ${data.voltaManualEnabled ? '' : 'readonly'} onchange="updateCommissionDataField('${person.id}','voltaManualValue', this.value)" /></div>
+            <div class="metric-line"><span>Soldo Total</span><strong>${formatMoney(soldoTotal)}</strong></div>
             <div class="metric-line"><span>AJUDA DE CUSTO</span><strong>${formatMoney(ida)}</strong></div>
             <div class="metric-line"><span>AJUDA DE CUSTO + ETAPA</span><strong>${formatMoney(volta)}</strong></div>
-            <div class="metric-line"><span>Diária Bruta + ADC Desloc</span><strong>${formatMoney(diariaBruta)}</strong></div>
+            <div class="metric-line"><span>Diária Bruta + ADC Desloc</span><strong>${formatMoney(diariaBrutaAdc)}</strong></div>
             <div class="metric-line"><span>ECONOMICIDADE</span><span class="badge ${bateEconomicidade ? 'badge-ok' : 'badge-no'}">${bateEconomicidade ? 'BATE' : 'NÃO BATE'}</span></div>
+            <div class="notice">A economicidade considera o acúmulo de todas as missões comissionadas do militar selecionado.</div>
           </div>
         </div>
         <div class="card commission-right">
           <h4 class="section-title" style="font-size:15px;">Missões do Militar</h4>
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>Missão</th>
-                  <th>Local</th>
-                  <th>Período</th>
-                  <th>Dias</th>
-                  <th>Adicionais</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Missão</th><th>Local</th><th>Período</th><th>Dias</th><th>Valor da Diária</th><th>Total Diárias</th><th>Adicionais</th><th>Status</th></tr></thead>
               <tbody>
                 ${missions.map(mission => {
+                  const rate = getDiaryRate(person.ptgrad, mission);
+                  const totalDiaria = rate * getMissionMultiplier(mission);
                   const status = isMissionExecuted(mission) ? 'EXECUTADO' : 'PLANEJADO';
                   const assignment = getAssignment(mission.id, person.id);
                   return `
@@ -4171,9 +4023,11 @@
                       <td>${escapeHtml(mission.name)}</td>
                       <td>${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')}</td>
                       <td>${formatDate(mission.start)} → ${formatDate(mission.end)}</td>
-                      <td>${getMissionDays(mission)} / ${getMissionMultiplier(mission).toFixed(1).replace('.', ',')}</td>
-                      <td><input type="number" step="0.01" min="0" value="${currencyToNumber(assignment.additional)}" onchange="updateAdditionalValue('${mission.id}','${person.id}', this.value)" /></td>
-                      <td><span class="badge ${status === 'EXECUTADO' ? 'badge-ok' : 'badge-no'}">${status}</span></td>
+                      <td class="center">${getMissionDays(mission)}</td>
+                      <td class="money-cell">${formatMoney(rate)}</td>
+                      <td class="money-cell">${formatMoney(totalDiaria)}</td>
+                      <td><input type="number" step="0.01" min="0" value="${currencyToNumber(assignment.additional)}" onchange="updateAdditionalValue('${mission.id}','${person.id}', this.value)" ${isAuthenticated() ? '' : 'readonly'} /></td>
+                      <td><span class="badge ${status === 'EXECUTADO' ? 'badge-ok' : 'badge-warn'}">${status}</span></td>
                     </tr>
                   `;
                 }).join('')}
@@ -4199,45 +4053,34 @@
     const total2 = assigned.reduce((acc, person) => acc + getPersonnel2Percent(person) * getMissionMultiplier(mission), 0);
     const totalDiarias = assigned.reduce((acc, person) => acc + getDiaryRate(person.ptgrad, mission) * getMissionMultiplier(mission), 0);
     return `
-      <div class="mission-card mission-card-advanced">
-        <div class="mission-card-head" style="background:${mission.color};">
-          <strong>${escapeHtml(mission.name)}</strong>
-        </div>
+      <div class="mission-card mission-card-advanced" data-mission-card="${mission.id}">
+        <div class="mission-card-head" style="background:${mission.color};"><strong>${escapeHtml(mission.name)}</strong></div>
         <div class="mission-card-body">
-          <div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')}</div>
-          <div><strong>Período:</strong> ${formatDate(mission.start)} até ${formatDate(mission.end)} | <strong>Dias:</strong> ${getMissionDays(mission)}</div>
-          <div><strong>Custo total em 2%:</strong> ${formatMoney(total2)}</div>
-          <div><strong>Custo total em diárias:</strong> ${formatMoney(totalDiarias)}</div>
+          <div class="mission-card-header">
+            <div class="mission-meta-grid">
+              <div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')}</div>
+              <div><strong>Período:</strong> ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+              <div><strong>Dias:</strong> ${getMissionDays(mission)}</div>
+              <div><strong>Custo total em 2%:</strong> ${formatMoney(total2)}</div>
+              <div><strong>Custo total em diárias:</strong> ${formatMoney(totalDiarias)}</div>
+            </div>
+            <div class="print-mission-toolbar"><button type="button" class="btn btn-primary btn-mini" onclick="printManningMission('${mission.id}')">Exportar PDF</button></div>
+          </div>
           <div class="table-wrap" style="margin-top:8px;">
             <table>
-              <thead>
-                <tr>
-                  <th>PT/GRAD</th>
-                  <th>Nome de Guerra</th>
-                  <th>FOP</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
+              <thead><tr><th>PT/GRAD</th><th>Nome de Guerra</th><th>FOP</th><th>Status</th></tr></thead>
               <tbody>
                 ${assigned.length ? assigned.map(person => {
                   const assignment = getAssignment(mission.id, person.id);
                   const availableFops = getPersonAvailableFops(person);
                   const fopControl = assignment.fopManual
                     ? `<input type="text" value="${escapeHtml(assignment.fop || '')}" onchange="updateAssignmentFop('${mission.id}','${person.id}', this.value)" placeholder="FOP livre" />`
-                    : `<select onchange="updateAssignmentFop('${mission.id}','${person.id}', this.value)">
-                        <option value="">Selecione</option>
-                        ${availableFops.map(fop => `<option value="${escapeHtml(fop)}" ${assignment.fop === fop ? 'selected' : ''}>${escapeHtml(fop)}</option>`).join('')}
-                      </select>`;
+                    : `<select onchange="updateAssignmentFop('${mission.id}','${person.id}', this.value)"><option value="">Selecione</option>${availableFops.map(fop => `<option value="${escapeHtml(fop)}" ${assignment.fop === fop ? 'selected' : ''}>${escapeHtml(fop)}</option>`).join('')}</select>`;
                   return `
                     <tr>
                       <td>${escapeHtml(person.ptgrad)}</td>
                       <td>${escapeHtml(person.nomeGuerra)}</td>
-                      <td>
-                        <div class="fop-pick-wrap">
-                          ${fopControl}
-                          <label class="manual-inline"><input type="checkbox" ${assignment.fopManual ? 'checked' : ''} onchange="updateAssignmentFopMode('${mission.id}','${person.id}', this.checked)" /> Editar manualmente</label>
-                        </div>
-                      </td>
+                      <td><div class="fop-pick-wrap">${fopControl}<label class="manual-inline"><input type="checkbox" ${assignment.fopManual ? 'checked' : ''} onchange="updateAssignmentFopMode('${mission.id}','${person.id}', this.checked)" /> Editar manualmente</label></div></td>
                       <td>${isPersonCommissionedInMission(person.id, mission.id) ? '<span class="badge badge-com">COM</span>' : '<span class="badge badge-ok">ESC</span>'}</td>
                     </tr>
                   `;
@@ -4271,6 +4114,18 @@
     renderManningMissions();
   };
 
+  window.printManningMission = function printManningMission(missionId) {
+    document.querySelectorAll('#manningContainer [data-mission-card]').forEach(card => {
+      card.classList.toggle('print-target', card.dataset.missionCard === missionId);
+    });
+    document.body.classList.add('print-mission');
+    window.print();
+    setTimeout(() => {
+      document.body.classList.remove('print-mission');
+      document.querySelectorAll('#manningContainer [data-mission-card]').forEach(card => card.classList.remove('print-target'));
+    }, 250);
+  };
+
   function renderManningMissions() {
     const container = document.getElementById('manningContainer');
     if (!container) return;
@@ -4281,7 +4136,7 @@
     container.innerHTML = `<div class="cards-grid">${state.missions.map(renderManningMissionCard).join('')}</div>`;
   }
 
-  window.setIdprep11Mode = function setIdprep11Mode(mode) {
+    window.setIdprep11Mode = function setIdprep11Mode(mode) {
     idprep11Mode = mode === 'quantitativo' ? 'quantitativo' : 'efetivo';
     renderIdprep11();
   };
@@ -4312,56 +4167,25 @@
     document.getElementById('idprep11QuantBtn')?.classList.toggle('btn-primary', idprep11Mode === 'quantitativo');
     if (idprep11Mode === 'efetivo') {
       container.innerHTML = `
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>PT/GRAD</th><th>Nome de Guerra</th><th>FOP 1</th><th>FOP 2</th><th>FOP 3</th><th>FOP 4</th></tr>
-            </thead>
-            <tbody>
-              ${state.personnel.length ? state.personnel.map(person => `
-                <tr>
-                  <td>${escapeHtml(person.ptgrad)}</td>
-                  <td>${escapeHtml(person.nomeGuerra)}</td>
-                  <td>${escapeHtml(person.fop1 || '—')}</td>
-                  <td>${escapeHtml(person.fop2 || '—')}</td>
-                  <td>${escapeHtml(person.fop3 || '—')}</td>
-                  <td>${escapeHtml(person.fop4 || '—')}</td>
-                </tr>
-              `).join('') : '<tr><td colspan="6">Nenhum militar cadastrado.</td></tr>'}
-            </tbody>
-          </table>
-        </div>
-      `;
+        <div class="table-wrap"><table><thead><tr><th>PT/GRAD</th><th>Nome de Guerra</th><th>FOP 1</th><th>FOP 2</th><th>FOP 3</th><th>FOP 4</th></tr></thead><tbody>
+        ${state.personnel.length ? state.personnel.map(person => `<tr><td>${escapeHtml(person.ptgrad)}</td><td>${escapeHtml(person.nomeGuerra)}</td><td>${escapeHtml(person.fop1 || '—')}</td><td>${escapeHtml(person.fop2 || '—')}</td><td>${escapeHtml(person.fop3 || '—')}</td><td>${escapeHtml(person.fop4 || '—')}</td></tr>`).join('') : '<tr><td colspan="6">Nenhum militar cadastrado.</td></tr>'}
+        </tbody></table></div>`;
       return;
     }
-    const countMap = {};
+    const countMap = Object.fromEntries(FOP_OPTIONS.map(fop => [fop, 0]));
     state.personnel.forEach(person => {
       [person.fop1, person.fop2, person.fop3, person.fop4].filter(Boolean).forEach(fop => {
-        countMap[fop] = (countMap[fop] || 0) + 1;
+        if (typeof countMap[fop] === 'number') countMap[fop] += 1;
       });
     });
-    const rows = Object.entries(countMap).filter(([, qty]) => qty > 0).sort((a, b) => b[1] - a[1]);
     container.innerHTML = `
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>FOP</th><th>Quantidade</th><th>Necessário</th></tr>
-          </thead>
-          <tbody>
-            ${rows.length ? rows.map(([fop, qty]) => {
-              const need = currencyToNumber(state.config.fopNecessario[fop]);
-              return `
-                <tr>
-                  <td>${escapeHtml(fop)}</td>
-                  <td class="center ${qty < need ? 'cell-alert' : ''}">${qty}</td>
-                  <td><input type="number" step="1" min="0" value="${need}" onchange="updateFopNecessario('${escapeHtml(fop)}', this.value)" /></td>
-                </tr>
-              `;
-            }).join('') : '<tr><td colspan="3">Nenhuma FOP cadastrada.</td></tr>'}
-          </tbody>
-        </table>
-      </div>
-    `;
+      <div class="table-wrap"><table><thead><tr><th>FOP</th><th>Quantidade</th><th>Necessário</th></tr></thead><tbody>
+      ${FOP_OPTIONS.map(fop => {
+        const qty = countMap[fop] || 0;
+        const need = currencyToNumber(state.config.fopNecessario[fop]);
+        return `<tr><td>${escapeHtml(fop)}</td><td class="center ${qty < need ? 'cell-alert' : ''}">${qty}</td><td><input type="number" step="1" min="0" value="${need}" onchange="updateFopNecessario('${escapeHtml(fop)}', this.value)" /></td></tr>`;
+      }).join('')}
+      </tbody></table></div>`;
   }
 
   function renderIdprep12() {
@@ -4370,91 +4194,63 @@
     document.getElementById('idprep12EfetivoBtn')?.classList.toggle('btn-primary', idprep12Mode === 'efetivo');
     document.getElementById('idprep12QuantBtn')?.classList.toggle('btn-primary', idprep12Mode === 'quantitativo');
     if (idprep12Mode === 'efetivo') {
-      const maxCols = Math.max(0, ...state.personnel.map(person => (person.capacitacoes || []).length));
+      const maxCols = Math.max(1, ...state.personnel.map(person => (person.capacitacoes || []).length || 0));
       container.innerHTML = `
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>PT/GRAD</th>
-                <th>Nome de Guerra</th>
-                ${Array.from({ length: maxCols || 1 }, (_, idx) => `<th>Capacitação ${idx + 1}</th>`).join('')}
-              </tr>
-            </thead>
-            <tbody>
-              ${state.personnel.length ? state.personnel.map(person => `
-                <tr>
-                  <td>${escapeHtml(person.ptgrad)}</td>
-                  <td>${escapeHtml(person.nomeGuerra)}</td>
-                  ${Array.from({ length: maxCols || 1 }, (_, idx) => `<td>${escapeHtml(person.capacitacoes?.[idx] || '—')}</td>`).join('')}
-                </tr>
-              `).join('') : `<tr><td colspan="${2 + (maxCols || 1)}">Nenhum militar cadastrado.</td></tr>`}
-            </tbody>
-          </table>
-        </div>
-      `;
+        <div class="table-wrap"><table><thead><tr><th>PT/GRAD</th><th>Nome de Guerra</th>${Array.from({ length: maxCols }, (_, idx) => `<th>Capacitação ${idx + 1}</th>`).join('')}</tr></thead><tbody>
+        ${state.personnel.length ? state.personnel.map(person => `<tr><td>${escapeHtml(person.ptgrad)}</td><td>${escapeHtml(person.nomeGuerra)}</td>${Array.from({ length: maxCols }, (_, idx) => `<td>${escapeHtml(person.capacitacoes?.[idx] || '—')}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${2 + maxCols}">Nenhum militar cadastrado.</td></tr>`}
+        </tbody></table></div>`;
       return;
     }
-    const countMap = {};
-    state.personnel.forEach(person => {
-      (person.capacitacoes || []).filter(Boolean).forEach(cap => {
-        countMap[cap] = (countMap[cap] || 0) + 1;
-      });
-    });
-    const rows = Object.entries(countMap).filter(([, qty]) => qty > 0).sort((a, b) => b[1] - a[1]);
+    const countMap = Object.fromEntries(CAPACITATION_OPTIONS.map(cap => [cap, 0]));
+    state.personnel.forEach(person => (person.capacitacoes || []).forEach(cap => { if (typeof countMap[cap] === 'number') countMap[cap] += 1; }));
     container.innerHTML = `
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Capacitação</th><th>Quantidade</th><th>Necessário</th></tr>
-          </thead>
-          <tbody>
-            ${rows.length ? rows.map(([cap, qty]) => {
-              const need = currencyToNumber(state.config.capacitacaoNecessario[cap]);
-              return `
-                <tr>
-                  <td>${escapeHtml(cap)}</td>
-                  <td class="center ${qty < need ? 'cell-alert' : ''}">${qty}</td>
-                  <td><input type="number" step="1" min="0" value="${need}" onchange="updateCapacitacaoNecessario('${escapeHtml(cap)}', this.value)" /></td>
-                </tr>
-              `;
-            }).join('') : '<tr><td colspan="3">Nenhuma capacitação cadastrada.</td></tr>'}
-          </tbody>
-        </table>
-      </div>
-    `;
+      <div class="table-wrap"><table><thead><tr><th>Capacitação</th><th>Quantidade</th><th>Necessário</th></tr></thead><tbody>
+      ${CAPACITATION_OPTIONS.map(cap => {
+        const qty = countMap[cap] || 0;
+        const need = currencyToNumber(state.config.capacitacaoNecessario[cap]);
+        return `<tr><td>${escapeHtml(cap)}</td><td class="center ${qty < need ? 'cell-alert' : ''}">${qty}</td><td><input type="number" step="1" min="0" value="${need}" onchange="updateCapacitacaoNecessario('${escapeHtml(cap)}', this.value)" /></td></tr>`;
+      }).join('')}
+      </tbody></table></div>`;
   }
 
   function renderCoursesTabView() {
     const select = document.getElementById('coursePersonSelect');
+    const input = document.getElementById('courseLookupInput');
     const container = document.getElementById('coursesContainerView');
-    if (!select || !container) return;
-    const person = state.personnel.find(item => item.id === select.value);
-    if (!person) {
-      container.innerHTML = '<div class="empty">Selecione um militar.</div>';
-      return;
+    const datalist = document.getElementById('courseLookupList');
+    if (!container) return;
+    const courseNames = Array.from(new Set(state.personnel.flatMap(person => [
+      ...(person.cursos || []).map(curso => String(curso.nome || '').trim()).filter(Boolean),
+      ...(person.cursosPretendidos || []).map(nome => String(nome || '').trim()).filter(Boolean)
+    ]))).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    if (datalist) datalist.innerHTML = courseNames.map(item => `<option value="${escapeHtml(item)}"></option>`).join('');
+    const person = state.personnel.find(item => item.id === select?.value);
+    const chosenCourse = String(input?.value || '').trim();
+    const personHtml = person ? `
+      <div class="card list-card">
+        <h4 class="section-title" style="font-size:15px;">Cursos realizados</h4>
+        <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Ano</th></tr></thead><tbody>${(person.cursos || []).length ? (person.cursos || []).map(curso => `<tr><td>${escapeHtml(curso.nome || '—')}</td><td>${escapeHtml(curso.ano || '—')}</td></tr>`).join('') : '<tr><td colspan="2">Nenhum curso registrado.</td></tr>'}</tbody></table></div>
+        <h4 class="section-title" style="font-size:15px; margin-top:12px;">Cursos pretendidos</h4>
+        ${(person.cursosPretendidos || []).length ? `<ul>${person.cursosPretendidos.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<div class="empty">Nenhum curso pretendido informado.</div>'}
+      </div>` : '<div class="card list-card"><div class="empty">Selecione um militar.</div></div>';
+    let courseHtml = '<div class="card list-card"><div class="empty">Selecione um curso para consultar quem já tem ou pretende fazer.</div></div>';
+    if (chosenCourse) {
+      const whoHas = [];
+      const whoWants = [];
+      state.personnel.forEach(personItem => {
+        (personItem.cursos || []).forEach(curso => { if ((curso?.nome || '').trim() === chosenCourse) whoHas.push({ person: personItem, ano: curso.ano || '—' }); });
+        if ((personItem.cursosPretendidos || []).some(nome => String(nome || '').trim() === chosenCourse)) whoWants.push(personItem);
+      });
+      courseHtml = `
+        <div class="card list-card">
+          <h4 class="section-title" style="font-size:15px;">Quem já tem</h4>
+          ${whoHas.length ? `<ul>${whoHas.map(item => `<li>${escapeHtml(item.person.ptgrad)} — ${escapeHtml(item.person.nomeGuerra)} <strong>(${escapeHtml(item.ano)})</strong></li>`).join('')}</ul>` : '<div class="empty">Nenhum militar com esse curso no cadastro.</div>'}
+          <h4 class="section-title" style="font-size:15px; margin-top:12px;">Quem pretende fazer</h4>
+          ${whoWants.length ? `<ul>${whoWants.map(item => `<li>${escapeHtml(item.ptgrad)} — ${escapeHtml(item.nomeGuerra)}</li>`).join('')}</ul>` : '<div class="empty">Nenhum militar informou esse curso como pretendido.</div>'}
+        </div>`;
     }
-    container.innerHTML = `
-      <div class="two-col">
-        <div class="card">
-          <h4 class="section-title" style="font-size:15px;">Cursos realizados</h4>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Nome do Curso</th><th>Ano</th></tr></thead>
-              <tbody>
-                ${(person.cursos || []).length ? (person.cursos || []).map(curso => `<tr><td>${escapeHtml(curso.nome || '—')}</td><td>${escapeHtml(curso.ano || '—')}</td></tr>`).join('') : '<tr><td colspan="2">Nenhum curso registrado.</td></tr>'}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card">
-          <h4 class="section-title" style="font-size:15px;">Cursos pretendidos</h4>
-          ${(person.cursosPretendidos || []).length ? `<ul class="mission-list">${person.cursosPretendidos.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<div class="empty">Nenhum curso pretendido informado.</div>'}
-        </div>
-      </div>
-    `;
+    container.innerHTML = `<div class="course-dual-grid">${personHtml}${courseHtml}</div>`;
   }
-  window.renderCoursesTabView = renderCoursesTabView;
 
   renderMissionSelects = function renderMissionSelectsEnhanced() {
     const options = [`<option value="">Selecione</option>`].concat(state.missions.map(mission => `<option value="${mission.id}">${escapeHtml(mission.name)}</option>`));
@@ -4475,6 +4271,14 @@
       const prev = courseSelect.value;
       courseSelect.innerHTML = ['<option value="">Selecione</option>'].concat(state.personnel.map(person => `<option value="${person.id}">${escapeHtml(person.ptgrad)} — ${escapeHtml(person.nomeGuerra)}</option>`)).join('');
       if (state.personnel.some(person => person.id === prev)) courseSelect.value = prev;
+    }
+    const courseLookupList = document.getElementById('courseLookupList');
+    if (courseLookupList) {
+      const names = Array.from(new Set(state.personnel.flatMap(person => [
+        ...(person.cursos || []).map(curso => String(curso.nome || '').trim()).filter(Boolean),
+        ...(person.cursosPretendidos || []).map(nome => String(nome || '').trim()).filter(Boolean)
+      ]))).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+      courseLookupList.innerHTML = names.map(item => `<option value="${escapeHtml(item)}"></option>`).join('');
     }
   };
 
