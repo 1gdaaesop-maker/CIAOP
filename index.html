@@ -75,6 +75,8 @@
       top: calc(100% + 8px);
       left: 0;
       width: 280px;
+      max-height: 90vh;
+      overflow-y: auto;
       padding: 10px;
       background: rgba(25,31,28,0.98);
       border: 1px solid var(--line-soft);
@@ -600,9 +602,41 @@
   }
 
   .badge-com {
-    background: rgba(158,122,46,0.24);
-    color: #ffe29b;
-    border: 1px solid rgba(158,122,46,0.55);
+    background: rgba(47,125,63,0.22);
+    color: #d6f2dd;
+    border: 1px solid rgba(47,125,63,0.52);
+  }
+
+  .badge-gr {
+    background: rgba(214,171,30,0.24);
+    color: #ffefad;
+    border: 1px solid rgba(214,171,30,0.55);
+  }
+
+  .badge-dr {
+    background: rgba(170,58,58,0.24);
+    color: #ffd6d6;
+    border: 1px solid rgba(170,58,58,0.55);
+  }
+
+  .badge-cm {
+    background: rgba(47,125,63,0.22);
+    color: #d6f2dd;
+    border: 1px solid rgba(47,125,63,0.52);
+  }
+
+  .mission-mode-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .matrix-mission-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
   }
 
   .subtab-bar {
@@ -743,6 +777,41 @@
   .course-search-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
   .metrics-grid { display:grid; grid-template-columns: repeat(4, minmax(110px,1fr)); gap:8px; margin:12px 0; }
   .metric-box { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,.08); padding:10px; border-radius:10px; display:flex; flex-direction:column; gap:4px; }
+
+  .drag-handle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    cursor: grab;
+    font-size: 14px;
+    line-height: 1;
+    user-select: none;
+  }
+  .drag-handle.disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+  .personnel-row-draggable.dragging {
+    opacity: 0.45;
+  }
+  .personnel-row-draggable.drag-over {
+    outline: 2px dashed rgba(110,165,125,0.7);
+    outline-offset: -2px;
+  }
+  .drag-order-badge {
+    display:block;
+    margin-top:4px;
+    font-size:10px;
+    color: var(--muted);
+  }
+  .print-area, .print-area *, .print-cost-area, .print-cost-area * {
+    color: #000 !important;
+  }
   .metric-box span { font-size:11px; opacity:.8; }
   .metric-box strong { font-size:16px; }
   .financial-comparison .field-inline { display:grid; grid-template-columns: 150px 80px 1fr; align-items:center; gap:8px; margin-bottom:8px; }
@@ -771,6 +840,169 @@
     body.print-mission #manningContainer .mission-card.print-target { display:block !important; border:none !important; box-shadow:none !important; }
   }
 
+
+  .manning-toolbar {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.2fr);
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: end;
+  }
+
+  .manning-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .manning-summary-card {
+    border-radius: 12px;
+    border: 1px solid var(--line-soft);
+    background: linear-gradient(180deg, rgba(36,42,39,1), rgba(30,35,32,1));
+    padding: 10px;
+  }
+
+  .manning-summary-card span {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  .manning-summary-card strong {
+    font-size: 16px;
+  }
+
+  .manning-single-panel {
+    border-radius: 14px;
+    border: 1px solid var(--line-soft);
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(38,44,41,1), rgba(28,33,30,1));
+  }
+
+  .manning-mission-head {
+    padding: 12px 14px;
+    color: #fff;
+  }
+
+  .manning-mission-head .mission-title-main {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .manning-mission-head .mission-subtitle-main {
+    font-size: 12px;
+    opacity: .9;
+    margin-top: 3px;
+  }
+
+  .manning-mission-body {
+    padding: 12px 14px 14px;
+  }
+
+  .manning-value-note {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .manning-mode-stack {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .manning-empty-state {
+    padding: 18px;
+  }
+
+  @media (max-width: 960px) {
+    .manning-toolbar {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  body.print-mission .manning-toolbar,
+  body.print-mission .manning-print-toolbar {
+    display: none !important;
+  }
+
+  @media print {
+    body.print-mission .menu-shell,
+    body.print-mission .header,
+    body.print-mission #tab1,
+    body.print-mission #tab2,
+    body.print-mission #tab3,
+    body.print-mission #tab4,
+    body.print-mission #tab5,
+    body.print-mission #tab6,
+    body.print-mission #tab7,
+    body.print-mission #tab8,
+    body.print-mission #tab9,
+    body.print-mission #tab10,
+    body.print-mission #tab12,
+    body.print-mission #tab13,
+    body.print-mission #tab14,
+    body.print-mission #tab11 .subtab-bar,
+    body.print-mission #tab11 .manning-toolbar {
+      display: none !important;
+    }
+
+    body.print-mission #tab11 {
+      display: block !important;
+    }
+
+    body.print-mission #tab11 .card {
+      border: none !important;
+      box-shadow: none !important;
+      background: #fff !important;
+      padding: 0 !important;
+    }
+
+    body.print-mission #tab11 .manning-single-panel {
+      display: none !important;
+    }
+
+    body.print-mission #tab11 .manning-single-panel.print-target {
+      display: block !important;
+      border: none !important;
+      box-shadow: none !important;
+      background: #fff !important;
+      color: #000 !important;
+    }
+
+    body.print-mission #tab11 .manning-single-panel.print-target .manning-mission-body,
+    body.print-mission #tab11 .manning-single-panel.print-target table,
+    body.print-mission #tab11 .manning-single-panel.print-target th,
+    body.print-mission #tab11 .manning-single-panel.print-target td,
+    body.print-mission #tab11 .manning-single-panel.print-target .manning-value-note,
+    body.print-mission #tab11 .manning-single-panel.print-target .manual-inline,
+    body.print-mission #tab11 .manning-single-panel.print-target .manning-summary-card span,
+    body.print-mission #tab11 .manning-single-panel.print-target .manning-summary-card strong {
+      color: #000 !important;
+    }
+
+    body.print-mission #tab11 .manning-single-panel.print-target .manning-summary-card {
+      background: #fff !important;
+      border: 1px solid #bbb !important;
+    }
+
+    body.print-mission #tab11 .manning-single-panel.print-target .manning-mission-head {
+      color: #000 !important;
+      border-bottom: 1px solid #bbb !important;
+    }
+
+    body.print-mission #tab11 .manning-single-panel.print-target input,
+    body.print-mission #tab11 .manning-single-panel.print-target select {
+      border: 1px solid #999 !important;
+      color: #000 !important;
+      background: #fff !important;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -795,7 +1027,7 @@
     <section class="tab-content" id="tab1">
       <div class="card">
         <h3 class="section-title">Cadastro de Efetivo</h3>
-        <div class="notice">A ordem da lista abaixo é global. Use ▲ e ▼ para reposicionar o efetivo.</div>
+        <div class="notice">A ordem da lista abaixo é global. Arraste e solte as linhas para reposicionar o efetivo.</div>
         <form id="personnelForm">
           <input type="hidden" id="personnelEditId" />
           <input type="hidden" id="soldoManualFlag" value="0" />
@@ -968,8 +1200,9 @@
           <div class="legend-item"><span class="legend-swatch" style="background: var(--weekend);"></span>Sábado/Domingo</div>
           <div class="legend-item"><span class="legend-swatch" style="background: var(--holiday);"></span>Feriado Nacional</div>
           <div class="legend-item"><span class="legend-swatch" style="background: #000;"></span>Férias</div>
-          <div class="legend-item"><span class="legend-swatch" style="background: rgba(47,125,63,0.75);"></span>Escalado</div>
-          <div class="legend-item"><span class="legend-swatch" style="background: rgba(158,122,46,0.8);"></span>Comissionado</div>
+          <div class="legend-item"><span class="legend-swatch" style="background: rgba(214,171,30,0.82);"></span>GR (Gratificação de Representação)</div>
+          <div class="legend-item"><span class="legend-swatch" style="background: rgba(170,58,58,0.82);"></span>DR (Diária)</div>
+          <div class="legend-item"><span class="legend-swatch" style="background: rgba(47,125,63,0.82);"></span>CM (Comissionamento)</div>
         </div>
         <div class="board-wrap">
           <table class="board-table" id="boardTable"></table>
@@ -1018,6 +1251,7 @@
                 <th>Trigrama</th>
                 <th>Nome Completo</th>
                 <th>SARAM</th>
+                <th>CPF</th>
                 <th>ID Militar</th>
                 <th>E-mail</th>
               </tr>
@@ -1398,11 +1632,20 @@
     }
 
     function getDaysOfYear(year) {
+      // Usa holidayCache dinâmico se disponível (carregado via BrasilAPI), senão usa fallback local
+      const holidayMap = (typeof getBoardHolidayMap === 'function')
+        ? getBoardHolidayMap(year)
+        : (typeof holidayCache !== 'undefined' && holidayCache[year])
+          ? holidayCache[year]
+          : null;
       const days = [];
       let current = new Date(`${year}-01-01T00:00:00`);
       const end = new Date(`${year}-12-31T00:00:00`);
       while (current <= end) {
         const iso = current.toISOString().slice(0, 10);
+        // Se tiver cache dinâmico usa ele, senão cai para o array fixo de 2026 como último recurso
+        const isHoliday = holidayMap ? !!holidayMap[iso] : HOLIDAYS_2026.includes(iso);
+        const holidayName = holidayMap ? (holidayMap[iso] || '') : '';
         days.push({
           iso,
           month: current.getMonth(),
@@ -1410,7 +1653,8 @@
           weekday: current.getDay(),
           weekdayShort: WEEKDAY_SHORT[current.getDay()],
           isWeekend: current.getDay() === 0 || current.getDay() === 6,
-          isHoliday: HOLIDAYS_2026.includes(iso)
+          isHoliday,
+          holidayName
         });
         current.setDate(current.getDate() + 1);
       }
@@ -2084,89 +2328,21 @@
       return map;
     }
 
+    // buildBoardHeader e renderBoard originais substituídos pela versão GR/DR/CM (buildBoardHeaderClean)
+    // Estas funções são redirecionadas para a implementação correta definida mais abaixo no arquivo
     function buildBoardHeader() {
-      const stickyLeft = getStickyLeftMap();
-      const monthCounts = DAYS_2026.reduce((acc, day) => {
-        acc[day.month] = (acc[day.month] || 0) + 1;
-        return acc;
-      }, {});
-      let row1 = `
-        <tr>
-          <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">PT/GRAD</th>
-          <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">Nome de Guerra</th>
-          <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">Trig.</th>
-      `;
-      state.missions.forEach(mission => {
-        row1 += `<th class="sticky-col mission-head" colspan="2" style="left:${stickyLeft[`m_${mission.id}_e`]}px;">${escapeHtml(mission.name)}</th>`;
-      });
-      MONTHS_PT.forEach((monthName, index) => {
-        row1 += `<th class="month-head" colspan="${monthCounts[index] || 0}">${monthName}</th>`;
-      });
-      row1 += '</tr>';
-
-      let row2 = '<tr>';
-      state.missions.forEach(mission => {
-        row2 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_e`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;"><div class="rotate-wrap">ESC</div></th>`;
-        row2 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_c`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;"><div class="rotate-wrap">COM</div></th>`;
-      });
-      DAYS_2026.forEach(day => {
-        const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
-        row2 += `<th class="day-head ${cls}">${day.day}</th>`;
-      });
-      row2 += '</tr>';
-
-      let row3 = '<tr>';
-      state.missions.forEach(mission => {
-        row3 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_e`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;">E</th>`;
-        row3 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_c`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;">C</th>`;
-      });
-      DAYS_2026.forEach(day => {
-        const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
-        row3 += `<th class="weekday-head ${cls}">${day.weekdayShort}</th>`;
-      });
-      row3 += '</tr>';
-
-      return `<thead>${row1 + row2 + row3}</thead>`;
+      if (typeof buildBoardHeaderClean === 'function') {
+        const days = typeof getBoardDays === 'function' ? getBoardDays(window.boardYearView || 2026) : (typeof getDaysOfYear === 'function' ? getDaysOfYear(window.boardYearView || 2026) : []);
+        return buildBoardHeaderClean(days);
+      }
+      return '<thead></thead>';
     }
 
     function renderBoard() {
-      const table = document.getElementById('boardTable');
-      if (!state.personnel.length) {
-        table.innerHTML = '<tbody><tr><td class="empty">Cadastre o efetivo para montar o quadro.</td></tr></tbody>';
-        return;
+      // Redireciona para a versão correta que usa GR/DR/CM
+      if (typeof window.__renderBoardClean === 'function') {
+        return window.__renderBoardClean();
       }
-      const canEditBoard = isAuthenticated();
-      const stickyLeft = getStickyLeftMap();
-      const headerHtml = buildBoardHeader();
-      const bodyRows = state.personnel.map(person => {
-        let row = '<tr>';
-        row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">${escapeHtml(person.ptgrad)}</td>`;
-        row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">${escapeHtml(person.nomeGuerra)}</td>`;
-        row += `<td class="sticky-col sticky-person center" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">${escapeHtml(person.trigrama)}</td>`;
-        state.missions.forEach(mission => {
-          const assignment = getAssignment(mission.id, person.id);
-          row += `<td class="sticky-col mission-toggle-cell sticky-mission ${assignment.selected ? 'active-assigned' : ''}" style="left:${stickyLeft[`m_${mission.id}_e`]}px;">
-              <input type="checkbox" ${assignment.selected ? 'checked' : ''} ${canEditBoard ? '' : 'disabled'} onchange="toggleAssignment('${mission.id}','${person.id}','selected', this.checked)">
-            </td>`;
-          row += `<td class="sticky-col mission-toggle-cell sticky-mission ${assignment.commissioned && assignment.selected ? 'active-commissioned' : ''}" style="left:${stickyLeft[`m_${mission.id}_c`]}px;">
-              <input type="checkbox" ${assignment.commissioned && assignment.selected ? 'checked' : ''} ${canEditBoard && assignment.selected ? '' : 'disabled'} onchange="toggleAssignment('${mission.id}','${person.id}','commissioned', this.checked)">
-            </td>`;
-        });
-        DAYS_2026.forEach(day => {
-          let cellStyle = '';
-          let cellClass = 'cell-day';
-          if (personOnVacation(person, day.iso)) {
-            cellClass += ' vacation-cell';
-          } else {
-            const missionColor = state.missions.find(mission => missionAppliesToDay(person, mission, day.iso))?.color;
-            if (missionColor) cellStyle = `background:${missionColor};`;
-          }
-          row += `<td class="${cellClass}" style="${cellStyle}"></td>`;
-        });
-        row += '</tr>';
-        return row;
-      }).join('');
-      table.innerHTML = headerHtml + `<tbody>${bodyRows}</tbody>`;
     }
 
     function toggleAssignment(missionId, personId, key, checked) {
@@ -2284,10 +2460,11 @@
           <td>${escapeHtml(person.trigrama)}</td>
           <td>${escapeHtml(person.nomeCompleto)}</td>
           <td>${escapeHtml(person.saram)}</td>
+          <td>${escapeHtml(person.cpf || '-')}</td>
           <td>${escapeHtml(person.idMilitar)}</td>
           <td>${escapeHtml(person.email)}</td>
         </tr>
-      `).join('') : '<tr><td colspan="8">Nenhum militar escalado.</td></tr>';
+      `).join('') : '<tr><td colspan="9">Nenhum militar escalado.</td></tr>';
     }
 
     // ==============================
@@ -2357,10 +2534,11 @@
         <div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')} — ${escapeHtml(locality.label)}</div>
       `;
       body.innerHTML = assigned.length ? assigned.map(person => {
-        const valor2 = getPersonnel2Percent(person) * multiplier;
-        const diarias = getDiaryRate(person.ptgrad, mission) * multiplier;
-        total2 += valor2;
-        totalDiarias += diarias;
+        const status = String((getAssignment(mission.id, person.id) || {}).status || '').toUpperCase();
+        const valor2 = status === 'GR' ? getPersonnel2Percent(person) * multiplier : 0;
+        const diarias = status === 'DR' ? getDiaryRate(person.ptgrad, mission) * multiplier : 0;
+        if (status === 'GR') total2 += valor2;
+        if (status === 'DR') totalDiarias += diarias;
         return `
           <tr>
             <td>${escapeHtml(person.ptgrad)}</td>
@@ -2371,26 +2549,21 @@
             <td>${escapeHtml(person.saram)}</td>
             <td>${escapeHtml(person.idMilitar)}</td>
             <td>${escapeHtml(person.email)}</td>
-            <td class="money-cell">${formatMoney(valor2)}</td>
-            <td class="money-cell">${formatMoney(diarias)}</td>
+            <td class="money-cell">${status === 'GR' ? formatMoney(valor2) : '—'}</td>
+            <td class="money-cell">${status === 'DR' ? formatMoney(diarias) : '—'}</td>
           </tr>
         `;
       }).join('') : '<tr><td colspan="10">Nenhum militar escalado.</td></tr>';
-      const totalGeral = total2 + totalDiarias;
       foot.innerHTML = assigned.length ? `
         <tr>
-          <th colspan="8" class="right">TOTAL DOS 2%</th>
+          <th colspan="8" class="right">TOTAL DOS 2% (marcados GR)</th>
           <th class="money-cell">${formatMoney(total2)}</th>
-          <th class="money-cell">-</th>
+          <th>—</th>
         </tr>
         <tr>
-          <th colspan="8" class="right">TOTAL EM DIÁRIAS</th>
-          <th class="money-cell">-</th>
+          <th colspan="8" class="right">TOTAL EM DIÁRIAS (marcados DR)</th>
+          <th>—</th>
           <th class="money-cell">${formatMoney(totalDiarias)}</th>
-        </tr>
-        <tr>
-          <th colspan="8" class="right">TOTAL GERAL (2% + DIÁRIAS)</th>
-          <th colspan="2" class="money-cell">${formatMoney(totalGeral)}</th>
         </tr>
       ` : '';
     }
@@ -2582,8 +2755,7 @@
   // ==============================
   // Extensões e evolução do sistema
   // ==============================
-  const FORMATION_OPTIONS = ['NIL', 'Especialização', 'Aperfeiçoamento', 'Altos Estudos I', 'Altos Estudos II'];
-  const HABILITACAO_OPTIONS = [...FORMATION_OPTIONS];
+  const HABILITACAO_OPTIONS = ['NIL', 'Formação', 'Especialização', 'Aperfeiçoamento', 'Altos Estudos I', 'Altos Estudos II'];
   const FOP_OPTIONS = [
     'ADJ OF CT', 'AJOLAAE', 'AT', 'AUX COM', 'AUX LOG', 'AUX REOP', 'AUX RADAR', 'ENC SUB ARM',
     'CMT BIA DAAE', 'CMT DAAE', 'CMT SEC TIR', 'CMT UTIR', 'ENC COM', 'ENC ELT', 'ENC LOG', 'LOCADOR',
@@ -2593,7 +2765,7 @@
   const CAPACITATION_OPTIONS = ['CBMAC', 'CBR', 'COGE/CDGE', 'GCC001', 'OPM012', 'OSD001', 'RAD001', 'TEL025', 'CDDAE BCO', 'CODAAE OF INF'];
   const BOARD_YEAR_MIN = 2024;
   const BOARD_YEAR_MAX = 2030;
-  let boardYearView = Math.min(BOARD_YEAR_MAX, Math.max(BOARD_YEAR_MIN, new Date().getFullYear()));
+  window.boardYearView = Math.min(BOARD_YEAR_MAX, Math.max(BOARD_YEAR_MIN, new Date().getFullYear()));
   const holidayCache = {};
   let titleEditorCleanupAttached = false;
   let idprep11Mode = 'efetivo';
@@ -2606,10 +2778,9 @@
     { id: 'tab4', label: '4. Dashboard por Missão', subtitle: 'Resumo operacional e efetivo escalado por missão.' },
     { id: 'tab5', label: '5. Dashboard por Militar', subtitle: 'Visão matricial de militares versus missões.' },
     { id: 'tab6', label: '6. Consulta de Missão + PDF', subtitle: 'Consulta de escalados com impressão formatada.' },
-    { id: 'tab7', label: '7. Cadastro Financeiro', subtitle: 'Soldos, diárias e percentuais de habilitação e formação.' },
-    { id: 'tab8', label: '8. Custo da Missão', subtitle: 'Cálculo financeiro por missão com 2% sobre soldo bruto e diárias por localidade.' },
+    { id: 'tab7', label: '7. Cadastro Financeiro', subtitle: 'Soldos, diárias e percentuais de habilitação.' },
+    { id: 'tab8', label: '8. Custo da Missão', subtitle: 'Cálculo financeiro por missão com 2% sempre sobre o soldo bruto e diárias por localidade.' },
     { id: 'tab9', label: '9. Comissionamento', subtitle: 'Painel acumulado de economicidade por militar comissionado.' },
-    { id: 'tab11', label: '10. Manning de Missões', subtitle: 'Distribuição operacional e FOP escolhida para cada militar escalado.' },
     { id: 'tab12', label: '11. IDPREP 1.1', subtitle: 'Panorama e quantitativo das FOPs cadastradas no efetivo.' },
     { id: 'tab13', label: '12. IDPREP 1.2', subtitle: 'Panorama e quantitativo das capacitações cadastradas.' },
     { id: 'tab14', label: '13. Cursos', subtitle: 'Consulta rápida de cursos realizados e cursos pretendidos por militar.' },
@@ -2628,7 +2799,6 @@
     tab8: 'Custo da Missão',
     tab9: 'Comissionamento',
     tab10: 'Registro de Acessos',
-    tab11: 'Manning de Missões',
     tab12: 'IDPREP 1.1',
     tab13: 'IDPREP 1.2',
     tab14: 'Cursos'
@@ -2688,20 +2858,7 @@
     return {
       soldos,
       diarias,
-      adicionaisHabilitacao: {
-        NIL: 0,
-        'Especialização': 0,
-        'Aperfeiçoamento': 0,
-        'Altos Estudos I': 0,
-        'Altos Estudos II': 0
-      },
-      adicionaisFormacao: {
-        NIL: 0,
-        'Especialização': 0,
-        'Aperfeiçoamento': 0,
-        'Altos Estudos I': 0,
-        'Altos Estudos II': 0
-      }
+      adicionaisHabilitacao: Object.fromEntries(HABILITACAO_OPTIONS.map(option => [option, 0]))
     };
   };
 
@@ -2721,8 +2878,13 @@
         email: String(item.email || '').trim(),
         soldoBruto: currencyToNumber(item.soldoBruto),
         dependente: !!item.dependente,
-        adicionalHabilitacao: HABILITACAO_OPTIONS.includes(item.adicionalHabilitacao) ? item.adicionalHabilitacao : 'NIL',
-        adicionalFormacao: FORMATION_OPTIONS.includes(item.adicionalFormacao) ? item.adicionalFormacao : 'NIL',
+        adicionalHabilitacao: (() => {
+          const habilitacaoAtual = String(item.adicionalHabilitacao || '').trim();
+          const formacaoLegada = String(item.adicionalFormacao || '').trim();
+          if (HABILITACAO_OPTIONS.includes(habilitacaoAtual)) return habilitacaoAtual;
+          if (formacaoLegada && formacaoLegada.toUpperCase() !== 'NIL' && HABILITACAO_OPTIONS.includes(formacaoLegada)) return formacaoLegada;
+          return 'NIL';
+        })(),
         adicionalMilitar: currencyToNumber(item.adicionalMilitar),
         adicionalDisponibilidade: currencyToNumber(item.adicionalDisponibilidade),
         cotaAeronavegante: currencyToNumber(item.cotaAeronavegante),
@@ -2779,10 +2941,16 @@
       base.diarias[group].other = currencyToNumber(incoming.diarias?.[group]?.other);
     });
     HABILITACAO_OPTIONS.forEach(option => {
-      base.adicionaisHabilitacao[option] = option === 'NIL' ? 0 : currencyToNumber(incoming.adicionaisHabilitacao?.[option]);
-    });
-    FORMATION_OPTIONS.forEach(option => {
-      base.adicionaisFormacao[option] = option === 'NIL' ? 0 : currencyToNumber(incoming.adicionaisFormacao?.[option]);
+      if (option === 'NIL') {
+        base.adicionaisHabilitacao[option] = 0;
+        return;
+      }
+      const current = incoming.adicionaisHabilitacao?.[option];
+      const legacy = incoming.adicionaisFormacao?.[option];
+      const fallbackFormacao = option === 'Formação' ? incoming.adicionaisHabilitacao?.['Formação'] : undefined;
+      base.adicionaisHabilitacao[option] = currencyToNumber(
+        current ?? legacy ?? fallbackFormacao
+      );
     });
     return base;
   };
@@ -3029,21 +3197,19 @@
     return currencyToNumber(state.financial?.adicionaisHabilitacao?.[label]) / 100;
   }
 
-  function getFormationPercent(person) {
-    const label = FORMATION_OPTIONS.includes(person?.adicionalFormacao) ? person.adicionalFormacao : 'NIL';
-    return currencyToNumber(state.financial?.adicionaisFormacao?.[label]) / 100;
+  function getManualPercentValue(person, key) {
+    return currencyToNumber(person?.[key]) / 100;
   }
 
   function getPersonnelTotalRemuneration(person) {
     const soldo = getPersonnelSoldo(person);
     return soldo
       + (soldo * getHabilitacaoPercent(person))
-      + (soldo * getFormationPercent(person))
-      + currencyToNumber(person?.adicionalMilitar)
-      + currencyToNumber(person?.adicionalDisponibilidade)
-      + currencyToNumber(person?.cotaAeronavegante)
-      + currencyToNumber(person?.cotaIncorporada)
-      + currencyToNumber(person?.outrosAdicionais);
+      + (soldo * getManualPercentValue(person, 'adicionalMilitar'))
+      + (soldo * getManualPercentValue(person, 'adicionalDisponibilidade'))
+      + (soldo * getManualPercentValue(person, 'cotaAeronavegante'))
+      + (soldo * getManualPercentValue(person, 'cotaIncorporada'))
+      + (soldo * getManualPercentValue(person, 'outrosAdicionais'));
   }
 
   getPersonnel2Percent = function getPersonnel2PercentEnhanced(person) {
@@ -3187,16 +3353,20 @@
   }
 
   function setBoardYear(value) {
-    const next = Math.min(BOARD_YEAR_MAX, Math.max(BOARD_YEAR_MIN, Number(value) || boardYearView));
-    boardYearView = next;
+    const next = Math.min(BOARD_YEAR_MAX, Math.max(BOARD_YEAR_MIN, Number(value) || window.boardYearView));
+    window.boardYearView = next;
+    // Atualiza label e select do ano
     const label = document.getElementById('boardYearLabel');
-    if (label) label.textContent = String(boardYearView);
+    if (label) label.textContent = String(window.boardYearView);
+    const selectYear = document.getElementById('boardYearSelect');
+    if (selectYear) selectYear.value = String(window.boardYearView);
+    // Garante que os feriados do ano selecionado sejam carregados antes de renderizar
     renderBoard();
-    ensureHolidayData(boardYearView).then(() => renderBoard());
+    ensureHolidayData(window.boardYearView).then(() => renderBoard());
   }
 
   window.incrementBoardYear = function incrementBoardYear(delta) {
-    setBoardYear(boardYearView + Number(delta || 0));
+    setBoardYear(window.boardYearView + Number(delta || 0));
   };
   window.changeBoardYear = function changeBoardYear(value) {
     setBoardYear(value);
@@ -3227,7 +3397,7 @@
       tab1.innerHTML = `
         <div class="card">
           <h3 class="section-title" data-title-key="tab1" data-title-default="Cadastro de Efetivo"></h3>
-          <div class="notice">A ordem da lista abaixo é global. Use ▲ e ▼ para reposicionar o efetivo.</div>
+          <div class="notice">A ordem da lista abaixo é global. Arraste e solte as linhas para reposicionar o efetivo.</div>
           <form id="personnelForm" onsubmit="handlePersonnelSubmit(event)">
             <input type="hidden" id="personnelEditId" />
 
@@ -3249,12 +3419,11 @@
             <div class="form-grid compact">
               <div class="field"><label for="soldoBruto">Soldo Bruto (R$)</label><input id="soldoBruto" type="number" step="0.01" min="0" readonly class="money-readonly" /></div>
               <div class="field"><label for="adicionalHabilitacao">Adicional de Habilitação</label><select id="adicionalHabilitacao" onchange="refreshPersonnelFinancialReadonly()">${HABILITACAO_OPTIONS.map(option => `<option value="${option}">${option}</option>`).join('')}</select></div>
-              <div class="field"><label for="adicionalFormacao">Adicional de Formação</label><select id="adicionalFormacao" onchange="refreshPersonnelFinancialReadonly()">${FORMATION_OPTIONS.map(option => `<option value="${option}">${option}</option>`).join('')}</select></div>
-              <div class="field"><label for="adicionalMilitar">Adicional Militar (R$)</label><input id="adicionalMilitar" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
-              <div class="field"><label for="adicionalDisponibilidade">Adicional Disponibilidade (R$)</label><input id="adicionalDisponibilidade" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
-              <div class="field"><label for="cotaAeronavegante">Cota Aeronavegante (R$)</label><input id="cotaAeronavegante" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
-              <div class="field"><label for="cotaIncorporada">Cota Incorporada (R$)</label><input id="cotaIncorporada" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
-              <div class="field"><label for="outrosAdicionais">Outros Adicionais (R$)</label><input id="outrosAdicionais" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="adicionalMilitar">Adicional Militar (%)</label><input id="adicionalMilitar" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="adicionalDisponibilidade">Adicional Disponibilidade (%)</label><input id="adicionalDisponibilidade" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="cotaAeronavegante">Cota Aeronavegante (%)</label><input id="cotaAeronavegante" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="cotaIncorporada">Cota Incorporada (%)</label><input id="cotaIncorporada" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="outrosAdicionais">Outros Adicionais (%)</label><input id="outrosAdicionais" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
               <div class="field"><label for="remuneracaoTotalPreview">Soldo Total (R$)</label><input id="remuneracaoTotalPreview" type="text" readonly class="money-readonly" /></div>
             </div>
 
@@ -3297,7 +3466,7 @@
             <table>
               <thead>
                 <tr>
-                  <th>Ordem</th><th>PT/GRAD</th><th>Quadro</th><th>Nome de Guerra</th><th>Trigrama</th><th>Nome Completo</th><th>SARAM</th><th>CPF</th><th>ID Militar</th><th>E-mail</th><th>Soldo Bruto</th><th>Soldo Total</th><th>Dependente</th><th>Ações</th>
+                  <th>Mover</th><th>PT/GRAD</th><th>Quadro</th><th>Nome de Guerra</th><th>Trigrama</th><th>Nome Completo</th><th>SARAM</th><th>CPF</th><th>ID Militar</th><th>E-mail</th><th>Soldo Bruto</th><th>Soldo Total</th><th>Dependente</th><th>Ações</th>
                 </tr>
               </thead>
               <tbody id="personnelTableBody"></tbody>
@@ -3318,18 +3487,19 @@
               <div class="notice locked-note" id="boardReadonlyNotice" style="display:none;">Modo consulta. Faça login no canto superior esquerdo para liberar cadastro e edição.</div>
             </div>
             <div class="year-switcher">
-              <button class="btn btn-secondary btn-mini" type="button" onclick="incrementBoardYear(-1)">◄</button>
-              <select id="boardYearSelect" onchange="changeBoardYear(this.value)">${Array.from({ length: BOARD_YEAR_MAX - BOARD_YEAR_MIN + 1 }, (_, idx) => BOARD_YEAR_MIN + idx).map(year => `<option value="${year}">${year}</option>`).join('')}</select>
-              <button class="btn btn-secondary btn-mini" type="button" onclick="incrementBoardYear(1)">►</button>
-              <span class="year-current" id="boardYearLabel"></span>
+              <button class="btn btn-secondary btn-mini" type="button" onclick="window.incrementBoardYear(-1)">◄</button>
+              <select id="boardYearSelect" onchange="window.changeBoardYear(this.value)">${Array.from({ length: BOARD_YEAR_MAX - BOARD_YEAR_MIN + 1 }, (_, idx) => BOARD_YEAR_MIN + idx).map(year => `<option value="${year}" ${year === (window.boardYearView || new Date().getFullYear()) ? 'selected' : ''}>${year}</option>`).join('')}</select>
+              <button class="btn btn-secondary btn-mini" type="button" onclick="window.incrementBoardYear(1)">►</button>
+              <span class="year-current" id="boardYearLabel">${window.boardYearView || new Date().getFullYear()}</span>
             </div>
           </div>
           <div class="legend">
             <div class="legend-item"><span class="legend-swatch" style="background: var(--weekend);"></span>Sábado/Domingo</div>
             <div class="legend-item"><span class="legend-swatch" style="background: var(--holiday);"></span>Feriado Nacional</div>
             <div class="legend-item"><span class="legend-swatch" style="background: #000;"></span>Férias</div>
-            <div class="legend-item"><span class="legend-swatch" style="background: rgba(47,125,63,0.75);"></span>Escalado</div>
-            <div class="legend-item"><span class="legend-swatch" style="background: rgba(158,122,46,0.8);"></span>Comissionado</div>
+            <div class="legend-item"><span class="legend-swatch" style="background: rgba(214,171,30,0.82);"></span>GR (Gratificação de Representação)</div>
+            <div class="legend-item"><span class="legend-swatch" style="background: rgba(170,58,58,0.82);"></span>DR (Diária)</div>
+            <div class="legend-item"><span class="legend-swatch" style="background: rgba(47,125,63,0.82);"></span>CM (Comissionamento)</div>
           </div>
           <div class="board-wrap"><table class="board-table" id="boardTable"></table></div>
         </div>
@@ -3341,11 +3511,11 @@
       tab7.innerHTML = `
         <div class="card">
           <h3 class="section-title" data-title-key="tab7" data-title-default="Cadastro Financeiro"></h3>
+          <div class="notice">Os 2% permanecem calculados sempre sobre o soldo bruto. Os adicionais manuais do cadastro de efetivo são percentuais aplicados sobre o soldo bruto.</div>
           <div class="financial-grid">
             <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Soldo Bruto por PT/GRAD</h4><div class="table-wrap"><table><thead><tr><th>PT/GRAD</th><th>Soldo Bruto (R$)</th><th>2% do Soldo (R$)</th></tr></thead><tbody id="financialSoldoBody"></tbody></table></div></div>
             <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Valores de Diária por Categoria</h4><div class="table-wrap"><table><thead><tr><th>Grupo</th><th>Postos</th><th>Capitais Prioritárias</th><th>Demais Capitais</th><th>Demais Localidades</th></tr></thead><tbody id="financialDiaryBody"></tbody></table></div></div>
             <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Percentuais de Adicional de Habilitação</h4><div class="table-wrap"><table><thead><tr><th>Adicional</th><th>Percentual (%)</th></tr></thead><tbody id="financialHabilitacaoBody"></tbody></table></div></div>
-            <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Percentuais de Adicional de Formação</h4><div class="table-wrap"><table><thead><tr><th>Adicional</th><th>Percentual (%)</th></tr></thead><tbody id="financialFormationBody"></tbody></table></div></div>
           </div>
         </div>
       `;
@@ -3400,9 +3570,8 @@
       }
     });
 
-    if (!document.getElementById('tab11')) {
+    if (!document.getElementById('tab12')) {
       tab10.insertAdjacentHTML('afterend', `
-        <section class="tab-content" id="tab11"><div class="card"><h3 class="section-title" data-title-key="tab11" data-title-default="Manning de Missões"></h3><div id="manningContainer"></div></div></section>
         <section class="tab-content" id="tab12"><div class="card"><div class="subtab-bar"><h3 class="section-title" data-title-key="tab12" data-title-default="IDPREP 1.1"></h3><div class="subtab-switch"><button type="button" class="btn btn-secondary btn-mini" id="idprep11EfetivoBtn" onclick="setIdprep11Mode('efetivo')">Efetivo</button><button type="button" class="btn btn-secondary btn-mini" id="idprep11QuantBtn" onclick="setIdprep11Mode('quantitativo')">Quantitativo</button></div></div><div id="idprep11Container"></div></div></section>
         <section class="tab-content" id="tab13"><div class="card"><div class="subtab-bar"><h3 class="section-title" data-title-key="tab13" data-title-default="IDPREP 1.2"></h3><div class="subtab-switch"><button type="button" class="btn btn-secondary btn-mini" id="idprep12EfetivoBtn" onclick="setIdprep12Mode('efetivo')">Efetivo</button><button type="button" class="btn btn-secondary btn-mini" id="idprep12QuantBtn" onclick="setIdprep12Mode('quantitativo')">Quantitativo</button></div></div><div id="idprep12Container"></div></div></section>
         <section class="tab-content" id="tab14"><div class="card"><h3 class="section-title" data-title-key="tab14" data-title-default="Cursos"></h3><div class="course-search-grid"><div class="field"><label for="coursePersonSelect">Busca por militar</label><select id="coursePersonSelect" onchange="renderCoursesTabView()"></select></div><div class="field"><label for="courseLookupInput">Busca por curso</label><input id="courseLookupInput" list="courseLookupList" placeholder="Digite ou selecione um curso" oninput="renderCoursesTabView()" /></div></div><div id="coursesContainerView"></div></div></section>
@@ -3533,7 +3702,6 @@
       ptgrad,
       soldoBruto: soldo,
       adicionalHabilitacao: document.getElementById('adicionalHabilitacao')?.value || 'NIL',
-      adicionalFormacao: document.getElementById('adicionalFormacao')?.value || 'NIL',
       adicionalMilitar: currencyToNumber(document.getElementById('adicionalMilitar')?.value),
       adicionalDisponibilidade: currencyToNumber(document.getElementById('adicionalDisponibilidade')?.value),
       cotaAeronavegante: currencyToNumber(document.getElementById('cotaAeronavegante')?.value),
@@ -3604,7 +3772,6 @@
         soldoBruto: getPersonnelSoldo({ ptgrad }),
         dependente: document.getElementById('dependente').checked,
         adicionalHabilitacao: document.getElementById('adicionalHabilitacao').value || 'NIL',
-        adicionalFormacao: document.getElementById('adicionalFormacao').value || 'NIL',
         adicionalMilitar: currencyToNumber(document.getElementById('adicionalMilitar').value),
         adicionalDisponibilidade: currencyToNumber(document.getElementById('adicionalDisponibilidade').value),
         cotaAeronavegante: currencyToNumber(document.getElementById('cotaAeronavegante').value),
@@ -3654,7 +3821,6 @@
     document.getElementById('email').value = person.email || '';
     document.getElementById('dependente').checked = !!person.dependente;
     document.getElementById('adicionalHabilitacao').value = person.adicionalHabilitacao || 'NIL';
-    document.getElementById('adicionalFormacao').value = person.adicionalFormacao || 'NIL';
     document.getElementById('adicionalMilitar').value = currencyToNumber(person.adicionalMilitar) || 0;
     document.getElementById('adicionalDisponibilidade').value = currencyToNumber(person.adicionalDisponibilidade) || 0;
     document.getElementById('cotaAeronavegante').value = currencyToNumber(person.cotaAeronavegante) || 0;
@@ -3678,6 +3844,81 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+
+  let draggingPersonnelId = null;
+
+  function reorderPersonnelByDrop(sourceId, targetId) {
+    if (!requireAuth()) return;
+    if (!sourceId || !targetId || sourceId === targetId) return;
+    const sourceIndex = state.personnel.findIndex(item => item.id === sourceId);
+    const targetIndex = state.personnel.findIndex(item => item.id === targetId);
+    if (sourceIndex < 0 || targetIndex < 0) return;
+    const [moved] = state.personnel.splice(sourceIndex, 1);
+    state.personnel.splice(targetIndex, 0, moved);
+    saveState();
+    renderAll();
+  }
+
+  function bindPersonnelDragAndDrop() {
+    const tbody = document.getElementById('personnelTableBody');
+    if (!tbody) return;
+    const canDrag = isAuthenticated();
+    tbody.querySelectorAll('tr[data-person-id]').forEach(row => {
+      row.draggable = !!canDrag;
+      row.classList.toggle('personnel-row-draggable', !!canDrag);
+      row.addEventListener('dragstart', (event) => {
+        if (!canDrag) {
+          event.preventDefault();
+          return;
+        }
+        draggingPersonnelId = row.dataset.personId;
+        row.classList.add('dragging');
+        try { event.dataTransfer.setData('text/plain', draggingPersonnelId); } catch (_) {}
+        event.dataTransfer.effectAllowed = 'move';
+      });
+      row.addEventListener('dragover', (event) => {
+        if (!canDrag) return;
+        event.preventDefault();
+        row.classList.add('drag-over');
+        if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
+      });
+      row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+      row.addEventListener('dragend', () => {
+        draggingPersonnelId = null;
+        row.classList.remove('dragging');
+        tbody.querySelectorAll('tr[data-person-id]').forEach(item => item.classList.remove('drag-over'));
+      });
+      row.addEventListener('drop', (event) => {
+        if (!canDrag) return;
+        event.preventDefault();
+        row.classList.remove('drag-over');
+        const sourceId = draggingPersonnelId || (event.dataTransfer ? event.dataTransfer.getData('text/plain') : '');
+        reorderPersonnelByDrop(sourceId, row.dataset.personId);
+      });
+    });
+  }
+
+  function applyLightBackgroundTextContrast(root = document) {
+    const nodes = root.querySelectorAll('td, th, .mission-card-head, .print-area, .print-cost-area, .mission-card, .card, [style*="background:"]');
+    nodes.forEach(node => {
+      const bg = getComputedStyle(node).backgroundColor;
+      if (!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') return;
+      const match = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+      if (!match) return;
+      const r = Number(match[1]);
+      const g = Number(match[2]);
+      const b = Number(match[3]);
+      const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      if (luminance >= 185) {
+        node.style.color = '#000';
+      }
+    });
+  }
+
+  function scheduleContrastPass() {
+    requestAnimationFrame(() => applyLightBackgroundTextContrast(document));
+  }
+
   renderPersonnelTable = function renderPersonnelTableEnhanced() {
     const tbody = document.getElementById('personnelTableBody');
     if (!tbody) return;
@@ -3685,9 +3926,13 @@
       tbody.innerHTML = '<tr><td colspan="14" class="empty">Nenhum militar cadastrado.</td></tr>';
       return;
     }
+    const canDrag = isAuthenticated();
     tbody.innerHTML = state.personnel.map((person, index) => `
-      <tr>
-        <td class="center">${index + 1}</td>
+      <tr data-person-id="${person.id}">
+        <td class="center">
+          <span class="drag-handle ${canDrag ? '' : 'disabled'}" title="${canDrag ? 'Arraste para reordenar' : 'Login necessário para reordenar'}">⠿</span>
+          <span class="drag-order-badge">${index + 1}</span>
+        </td>
         <td>${escapeHtml(person.ptgrad)}</td>
         <td>${escapeHtml(person.quadro)}</td>
         <td>${escapeHtml(person.nomeGuerra)}</td>
@@ -3702,14 +3947,14 @@
         <td class="center">${person.dependente ? 'SIM' : 'NÃO'}</td>
         <td>
           <div class="actions">
-            <button class="btn btn-secondary btn-mini" onclick="movePersonnel('${person.id}', -1)">▲</button>
-            <button class="btn btn-secondary btn-mini" onclick="movePersonnel('${person.id}', 1)">▼</button>
             <button class="btn btn-primary btn-mini" onclick="editPersonnel('${person.id}')">Editar</button>
             <button class="btn btn-danger btn-mini" onclick="deletePersonnel('${person.id}')">Excluir</button>
           </div>
         </td>
       </tr>
     `).join('');
+    bindPersonnelDragAndDrop();
+    scheduleContrastPass();
   };
 
   renderFinancialTables = function renderFinancialTablesEnhanced() {
@@ -3744,27 +3989,11 @@
         </tr>
       `).join('');
     }
-    const formationBody = document.getElementById('financialFormationBody');
-    if (formationBody) {
-      formationBody.innerHTML = FORMATION_OPTIONS.map(option => `
-        <tr>
-          <td>${option}</td>
-          <td>${option === 'NIL' ? '<input type="number" value="0" readonly />' : `<input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.adicionaisFormacao[option])}" onchange="updateFormationPercent('${option}', this.value)" />`}</td>
-        </tr>
-      `).join('');
-    }
   };
 
   window.updateHabilitacaoPercent = function updateHabilitacaoPercent(option, value) {
     if (!requireAuth() || option === 'NIL') return;
     state.financial.adicionaisHabilitacao[option] = currencyToNumber(value);
-    saveState();
-    renderAll();
-  };
-
-  window.updateFormationPercent = function updateFormationPercent(option, value) {
-    if (!requireAuth() || option === 'NIL') return;
-    state.financial.adicionaisFormacao[option] = currencyToNumber(value);
     saveState();
     renderAll();
   };
@@ -3783,95 +4012,15 @@
     renderAll();
   };
 
+  // buildBoardHeaderEnhanced substituída — redireciona para buildBoardHeaderClean (versão GR/DR/CM)
   function buildBoardHeaderEnhanced(days) {
-    const stickyLeft = getStickyLeftMap();
-    const monthCounts = days.reduce((acc, day) => {
-      acc[day.month] = (acc[day.month] || 0) + 1;
-      return acc;
-    }, {});
-    let row1 = `
-      <tr>
-        <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">PT/GRAD</th>
-        <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">Nome de Guerra</th>
-        <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">Trig.</th>
-    `;
-    state.missions.forEach(mission => {
-      row1 += `<th class="sticky-col mission-head" colspan="2" style="left:${stickyLeft[`m_${mission.id}_e`]}px;">${escapeHtml(mission.name)}</th>`;
-    });
-    MONTHS_PT.forEach((monthName, index) => {
-      row1 += `<th class="month-head" colspan="${monthCounts[index] || 0}">${monthName}</th>`;
-    });
-    row1 += '</tr>';
-
-    let row2 = '<tr>';
-    state.missions.forEach(mission => {
-      row2 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_e`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;"><div class="rotate-wrap">ESC</div></th>`;
-      row2 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_c`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;"><div class="rotate-wrap">COM</div></th>`;
-    });
-    days.forEach(day => {
-      const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
-      row2 += `<th class="day-head ${cls}" ${day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}"` : ''}>${day.day}</th>`;
-    });
-    row2 += '</tr>';
-
-    let row3 = '<tr>';
-    state.missions.forEach(mission => {
-      row3 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_e`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;">E</th>`;
-      row3 += `<th class="sticky-col mission-subhead" style="left:${stickyLeft[`m_${mission.id}_c`]}px; min-width:${BOARD_WIDTHS.mission}px; width:${BOARD_WIDTHS.mission}px;">C</th>`;
-    });
-    days.forEach(day => {
-      const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
-      row3 += `<th class="day-head ${cls}" ${day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}"` : ''}>${day.weekdayShort}</th>`;
-    });
-    row3 += '</tr>';
-
-    return `<thead>${row1}${row2}${row3}</thead>`;
+    if (typeof buildBoardHeaderClean === 'function') return buildBoardHeaderClean(days);
+    return '<thead></thead>';
   }
 
+  // renderBoardEnhanced substituída — redireciona para versão limpa GR/DR/CM
   renderBoard = function renderBoardEnhanced() {
-    const table = document.getElementById('boardTable');
-    if (!table) return;
-    const select = document.getElementById('boardYearSelect');
-    if (select) select.value = String(boardYearView);
-    const label = document.getElementById('boardYearLabel');
-    if (label) label.textContent = String(boardYearView);
-    if (!state.personnel.length) {
-      table.innerHTML = '<tbody><tr><td class="empty">Cadastre o efetivo para montar o quadro.</td></tr></tbody>';
-      return;
-    }
-    const days = getBoardDays(boardYearView);
-    const canEditBoard = isAuthenticated();
-    const stickyLeft = getStickyLeftMap();
-    const headerHtml = buildBoardHeaderEnhanced(days);
-    const bodyRows = state.personnel.map(person => {
-      let row = '<tr>';
-      row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">${escapeHtml(person.ptgrad)}</td>`;
-      row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">${escapeHtml(person.nomeGuerra)}</td>`;
-      row += `<td class="sticky-col sticky-person center" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">${escapeHtml(person.trigrama)}</td>`;
-      state.missions.forEach(mission => {
-        const assignment = getAssignment(mission.id, person.id);
-        row += `<td class="sticky-col mission-toggle-cell sticky-mission ${assignment.selected ? 'active-assigned' : ''}" style="left:${stickyLeft[`m_${mission.id}_e`]}px;">
-            <input type="checkbox" ${assignment.selected ? 'checked' : ''} ${canEditBoard ? '' : 'disabled'} onchange="toggleAssignment('${mission.id}','${person.id}','selected', this.checked)">
-          </td>`;
-        row += `<td class="sticky-col mission-toggle-cell sticky-mission ${assignment.commissioned && assignment.selected ? 'active-commissioned' : ''}" style="left:${stickyLeft[`m_${mission.id}_c`]}px;">
-            <input type="checkbox" ${assignment.commissioned && assignment.selected ? 'checked' : ''} ${canEditBoard && assignment.selected ? '' : 'disabled'} onchange="toggleAssignment('${mission.id}','${person.id}','commissioned', this.checked)">
-          </td>`;
-      });
-      days.forEach(day => {
-        let cellStyle = '';
-        let cellClass = 'cell-day';
-        if (personOnVacation(person, day.iso)) {
-          cellClass += ' vacation-cell';
-        } else {
-          const missionColor = state.missions.find(mission => missionAppliesToDay(person, mission, day.iso))?.color;
-          if (missionColor) cellStyle = `background:${missionColor};`;
-        }
-        row += `<td class="${cellClass}" style="${cellStyle}" ${day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}"` : ''}></td>`;
-      });
-      row += '</tr>';
-      return row;
-    }).join('');
-    table.innerHTML = headerHtml + `<tbody>${bodyRows}</tbody>`;
+    if (typeof window.__renderBoardClean === 'function') return window.__renderBoardClean();
   };
 
   renderMissionCost = function renderMissionCostEnhanced() {
@@ -3901,10 +4050,11 @@
       <div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')} — ${escapeHtml(locality.label)}</div>
     `;
     body.innerHTML = assigned.length ? assigned.map(person => {
-      const valor2 = getPersonnel2Percent(person) * multiplier;
-      const diarias = getDiaryRate(person.ptgrad, mission) * multiplier;
-      total2 += valor2;
-      totalDiarias += diarias;
+      const status = String((getAssignment(mission.id, person.id) || {}).status || '').toUpperCase();
+      const valor2 = status === 'GR' ? getPersonnel2Percent(person) * multiplier : 0;
+      const diarias = status === 'DR' ? getDiaryRate(person.ptgrad, mission) * multiplier : 0;
+      if (status === 'GR') total2 += valor2;
+      if (status === 'DR') totalDiarias += diarias;
       return `
         <tr>
           <td>${escapeHtml(person.ptgrad)}</td>
@@ -3915,14 +4065,14 @@
           <td>${escapeHtml(person.saram)}</td>
           <td>${escapeHtml(person.idMilitar)}</td>
           <td>${escapeHtml(person.email)}</td>
-          <td class="money-cell">${formatMoney(valor2)}</td>
-          <td class="money-cell">${formatMoney(diarias)}</td>
+          <td class="money-cell">${status === 'GR' ? formatMoney(valor2) : '—'}</td>
+          <td class="money-cell">${status === 'DR' ? formatMoney(diarias) : '—'}</td>
         </tr>
       `;
     }).join('') : '<tr><td colspan="10">Nenhum militar escalado nesta missão.</td></tr>';
     foot.innerHTML = `
-      <tr><th colspan="8" style="text-align:right;">Total dos 2%</th><th class="money-cell">${formatMoney(total2)}</th><th></th></tr>
-      <tr><th colspan="9" style="text-align:right;">Total em Diárias</th><th class="money-cell">${formatMoney(totalDiarias)}</th></tr>
+      <tr><th colspan="8" style="text-align:right;">Total dos 2% (marcados GR)</th><th class="money-cell">${formatMoney(total2)}</th><th>—</th></tr>
+      <tr><th colspan="8" style="text-align:right;">Total em Diárias (marcados DR)</th><th>—</th><th class="money-cell">${formatMoney(totalDiarias)}</th></tr>
     `;
   };
 
@@ -3972,19 +4122,20 @@
       return;
     }
     const data = getCommissionDataEntry(person.id);
-    const soldoTotal = getPersonnelTotalRemuneration(person);
+    const soldoTotalRemuneracao = getPersonnelTotalRemuneration(person);
     const totalDiasProposta = missions.reduce((acc, mission) => acc + getMissionDays(mission), 0);
     const totalDiasExecutado = missions.filter(isMissionExecuted).reduce((acc, mission) => acc + getMissionDays(mission), 0);
     const totalDiasPlanejado = missions.filter(mission => !isMissionExecuted(mission)).reduce((acc, mission) => acc + getMissionDays(mission), 0);
     const restam = totalDiasProposta - totalDiasExecutado - totalDiasPlanejado;
     const adicionaisMissoes = missions.reduce((acc, mission) => acc + currencyToNumber(getAssignment(mission.id, person.id).additional), 0);
     const diariaBruta = missions.reduce((acc, mission) => acc + missionMoneyTotalForPerson(person, mission), 0);
-    const diariaBrutaAdc = diariaBruta + adicionaisMissoes;
-    const idaBase = person.dependente ? soldoTotal : soldoTotal / 2;
-    const voltaBase = (person.dependente ? soldoTotal : soldoTotal / 2) + adicionaisMissoes;
+    const valorEmDiarias = diariaBruta;
+    const idaBase = person.dependente ? soldoTotalRemuneracao : soldoTotalRemuneracao / 2;
+    const voltaBase = (person.dependente ? soldoTotalRemuneracao : soldoTotalRemuneracao / 2) + adicionaisMissoes;
     const ida = data.idaManualEnabled ? currencyToNumber(data.idaManualValue) : idaBase;
     const volta = data.voltaManualEnabled ? currencyToNumber(data.voltaManualValue) : voltaBase;
-    const bateEconomicidade = diariaBrutaAdc >= (ida + volta);
+    const soldoTotal = ida + volta;
+    const bateEconomicidade = diariaBruta >= soldoTotal;
     container.innerHTML = `
       <div class="commission-layout">
         <div class="card commission-left">
@@ -4002,9 +4153,9 @@
             <div class="metric-line"><span>Soldo Total</span><strong>${formatMoney(soldoTotal)}</strong></div>
             <div class="metric-line"><span>AJUDA DE CUSTO</span><strong>${formatMoney(ida)}</strong></div>
             <div class="metric-line"><span>AJUDA DE CUSTO + ETAPA</span><strong>${formatMoney(volta)}</strong></div>
-            <div class="metric-line"><span>Diária Bruta + ADC Desloc</span><strong>${formatMoney(diariaBrutaAdc)}</strong></div>
+            <div class="metric-line"><span>Valor em Diárias</span><strong>${formatMoney(valorEmDiarias)}</strong></div>
             <div class="metric-line"><span>ECONOMICIDADE</span><span class="badge ${bateEconomicidade ? 'badge-ok' : 'badge-no'}">${bateEconomicidade ? 'BATE' : 'NÃO BATE'}</span></div>
-            <div class="notice">A economicidade considera o acúmulo de todas as missões comissionadas do militar selecionado.</div>
+            <div class="notice">A economicidade compara o valor em diárias acumulado com o soldo total desta aba, calculado como AJUDA DE CUSTO + AJUDA DE CUSTO + ETAPA.</div>
           </div>
         </div>
         <div class="card commission-right">
@@ -4310,7 +4461,7 @@
     renderMissionTable();
     renderSummaryCards();
     renderBoard();
-    ensureHolidayData(boardYearView).then(() => renderBoard());
+    ensureHolidayData(window.boardYearView).then(() => { renderBoard(); scheduleContrastPass(); });
     renderMissionDashboard();
     renderPersonMissionMatrix();
     renderMissionSelects();
@@ -4325,6 +4476,7 @@
     renderCoursesTabView();
     renderAccessLog();
     toggleAdditionalPersonnelFields();
+    scheduleContrastPass();
   };
 
   // ==============================
@@ -4510,5 +4662,2933 @@
     });
   </script>
 
+
+  <style id="bloco3-patch-styles">
+    .board-table {
+      --board-top-row-1: 0px;
+      --board-top-row-2: 32px;
+      --board-top-row-3: 58px;
+    }
+    .board-table thead tr:nth-child(1) th { top: var(--board-top-row-1); z-index: 11; }
+    .board-table thead tr:nth-child(2) th { top: var(--board-top-row-2); z-index: 10; }
+    .board-table thead tr:nth-child(3) th { top: var(--board-top-row-3); z-index: 9; }
+    .board-table .sticky-col { z-index: 12; }
+    .board-table thead .sticky-col { z-index: 15; }
+    .board-table .mission-head {
+      min-width: 76px;
+      width: 76px;
+      max-width: 76px;
+      font-size: 9px;
+      line-height: 1.1;
+      white-space: normal;
+      word-break: break-word;
+      padding: 4px 3px;
+      vertical-align: middle;
+    }
+    .board-table .mission-select-cell {
+      min-width: 76px;
+      width: 76px;
+      max-width: 76px;
+      padding: 2px;
+      background: rgba(255,255,255,0.03);
+    }
+    .board-table .mission-select-cell.status-gr { background: rgba(214,171,30,0.36); }
+    .board-table .mission-select-cell.status-dr { background: rgba(170,58,58,0.34); }
+    .board-table .mission-select-cell.status-cm { background: rgba(47,125,63,0.36); }
+    .board-table .board-assignment-select {
+      width: 100%;
+      min-width: 68px;
+      height: 24px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(17,24,19,0.92);
+      color: #fff;
+      font-size: 10px;
+      padding: 0 2px;
+    }
+    .board-table .board-assignment-select:disabled {
+      opacity: 0.78;
+      cursor: not-allowed;
+    }
+    .board-table .sticky-main,
+    .board-table .sticky-person {
+      box-shadow: 1px 0 0 rgba(255,255,255,0.07);
+    }
+  </style>
+  <script id="bloco3-patch-script">
+  (() => {
+    const ASSIGNMENT_STATUS_OPTIONS = ['', 'GR', 'DR', 'CM'];
+    const ASSIGNMENT_STATUS_LABELS = {
+      '': '—',
+      GR: 'GR',
+      DR: 'DR',
+      CM: 'CM'
+    };
+
+    function sortMissionsList(list) {
+      return (Array.isArray(list) ? [...list] : []).sort((a, b) => {
+        const da = String(a?.start || '9999-12-31');
+        const db = String(b?.start || '9999-12-31');
+        if (da !== db) return da.localeCompare(db);
+        return String(a?.name || '').localeCompare(String(b?.name || ''), 'pt-BR', { sensitivity: 'base' });
+      });
+    }
+
+    function syncAssignmentShape(raw) {
+      let status = String(raw?.status || raw?.tipo || raw?.mode || '').trim().toUpperCase();
+      if (!ASSIGNMENT_STATUS_OPTIONS.includes(status)) {
+        status = raw?.selected ? (raw?.commissioned ? 'CM' : 'GR') : '';
+      }
+      const result = {
+        status,
+        selected: status !== '',
+        commissioned: status === 'CM',
+        additional: currencyToNumber(raw?.additional),
+        fop: String(raw?.fop || '').trim(),
+        fopManual: !!raw?.fopManual
+      };
+      return result;
+    }
+
+    function getAssignmentStatus(missionId, personId) {
+      return getAssignment(missionId, personId).status || '';
+    }
+
+    function getAssignmentBadge(status) {
+      const normalized = ASSIGNMENT_STATUS_OPTIONS.includes(status) ? status : '';
+      if (!normalized) return '<span class="badge">—</span>';
+      const badgeClass = normalized === 'GR' ? 'badge-gr' : (normalized === 'DR' ? 'badge-dr' : 'badge-cm');
+      return `<span class="badge ${badgeClass}">${ASSIGNMENT_STATUS_LABELS[normalized]}</span>`;
+    }
+
+    function getBoardCellClassByStatus(status) {
+      if (status === 'GR') return 'status-gr';
+      if (status === 'DR') return 'status-dr';
+      if (status === 'CM') return 'status-cm';
+      return '';
+    }
+
+    function buildBoardHeaderStatus(days) {
+      const stickyLeft = getStickyLeftMap();
+      const monthCounts = days.reduce((acc, day) => {
+        acc[day.month] = (acc[day.month] || 0) + 1;
+        return acc;
+      }, {});
+      let row1 = `
+        <tr>
+          <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">PT/GRAD</th>
+          <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">Nome de Guerra</th>
+          <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">Trig.</th>
+      `;
+      state.missions.forEach(mission => {
+        row1 += `<th class="mission-head" rowspan="3">${escapeHtml(mission.name)}</th>`;
+      });
+      MONTHS_PT.forEach((monthName, index) => {
+        row1 += `<th class="month-head" colspan="${monthCounts[index] || 0}">${monthName}</th>`;
+      });
+      row1 += '</tr>';
+
+      let row2 = '<tr>';
+      days.forEach(day => {
+        const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
+        row2 += `<th class="day-head ${cls}" ${day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}"` : ''}>${day.day}</th>`;
+      });
+      row2 += '</tr>';
+
+      let row3 = '<tr>';
+      days.forEach(day => {
+        const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
+        row3 += `<th class="weekday-head ${cls}" ${day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}"` : ''}>${day.weekdayShort}</th>`;
+      });
+      row3 += '</tr>';
+
+      return `<thead>${row1}${row2}${row3}</thead>`;
+    }
+
+    function syncBoardStickyOffsets() {
+      const table = document.getElementById('boardTable');
+      if (!table) return;
+      const rows = table.querySelectorAll('thead tr');
+      if (!rows.length) return;
+      const h1 = rows[0]?.getBoundingClientRect().height || 0;
+      const h2 = rows[1]?.getBoundingClientRect().height || 0;
+      table.style.setProperty('--board-top-row-1', '0px');
+      table.style.setProperty('--board-top-row-2', `${Math.round(h1)}px`);
+      table.style.setProperty('--board-top-row-3', `${Math.round(h1 + h2)}px`);
+    }
+
+    normalizeMissions = function normalizeMissionsBloco3(rawMissions) {
+      return sortMissionsList((Array.isArray(rawMissions) ? rawMissions : []).map(item => {
+        const stateData = getStateByInput(item.stateUf || item.stateName || item.state || '');
+        return {
+          id: item.id || uid('mis'),
+          name: String(item.name || item.nome || '').trim(),
+          start: item.start || item.inicio || '',
+          end: item.end || item.termino || '',
+          color: item.color || '#4a7c59',
+          stateUf: item.stateUf || stateData?.sigla || '',
+          stateName: item.stateName || stateData?.nome || '',
+          city: String(item.city || item.cidade || '').trim()
+        };
+      }));
+    };
+
+    normalizeAssignments = function normalizeAssignmentsBloco3(rawAssignments) {
+      const result = {};
+      if (!rawAssignments || typeof rawAssignments !== 'object') return result;
+      Object.entries(rawAssignments).forEach(([missionId, missionMap]) => {
+        result[missionId] = {};
+        if (!missionMap || typeof missionMap !== 'object') return;
+        Object.entries(missionMap).forEach(([personId, value]) => {
+          if (typeof value === 'boolean') {
+            result[missionId][personId] = syncAssignmentShape({ selected: value });
+          } else {
+            result[missionId][personId] = syncAssignmentShape(value || {});
+          }
+        });
+      });
+      return result;
+    };
+
+    getAssignment = function getAssignmentBloco3(missionId, personId) {
+      if (!state.assignments[missionId]) state.assignments[missionId] = {};
+      if (!state.assignments[missionId][personId]) {
+        state.assignments[missionId][personId] = syncAssignmentShape({ status: '' });
+      }
+      state.assignments[missionId][personId] = syncAssignmentShape(state.assignments[missionId][personId]);
+      return state.assignments[missionId][personId];
+    };
+
+    isPersonAssignedToMission = function isPersonAssignedToMissionBloco3(personId, missionId) {
+      return getAssignmentStatus(missionId, personId) !== '';
+    };
+
+    isPersonCommissionedInMission = function isPersonCommissionedInMissionBloco3(personId, missionId) {
+      return getAssignmentStatus(missionId, personId) === 'CM';
+    };
+
+    window.updateAssignmentStatus = function updateAssignmentStatus(missionId, personId, value) {
+      if (!requireAuth()) return;
+      const nextStatus = ASSIGNMENT_STATUS_OPTIONS.includes(String(value || '').toUpperCase()) ? String(value || '').toUpperCase() : '';
+      state.assignments[missionId][personId] = syncAssignmentShape({ ...getAssignment(missionId, personId), status: nextStatus });
+      saveState();
+      renderAll();
+    };
+
+    toggleAssignment = function toggleAssignmentBloco3(missionId, personId, key, checked) {
+      if (!requireAuth()) return;
+      const item = getAssignment(missionId, personId);
+      if (key === 'selected') {
+        item.status = checked ? (item.status && item.status !== 'CM' ? item.status : 'GR') : '';
+      } else if (key === 'commissioned') {
+        item.status = checked ? 'CM' : (item.status ? 'GR' : '');
+      }
+      state.assignments[missionId][personId] = syncAssignmentShape(item);
+      saveState();
+      renderAll();
+    };
+
+    renderBoard = function renderBoardBloco3() {
+      const table = document.getElementById('boardTable');
+      if (!table) return;
+      if (!state.personnel.length) {
+        table.innerHTML = '<tbody><tr><td class="empty">Cadastre o efetivo para montar o quadro.</td></tr></tbody>';
+        return;
+      }
+      const days = typeof getBoardDays === 'function' ? getBoardDays(window.boardYearView) : getDaysOfYear(window.boardYearView || new Date().getFullYear());
+      const canEditBoard = isAuthenticated();
+      const stickyLeft = getStickyLeftMap();
+      const headerHtml = buildBoardHeaderStatus(days);
+      const bodyRows = state.personnel.map(person => {
+        let row = '<tr>';
+        row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">${escapeHtml(person.ptgrad)}</td>`;
+        row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">${escapeHtml(person.nomeGuerra)}</td>`;
+        row += `<td class="sticky-col sticky-person center" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">${escapeHtml(person.trigrama)}</td>`;
+        state.missions.forEach(mission => {
+          const assignment = getAssignment(mission.id, person.id);
+          const status = assignment.status || '';
+          row += `
+            <td class="mission-select-cell ${getBoardCellClassByStatus(status)}">
+              <select class="board-assignment-select" ${canEditBoard ? '' : 'disabled'} onchange="updateAssignmentStatus('${mission.id}','${person.id}', this.value)">
+                <option value="" ${status === '' ? 'selected' : ''}></option>
+                <option value="GR" ${status === 'GR' ? 'selected' : ''}>GR</option>
+                <option value="DR" ${status === 'DR' ? 'selected' : ''}>DR</option>
+                <option value="CM" ${status === 'CM' ? 'selected' : ''}>CM</option>
+              </select>
+            </td>`;
+        });
+        days.forEach(day => {
+          let cellStyle = '';
+          let cellClass = 'cell-day';
+          if (personOnVacation(person, day.iso)) {
+            cellClass += ' vacation-cell';
+          } else {
+            const missionColor = state.missions.find(mission => missionAppliesToDay(person, mission, day.iso))?.color;
+            if (missionColor) cellStyle = `background:${missionColor};`;
+          }
+          row += `<td class="${cellClass}" style="${cellStyle}" ${day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}"` : ''}></td>`;
+        });
+        row += '</tr>';
+        return row;
+      }).join('');
+      table.innerHTML = headerHtml + `<tbody>${bodyRows}</tbody>`;
+      syncBoardStickyOffsets();
+      scheduleContrastPass();
+    };
+
+    renderMissionDashboard = function renderMissionDashboardBloco3() {
+      const container = document.getElementById('missionDashboard');
+      if (!container) return;
+      if (!state.missions.length) {
+        container.innerHTML = '<div class="empty">Nenhuma missão cadastrada.</div>';
+        return;
+      }
+      container.innerHTML = `<div class="cards-grid">${state.missions.map(mission => {
+        const assigned = state.personnel.filter(person => isPersonAssignedToMission(person.id, mission.id));
+        const locality = getLocalityClass(mission);
+        return `
+          <div class="mission-card">
+            <div class="mission-card-head" style="background:${mission.color};">
+              <strong>${escapeHtml(mission.name)}</strong>
+            </div>
+            <div class="mission-card-body">
+              <div><strong>Período:</strong> ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+              <div><strong>Dias:</strong> ${getMissionDays(mission)} | <strong>Multiplicador:</strong> ${getMissionMultiplier(mission).toFixed(1).replace('.', ',')}</div>
+              <div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')} — ${escapeHtml(locality.label)}</div>
+              <div style="margin-top:8px;"><strong>Militares escalados:</strong></div>
+              ${assigned.length ? `<ul class="mission-list">${assigned.map(person => {
+                const status = getAssignmentStatus(mission.id, person.id);
+                return `<li><span class="mission-mode-inline">${escapeHtml(person.ptgrad)} — ${escapeHtml(person.trigrama)} — ${escapeHtml(person.nomeGuerra)} ${getAssignmentBadge(status)}</span></li>`;
+              }).join('')}</ul>` : '<div class="empty">Nenhum militar escalado.</div>'}
+            </div>
+          </div>
+        `;
+      }).join('')}</div>`;
+    };
+
+    renderPersonMissionMatrix = function renderPersonMissionMatrixBloco3() {
+      const head = document.getElementById('personMissionHead');
+      const body = document.getElementById('personMissionBody');
+      if (!head || !body) return;
+      if (!state.personnel.length) {
+        head.innerHTML = '';
+        body.innerHTML = '<tr><td class="empty">Nenhum militar cadastrado.</td></tr>';
+        return;
+      }
+      head.innerHTML = `
+        <tr>
+          <th>PT/GRAD</th>
+          <th>Nome de Guerra</th>
+          ${state.missions.map(mission => `<th style="background:${mission.color}; color:#fff;">${escapeHtml(mission.name)}</th>`).join('')}
+        </tr>
+      `;
+      body.innerHTML = state.personnel.map(person => `
+        <tr>
+          <td>${escapeHtml(person.ptgrad)}</td>
+          <td>${escapeHtml(person.nomeGuerra)}</td>
+          ${state.missions.map(mission => {
+            const status = getAssignmentStatus(mission.id, person.id);
+            const assigned = status !== '';
+            return `<td class="center" style="background:${assigned ? mission.color : 'transparent'}; color:${assigned ? '#fff' : 'inherit'};">${assigned ? `<div class="matrix-mission-cell">${getAssignmentBadge(status)}</div>` : '—'}</td>`;
+          }).join('')}
+        </tr>
+      `).join('');
+    };
+
+    renderMissionCost = function renderMissionCostBloco3() {
+      const select = document.getElementById('missionCostSelect');
+      const mission = state.missions.find(item => item.id === select?.value);
+      const body = document.getElementById('missionCostBody');
+      const foot = document.getElementById('missionCostFoot');
+      const meta = document.getElementById('custoMeta');
+      const title = document.getElementById('custoTitle');
+      if (!body || !foot || !meta || !title) return;
+      if (!mission) {
+        title.textContent = 'Custo da Missão';
+        meta.innerHTML = '';
+        body.innerHTML = '<tr><td colspan="10">Selecione uma missão.</td></tr>';
+        foot.innerHTML = '';
+        return;
+      }
+      const assigned = state.personnel.filter(person => isPersonAssignedToMission(person.id, mission.id));
+      const multiplier = getMissionMultiplier(mission);
+      const locality = getLocalityClass(mission);
+      let total2 = 0;
+      let totalDiarias = 0;
+      title.textContent = `Custo da Missão — ${mission.name}`;
+      meta.innerHTML = `
+        <div><strong>Período:</strong> ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+        <div><strong>Dias:</strong> ${getMissionDays(mission)} | <strong>Multiplicador:</strong> ${multiplier.toFixed(1).replace('.', ',')}</div>
+        <div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')} — ${escapeHtml(locality.label)}</div>
+      `;
+      body.innerHTML = assigned.length ? assigned.map(person => {
+        const status = getAssignmentStatus(mission.id, person.id);
+        const valor2 = status === 'GR' ? getPersonnel2Percent(person) * multiplier : 0;
+        const diarias = status === 'DR' ? getDiaryRate(person.ptgrad, mission) * multiplier : 0;
+        if (status === 'GR') total2 += valor2;
+        if (status === 'DR') totalDiarias += diarias;
+        return `
+          <tr>
+            <td>${escapeHtml(person.ptgrad)}</td>
+            <td>${escapeHtml(person.quadro)}</td>
+            <td>${escapeHtml(person.nomeGuerra)}</td>
+            <td>${escapeHtml(person.trigrama)}</td>
+            <td>${escapeHtml(person.nomeCompleto)}</td>
+            <td>${escapeHtml(person.saram)}</td>
+            <td>${escapeHtml(person.idMilitar)}</td>
+            <td>${escapeHtml(person.email)}</td>
+            <td class="money-cell">${status === 'GR' ? formatMoney(valor2) : '—'}</td>
+            <td class="money-cell">${status === 'DR' ? formatMoney(diarias) : '—'}</td>
+          </tr>
+        `;
+      }).join('') : '<tr><td colspan="10">Nenhum militar escalado nesta missão.</td></tr>';
+      foot.innerHTML = `
+        <tr><th colspan="8" style="text-align:right;">Total dos 2% (marcados GR)</th><th class="money-cell">${formatMoney(total2)}</th><th>—</th></tr>
+        <tr><th colspan="8" style="text-align:right;">Total em Diárias (marcados DR)</th><th>—</th><th class="money-cell">${formatMoney(totalDiarias)}</th></tr>
+      `;
+    };
+
+    renderManningMissionCard = function renderManningMissionCardBloco3(mission) {
+      const assigned = state.personnel.filter(person => isPersonAssignedToMission(person.id, mission.id));
+      // Manning: ferramenta de decisão — calcula todos independente do status
+      const total2 = assigned.reduce((acc, person) => acc + getPersonnel2Percent(person) * getMissionMultiplier(mission), 0);
+      const totalDiarias = assigned.reduce((acc, person) => acc + getDiaryRate(person.ptgrad, mission) * getMissionMultiplier(mission), 0);
+      return `
+        <div class="mission-card mission-card-advanced" data-mission-card="${mission.id}">
+          <div class="mission-card-head" style="background:${mission.color};"><strong>${escapeHtml(mission.name)}</strong></div>
+          <div class="mission-card-body">
+            <div class="mission-card-header">
+              <div class="mission-meta-grid">
+                <div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')}</div>
+                <div><strong>Período:</strong> ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+                <div><strong>Dias:</strong> ${getMissionDays(mission)}</div>
+                <div><strong>Custo total em 2%:</strong> ${formatMoney(total2)}</div>
+                <div><strong>Custo total em diárias:</strong> ${formatMoney(totalDiarias)}</div>
+              </div>
+              <div class="print-mission-toolbar"><button type="button" class="btn btn-primary btn-mini" onclick="printManningMission('${mission.id}')">Exportar PDF</button></div>
+            </div>
+            <div class="table-wrap" style="margin-top:8px;">
+              <table>
+                <thead><tr><th>PT/GRAD</th><th>Nome de Guerra</th><th>FOP</th><th>Status</th></tr></thead>
+                <tbody>
+                  ${assigned.length ? assigned.map(person => {
+                    const assignment = getAssignment(mission.id, person.id);
+                    const availableFops = getPersonAvailableFops(person);
+                    const fopControl = assignment.fopManual
+                      ? `<input type="text" value="${escapeHtml(assignment.fop || '')}" onchange="updateAssignmentFop('${mission.id}','${person.id}', this.value)" placeholder="FOP livre" />`
+                      : `<select onchange="updateAssignmentFop('${mission.id}','${person.id}', this.value)"><option value="">Selecione</option>${availableFops.map(fop => `<option value="${escapeHtml(fop)}" ${assignment.fop === fop ? 'selected' : ''}>${escapeHtml(fop)}</option>`).join('')}</select>`;
+                    const status = assignment.status || '';
+                    return `
+                      <tr>
+                        <td>${escapeHtml(person.ptgrad)}</td>
+                        <td><span class="mission-mode-inline">${escapeHtml(person.nomeGuerra)} ${getAssignmentBadge(status)}</span></td>
+                        <td><div class="fop-pick-wrap">${fopControl}<label class="manual-inline"><input type="checkbox" ${assignment.fopManual ? 'checked' : ''} onchange="updateAssignmentFopMode('${mission.id}','${person.id}', this.checked)" /> Editar manualmente</label></div></td>
+                        <td>${getAssignmentBadge(status)}</td>
+                      </tr>
+                    `;
+                  }).join('') : '<tr><td colspan="4">Nenhum militar escalado.</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    const legend = document.querySelector('#tab3 .legend');
+    if (legend) {
+      legend.innerHTML = `
+        <div class="legend-item"><span class="legend-swatch" style="background: var(--weekend);"></span>Sábado/Domingo</div>
+        <div class="legend-item"><span class="legend-swatch" style="background: var(--holiday);"></span>Feriado Nacional</div>
+        <div class="legend-item"><span class="legend-swatch" style="background: #000;"></span>Férias</div>
+        <div class="legend-item"><span class="legend-swatch" style="background: rgba(214,171,30,0.82);"></span>GR (Gratificação de Representação)</div>
+        <div class="legend-item"><span class="legend-swatch" style="background: rgba(170,58,58,0.82);"></span>DR (Diária)</div>
+        <div class="legend-item"><span class="legend-swatch" style="background: rgba(47,125,63,0.82);"></span>CM (Comissionamento)</div>
+      `;
+    }
+
+    try {
+      BOARD_WIDTHS.mission = 76;
+    } catch (error) {
+      console.error('Não foi possível atualizar a largura da missão:', error);
+    }
+
+    const boardWrap = document.querySelector('.board-wrap');
+    if (boardWrap) boardWrap.style.maxHeight = '76vh';
+
+    const form = document.getElementById('missionForm');
+    if (form && !form.dataset.bloco3Bound) {
+      form.dataset.bloco3Bound = '1';
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (!requireAuth()) return;
+        const stateData = getStateByInput(document.getElementById('missionState').value);
+        const city = document.getElementById('missionCity').value.trim();
+        if (document.getElementById('missionState').value && !stateData) {
+          alert('Selecione um estado válido na lista.');
+          return;
+        }
+        if (stateData && city && !stateData.cidades.some(item => normalizeText(item) === normalizeText(city))) {
+          alert('Selecione uma cidade válida para o estado informado.');
+          return;
+        }
+        const payload = {
+          id: document.getElementById('missionEditId').value || uid('mis'),
+          name: document.getElementById('missionName').value.trim(),
+          start: document.getElementById('missionStart').value,
+          end: document.getElementById('missionEnd').value,
+          color: document.getElementById('missionColor').value,
+          stateUf: stateData?.sigla || '',
+          stateName: stateData?.nome || '',
+          city
+        };
+        if (!payload.name || !payload.start || !payload.end) {
+          alert('Preencha os campos obrigatórios da missão.');
+          return;
+        }
+        if (payload.end < payload.start) {
+          alert('A data de término não pode ser anterior à data de início.');
+          return;
+        }
+        const editId = document.getElementById('missionEditId').value;
+        if (editId) {
+          const index = state.missions.findIndex(item => item.id === editId);
+          if (index >= 0) state.missions[index] = payload;
+        } else {
+          state.missions.push(payload);
+        }
+        state.missions = sortMissionsList(state.missions);
+        saveState();
+        renderAll();
+        clearMissionForm();
+      }, true);
+    }
+
+    const missionCostSelect = document.getElementById('missionCostSelect');
+    if (missionCostSelect && !missionCostSelect.dataset.bloco3Bound) {
+      missionCostSelect.dataset.bloco3Bound = '1';
+      missionCostSelect.addEventListener('change', () => renderMissionCost());
+    }
+
+    const commissionedSelect = document.getElementById('commissionedPersonSelect');
+    if (commissionedSelect && !commissionedSelect.dataset.bloco3Bound) {
+      commissionedSelect.dataset.bloco3Bound = '1';
+      commissionedSelect.addEventListener('change', () => renderCommissionPanel());
+    }
+
+    state.missions = sortMissionsList(state.missions);
+    state.assignments = normalizeAssignments(state.assignments);
+    saveState();
+    renderAll();
+    window.addEventListener('resize', syncBoardStickyOffsets);
+  })();
+  </script>
+
+
+  <style id="bloco5-patch-styles">
+    #block5PrintRoot { display: none; }
+    .board-table .mission-select-cell.status-gr { background: rgba(214,171,30,0.36); }
+    .board-table .mission-select-cell.status-dr { background: rgba(170,58,58,0.34); }
+    .board-table .mission-select-cell.status-cm { background: rgba(47,125,63,0.36); }
+    .board-table .mission-select-cell select { width: 100%; }
+    @media print {
+      body.printing-consulta > *:not(#block5PrintRoot),
+      body.printing-custo > *:not(#block5PrintRoot) {
+        display: none !important;
+      }
+      body.printing-consulta #block5PrintRoot,
+      body.printing-custo #block5PrintRoot {
+        display: block !important;
+        background: #fff !important;
+        color: #000 !important;
+        min-height: 100vh !important;
+        padding: 12mm !important;
+      }
+      #block5PrintRoot,
+      #block5PrintRoot * {
+        visibility: visible !important;
+      }
+      #block5PrintRoot .toolbar,
+      #block5PrintRoot .btn,
+      #block5PrintRoot button,
+      #block5PrintRoot .menu-shell,
+      #block5PrintRoot .tabs,
+      #block5PrintRoot .tab-content {
+        display: none !important;
+      }
+      #block5PrintRoot table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+      }
+      #block5PrintRoot th,
+      #block5PrintRoot td {
+        border: 1px solid #555 !important;
+        padding: 6px !important;
+        font-size: 11px !important;
+        color: #000 !important;
+        background: #fff !important;
+      }
+      #block5PrintRoot h3 {
+        margin: 0 0 8px !important;
+        color: #000 !important;
+      }
+      #block5PrintRoot .print-meta {
+        color: #000 !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 14px !important;
+        margin-bottom: 10px !important;
+      }
+    }
+  </style>
+  <script id="bloco5-patch-script">
+  (() => {
+    const PRINT_ROOT_ID = 'block5PrintRoot';
+
+    function block5Status(missionId, personId) {
+      try {
+        return String(getAssignment(missionId, personId)?.status || '').trim().toUpperCase();
+      } catch (error) {
+        return '';
+      }
+    }
+
+    function block5Badge(status) {
+      const normalized = ['GR', 'DR', 'CM'].includes(String(status || '').toUpperCase()) ? String(status || '').toUpperCase() : '';
+      if (!normalized) return '<span class="badge">—</span>';
+      const cls = normalized === 'GR' ? 'badge-gr' : (normalized === 'DR' ? 'badge-dr' : 'badge-cm');
+      return `<span class="badge ${cls}">${normalized}</span>`;
+    }
+
+    function ensurePrintRoot() {
+      let root = document.getElementById(PRINT_ROOT_ID);
+      if (!root) {
+        root = document.createElement('div');
+        root.id = PRINT_ROOT_ID;
+        root.hidden = true;
+        document.body.appendChild(root);
+      }
+      return root;
+    }
+
+    function syncConsultaHeader() {
+      const headerRow = document.querySelector('#consultaPrintArea thead tr');
+      if (!headerRow) return;
+      headerRow.innerHTML = `
+        <th>PT/GRAD</th>
+        <th>Quadro</th>
+        <th>Nome de Guerra</th>
+        <th>Trigrama</th>
+        <th>Nome Completo</th>
+        <th>SARAM</th>
+        <th>CPF</th>
+        <th>ID Militar</th>
+        <th>E-mail</th>
+      `;
+    }
+
+    function syncBoardYearUi() {
+      const select = document.getElementById('boardYearSelect');
+      const label = document.getElementById('boardYearLabel');
+      if (select) select.value = String(window.boardYearView);
+      if (label) label.textContent = String(window.boardYearView);
+    }
+
+    function buildBoardHeaderBlock5(days) {
+      const stickyLeft = getStickyLeftMap();
+      const monthCounts = days.reduce((acc, day) => {
+        acc[day.month] = (acc[day.month] || 0) + 1;
+        return acc;
+      }, {});
+
+      let row1 = `
+        <tr>
+          <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">PT/GRAD</th>
+          <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">Nome de Guerra</th>
+          <th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">Trig.</th>
+      `;
+      state.missions.forEach(mission => {
+        row1 += `<th class="mission-head" rowspan="3">${escapeHtml(mission.name)}</th>`;
+      });
+      MONTHS_PT.forEach((monthName, index) => {
+        row1 += `<th class="month-head" colspan="${monthCounts[index] || 0}">${monthName}</th>`;
+      });
+      row1 += '</tr>';
+
+      let row2 = '<tr>';
+      days.forEach(day => {
+        const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
+        const holidayAttr = day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}" title="${escapeHtml(day.holidayName)}"` : '';
+        row2 += `<th class="day-head ${cls}" ${holidayAttr}>${day.day}</th>`;
+      });
+      row2 += '</tr>';
+
+      let row3 = '<tr>';
+      days.forEach(day => {
+        const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
+        const holidayAttr = day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}" title="${escapeHtml(day.holidayName)}"` : '';
+        row3 += `<th class="weekday-head ${cls}" ${holidayAttr}>${day.weekdayShort}</th>`;
+      });
+      row3 += '</tr>';
+
+      return `<thead>${row1}${row2}${row3}</thead>`;
+    }
+
+    function syncBoardStickyOffsetsBlock5() {
+      const table = document.getElementById('boardTable');
+      if (!table) return;
+      const rows = table.querySelectorAll('thead tr');
+      if (!rows.length) return;
+      const h1 = rows[0]?.getBoundingClientRect().height || 0;
+      const h2 = rows[1]?.getBoundingClientRect().height || 0;
+      table.style.setProperty('--board-top-row-1', '0px');
+      table.style.setProperty('--board-top-row-2', `${Math.round(h1)}px`);
+      table.style.setProperty('--board-top-row-3', `${Math.round(h1 + h2)}px`);
+    }
+
+    function bindPrintButtonsBlock5() {
+      const consultaBtn = document.getElementById('printConsultaBtn');
+      const custoBtn = document.getElementById('printCustoBtn');
+      if (consultaBtn) consultaBtn.onclick = () => startPrint('consulta');
+      if (custoBtn) custoBtn.onclick = () => startPrint('custo');
+    }
+
+    renderMissionDashboard = function renderMissionDashboardBloco5() {
+      const container = document.getElementById('missionDashboard');
+      if (!container) return;
+      if (!state.missions.length) {
+        container.innerHTML = '<div class="empty">Nenhuma missão cadastrada.</div>';
+        return;
+      }
+      container.innerHTML = `<div class="cards-grid">${state.missions.map(mission => {
+        const assigned = state.personnel.filter(person => isPersonAssignedToMission(person.id, mission.id));
+        const locality = getLocalityClass(mission);
+        return `
+          <div class="mission-card">
+            <div class="mission-card-head" style="background:${mission.color};">
+              <strong>${escapeHtml(mission.name)}</strong>
+            </div>
+            <div class="mission-card-body">
+              <div><strong>Período:</strong> ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+              <div><strong>Dias:</strong> ${getMissionDays(mission)} | <strong>Multiplicador:</strong> ${getMissionMultiplier(mission).toFixed(1).replace('.', ',')}</div>
+              <div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')} — ${escapeHtml(locality.label)}</div>
+              <div style="margin-top:8px;"><strong>Militares escalados:</strong></div>
+              ${assigned.length ? `<ul class="mission-list">${assigned.map(person => {
+                const status = block5Status(mission.id, person.id);
+                return `<li><span class="mission-mode-inline">${escapeHtml(person.ptgrad)} — ${escapeHtml(person.trigrama)} — ${escapeHtml(person.nomeGuerra)} ${block5Badge(status)}</span></li>`;
+              }).join('')}</ul>` : '<div class="empty">Nenhum militar escalado.</div>'}
+            </div>
+          </div>
+        `;
+      }).join('')}</div>`;
+    };
+
+    renderPersonMissionMatrix = function renderPersonMissionMatrixBloco5() {
+      const head = document.getElementById('personMissionHead');
+      const body = document.getElementById('personMissionBody');
+      if (!head || !body) return;
+      if (!state.personnel.length) {
+        head.innerHTML = '';
+        body.innerHTML = '<tr><td class="empty">Nenhum militar cadastrado.</td></tr>';
+        return;
+      }
+      head.innerHTML = `
+        <tr>
+          <th>PT/GRAD</th>
+          <th>Nome de Guerra</th>
+          ${state.missions.map(mission => `<th style="background:${mission.color}; color:#fff;">${escapeHtml(mission.name)}</th>`).join('')}
+        </tr>
+      `;
+      body.innerHTML = state.personnel.map(person => `
+        <tr>
+          <td>${escapeHtml(person.ptgrad)}</td>
+          <td>${escapeHtml(person.nomeGuerra)}</td>
+          ${state.missions.map(mission => {
+            const status = block5Status(mission.id, person.id);
+            const assigned = status !== '';
+            return `<td class="center" style="background:${assigned ? mission.color : 'transparent'}; color:${assigned ? '#fff' : 'inherit'};">${assigned ? `<div class="matrix-mission-cell">${block5Badge(status)}</div>` : '—'}</td>`;
+          }).join('')}
+        </tr>
+      `).join('');
+    };
+
+    renderMissionQuery = function renderMissionQueryBloco5() {
+      const select = document.getElementById('missionQuerySelect');
+      const mission = state.missions.find(item => item.id === select?.value);
+      const tbody = document.getElementById('queryMissionBody');
+      const meta = document.getElementById('consultaMeta');
+      const title = document.getElementById('consultaTitle');
+      syncConsultaHeader();
+      if (!tbody || !meta || !title) return;
+      if (!mission) {
+        title.textContent = 'Consulta de Missão';
+        meta.innerHTML = '';
+        tbody.innerHTML = '<tr><td colspan="9">Selecione uma missão.</td></tr>';
+        return;
+      }
+      const assigned = state.personnel.filter(person => isPersonAssignedToMission(person.id, mission.id));
+      title.textContent = `Consulta de Missão — ${mission.name}`;
+      meta.innerHTML = `
+        <div><strong>Período:</strong> ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+        <div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')}</div>
+        <div><strong>Efetivo:</strong> ${assigned.length}</div>
+      `;
+      tbody.innerHTML = assigned.length ? assigned.map(person => `
+        <tr>
+          <td>${escapeHtml(person.ptgrad)}</td>
+          <td>${escapeHtml(person.quadro)}</td>
+          <td>${escapeHtml(person.nomeGuerra)}</td>
+          <td>${escapeHtml(person.trigrama)}</td>
+          <td>${escapeHtml(person.nomeCompleto)}</td>
+          <td>${escapeHtml(person.saram)}</td>
+          <td>${escapeHtml(person.cpf || '')}</td>
+          <td>${escapeHtml(person.idMilitar)}</td>
+          <td>${escapeHtml(person.email)}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="9">Nenhum militar escalado.</td></tr>';
+    };
+
+    renderBoard = function renderBoardBloco5() {
+      const table = document.getElementById('boardTable');
+      if (!table) return;
+      syncBoardYearUi();
+      if (!state.personnel.length) {
+        table.innerHTML = '<tbody><tr><td class="empty">Cadastre o efetivo para montar o quadro.</td></tr></tbody>';
+        return;
+      }
+      const days = typeof getBoardDays === 'function' ? getBoardDays(window.boardYearView) : getDaysOfYear(window.boardYearView);
+      const canEditBoard = isAuthenticated();
+      const stickyLeft = getStickyLeftMap();
+      const headerHtml = buildBoardHeaderBlock5(days);
+      const bodyRows = state.personnel.map(person => {
+        let row = '<tr>';
+        row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">${escapeHtml(person.ptgrad)}</td>`;
+        row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">${escapeHtml(person.nomeGuerra)}</td>`;
+        row += `<td class="sticky-col sticky-person center" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">${escapeHtml(person.trigrama)}</td>`;
+        state.missions.forEach(mission => {
+          const status = block5Status(mission.id, person.id);
+          row += `
+            <td class="mission-select-cell ${status ? `status-${status.toLowerCase()}` : ''}">
+              <select class="board-assignment-select" ${canEditBoard ? '' : 'disabled'} onchange="updateAssignmentStatus('${mission.id}','${person.id}', this.value)">
+                <option value="" ${status === '' ? 'selected' : ''}></option>
+                <option value="GR" ${status === 'GR' ? 'selected' : ''}>GR</option>
+                <option value="DR" ${status === 'DR' ? 'selected' : ''}>DR</option>
+                <option value="CM" ${status === 'CM' ? 'selected' : ''}>CM</option>
+              </select>
+            </td>`;
+        });
+        days.forEach(day => {
+          let cellStyle = '';
+          let cellClass = 'cell-day';
+          if (personOnVacation(person, day.iso)) {
+            cellClass += ' vacation-cell';
+          } else {
+            const missionColor = state.missions.find(mission => missionAppliesToDay(person, mission, day.iso))?.color;
+            if (missionColor) cellStyle = `background:${missionColor};`;
+          }
+          const holidayAttr = day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}" title="${escapeHtml(day.holidayName)}"` : '';
+          row += `<td class="${cellClass}" style="${cellStyle}" ${holidayAttr}></td>`;
+        });
+        row += '</tr>';
+        return row;
+      }).join('');
+      table.innerHTML = headerHtml + `<tbody>${bodyRows}</tbody>`;
+      requestAnimationFrame(() => {
+        syncBoardStickyOffsetsBlock5();
+        if (typeof scheduleContrastPass === 'function') scheduleContrastPass();
+      });
+    };
+
+    window.changeBoardYear = function changeBoardYearBloco5(value) {
+      const next = Math.min(BOARD_YEAR_MAX, Math.max(BOARD_YEAR_MIN, Number(value) || window.boardYearView));
+      window.boardYearView = next;
+      syncBoardYearUi();
+      renderBoard();
+      if (typeof ensureHolidayData === 'function') {
+        Promise.resolve(ensureHolidayData(window.boardYearView)).then(() => renderBoard());
+      }
+    };
+
+    window.incrementBoardYear = function incrementBoardYearBloco5(delta) {
+      window.changeBoardYear(window.boardYearView + Number(delta || 0));
+    };
+
+    startPrint = function startPrintBloco5(mode) {
+      const sourceId = mode === 'consulta' ? 'consultaPrintArea' : 'custoPrintArea';
+      const source = document.getElementById(sourceId);
+      if (!source) return;
+      clearPrintMode();
+      const root = ensurePrintRoot();
+      root.innerHTML = '';
+      root.hidden = false;
+      const clone = source.cloneNode(true);
+      clone.removeAttribute('id');
+      root.appendChild(clone);
+      document.body.classList.add(mode === 'consulta' ? 'printing-consulta' : 'printing-custo');
+      requestAnimationFrame(() => window.print());
+    };
+
+    clearPrintMode = function clearPrintModeBloco5() {
+      document.body.classList.remove('printing-consulta', 'printing-custo');
+      const root = document.getElementById(PRINT_ROOT_ID);
+      if (root) {
+        root.innerHTML = '';
+        root.hidden = true;
+      }
+    };
+
+    window.addEventListener('afterprint', clearPrintMode);
+    window.addEventListener('resize', syncBoardStickyOffsetsBlock5);
+
+    const originalRenderAll = renderAll;
+    renderAll = function renderAllBloco5() {
+      const result = originalRenderAll.apply(this, arguments);
+      syncConsultaHeader();
+      bindPrintButtonsBlock5();
+      syncBoardYearUi();
+      requestAnimationFrame(syncBoardStickyOffsetsBlock5);
+      return result;
+    };
+
+    ensurePrintRoot();
+    syncConsultaHeader();
+    bindPrintButtonsBlock5();
+    renderAll();
+  })();
+  </script>
+
+
+  <script id="bloco7-patch-script">
+  (() => {
+    const manningState = window.__manningState || { query: '', selectedMissionId: '' };
+    window.__manningState = manningState;
+
+    function formatMultiplierLabel(value) {
+      const num = Number(value || 0);
+      if (!Number.isFinite(num)) return '0';
+      return String(num).replace('.', ',');
+    }
+
+    function missionSearchText(mission) {
+      return normalizeText([
+        mission?.name || '',
+        mission?.city || '',
+        mission?.stateUf || '',
+        mission?.start || '',
+        mission?.end || ''
+      ].join(' '));
+    }
+
+    function getFilteredManningMissions() {
+      const query = normalizeText(manningState.query || '');
+      if (!query) return [...state.missions];
+      return state.missions.filter(mission => missionSearchText(mission).includes(query));
+    }
+
+    function ensureSelectedMission() {
+      const missions = Array.isArray(state.missions) ? state.missions : [];
+      const filtered = getFilteredManningMissions();
+      const missionExists = missions.some(mission => mission.id === manningState.selectedMissionId);
+      if (!missionExists) {
+        manningState.selectedMissionId = filtered[0]?.id || missions[0]?.id || '';
+      }
+      if (filtered.length && !filtered.some(mission => mission.id === manningState.selectedMissionId)) {
+        manningState.selectedMissionId = filtered[0].id;
+      }
+      return missions.find(mission => mission.id === manningState.selectedMissionId) || null;
+    }
+
+    function getManningStatusBadge(status) {
+      if (typeof getAssignmentBadge === 'function') return getAssignmentBadge(status);
+      if (status === 'GR') return '<span class="badge badge-gr">GR</span>';
+      if (status === 'DR') return '<span class="badge badge-dr">DR</span>';
+      if (status === 'CM') return '<span class="badge badge-cm">CM</span>';
+      return '<span class="badge">—</span>';
+    }
+
+    function getManningAssignedPeople(mission) {
+      return state.personnel.filter(person => {
+        const status = typeof getAssignmentStatus === 'function'
+          ? getAssignmentStatus(mission.id, person.id)
+          : String(getAssignment(mission.id, person.id)?.status || '').trim().toUpperCase();
+        return !!status;
+      });
+    }
+
+    function getManningValue(person, mission, status) {
+      const multiplier = getMissionMultiplier(mission);
+      if (status === 'GR') return getPersonnel2Percent(person) * multiplier;
+      if (status === 'DR') return getDiaryRate(person.ptgrad, mission) * multiplier;
+      return 0;
+    }
+
+    function getManningCalcNote(person, mission, status) {
+      const multiplier = formatMultiplierLabel(getMissionMultiplier(mission));
+      if (status === 'GR') return `2% do soldo bruto × ${multiplier}`;
+      if (status === 'DR') return `Diária por localidade/PT-GRAD × ${multiplier}`;
+      if (status === 'CM') return 'CM — sem contabilizar valor';
+      return '—';
+    }
+
+    function buildFopControl(missionId, person) {
+      const assignment = getAssignment(missionId, person.id);
+      const availableFops = getPersonAvailableFops(person);
+      const currentValue = String(assignment.fop || '').trim();
+      const selectControl = `<select onchange="updateAssignmentFop('${missionId}','${person.id}', this.value)"><option value="">Selecione</option>${availableFops.map(fop => `<option value="${escapeHtml(fop)}" ${currentValue === fop ? 'selected' : ''}>${escapeHtml(fop)}</option>`).join('')}</select>`;
+      const inputControl = `<input type="text" value="${escapeHtml(currentValue)}" onchange="updateAssignmentFop('${missionId}','${person.id}', this.value)" placeholder="FOP livre" />`;
+      return `<div class="fop-pick-wrap">${assignment.fopManual ? inputControl : selectControl}<label class="manual-inline"><input type="checkbox" ${assignment.fopManual ? 'checked' : ''} onchange="updateAssignmentFopMode('${missionId}','${person.id}', this.checked)" /> Editar manualmente</label></div>`;
+    }
+
+    function syncManningControls(filteredMissions) {
+      const searchInput = document.getElementById('manningMissionSearch');
+      const select = document.getElementById('manningMissionSelect');
+      if (searchInput && searchInput.value !== manningState.query) searchInput.value = manningState.query;
+      if (!select) return;
+      if (!state.missions.length) {
+        select.innerHTML = '<option value="">Nenhuma missão cadastrada</option>';
+        select.value = '';
+        return;
+      }
+      if (!filteredMissions.length) {
+        select.innerHTML = '<option value="">Nenhuma missão encontrada</option>';
+        select.value = '';
+        return;
+      }
+      select.innerHTML = filteredMissions.map(mission => {
+        const label = `${mission.name} — ${mission.city || '-'} / ${mission.stateUf || '-'} — ${formatDate(mission.start)} a ${formatDate(mission.end)}`;
+        return `<option value="${mission.id}">${escapeHtml(label)}</option>`;
+      }).join('');
+      if (!filteredMissions.some(mission => mission.id === manningState.selectedMissionId)) {
+        manningState.selectedMissionId = filteredMissions[0].id;
+      }
+      select.value = manningState.selectedMissionId;
+    }
+
+    window.onManningMissionSearchInput = function onManningMissionSearchInput(value) {
+      manningState.query = String(value || '');
+      renderManningMissions();
+    };
+
+    window.onManningMissionSelect = function onManningMissionSelect(value) {
+      manningState.selectedMissionId = String(value || '');
+      renderManningMissions();
+    };
+
+    renderManningMissions = function renderManningMissionsBloco7() {
+      const container = document.getElementById('manningContainer');
+      if (!container) return;
+      const filteredMissions = getFilteredManningMissions();
+      const selectedMission = ensureSelectedMission();
+      syncManningControls(filteredMissions);
+
+      if (!state.missions.length) {
+        container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Nenhuma missão cadastrada.</div></div>';
+        return;
+      }
+      if (!filteredMissions.length) {
+        container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Nenhuma missão encontrada para a busca informada.</div></div>';
+        return;
+      }
+      const mission = filteredMissions.find(item => item.id === manningState.selectedMissionId) || selectedMission || filteredMissions[0];
+      if (!mission) {
+        container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Selecione uma missão.</div></div>';
+        return;
+      }
+      manningState.selectedMissionId = mission.id;
+      const assigned = getManningAssignedPeople(mission);
+      let subtotalGR = 0;
+      let subtotalDR = 0;
+      const multiplier = getMissionMultiplier(mission);
+      const totalDias = getMissionDays(mission);
+      // Todos os valores calculados para todos os militares independente da modalidade
+      const rows = assigned.length ? assigned.map(person => {
+        const assignment = getAssignment(mission.id, person.id);
+        const status = String(assignment.status || '').trim().toUpperCase();
+        const valor2 = getPersonnel2Percent(person) * multiplier;
+        const valorDR = getDiaryRate(person.ptgrad, mission) * multiplier;
+        return `
+          <tr>
+            <td>${escapeHtml(person.ptgrad)}</td>
+            <td>${escapeHtml(person.nomeGuerra)}</td>
+            <td>${buildFopControl(mission.id, person)}</td>
+            <td><div class="manning-mode-stack">${getManningStatusBadge(status)}</div></td>
+            <td class="money-cell right">${formatMoney(valor2)}</td>
+            <td class="money-cell right">${formatMoney(valorDR)}</td>
+          </tr>
+        `;
+      }).join('') : '<tr><td colspan="6">Nenhum militar escalado nesta missão.</td></tr>';
+      const totalGR_todos = assigned.reduce((acc, person) => acc + getPersonnel2Percent(person) * multiplier, 0);
+      const totalDR_todos = assigned.reduce((acc, person) => acc + getDiaryRate(person.ptgrad, mission) * multiplier, 0);
+      const localityLabel = `${mission.city || '-'} / ${mission.stateUf || '-'}`;
+      container.innerHTML = `
+        <div class="manning-single-panel mission-card" data-mission-panel="${mission.id}">
+          <div class="manning-mission-head" style="background:${mission.color};">
+            <div class="mission-title-main">${escapeHtml(mission.name)}</div>
+            <div class="mission-subtitle-main">${escapeHtml(localityLabel)} • ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+          </div>
+          <div class="manning-mission-body">
+            <div class="manning-summary-grid">
+              <div class="manning-summary-card"><span>Localidade</span><strong>${escapeHtml(localityLabel)}</strong></div>
+              <div class="manning-summary-card"><span>Período</span><strong>${formatDate(mission.start)} a ${formatDate(mission.end)}</strong></div>
+              <div class="manning-summary-card"><span>Dias</span><strong>${totalDias}</strong></div>
+              <div class="manning-summary-card"><span>Multiplicador</span><strong>${formatMultiplierLabel(multiplier)}</strong></div>
+              <div class="manning-summary-card" style="border:1px solid rgba(214,171,30,0.5); background:rgba(214,171,30,0.08);">
+                <span style="color:rgba(214,171,30,0.9); font-weight:700; letter-spacing:0.4px;">⚖ FERRAMENTA DE DECISÃO</span>
+                <div style="display:flex; flex-direction:column; gap:4px; margin-top:6px;">
+                  <div style="font-size:11px; color:var(--muted);">Total se todos fossem GR (2%)</div>
+                  <strong style="font-size:15px;">${formatMoney(totalGR_todos)}</strong>
+                  <div style="font-size:11px; color:var(--muted); margin-top:4px;">Total se todos fossem DR (Diária)</div>
+                  <strong style="font-size:15px;">${formatMoney(totalDR_todos)}</strong>
+                </div>
+              </div>
+            </div>
+            <div class="table-wrap" style="margin-top:8px;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>PT/GRAD</th>
+                    <th>Nome de Guerra</th>
+                    <th>FOP</th>
+                    <th>Modalidade</th>
+                    <th class="right">Valor em 2%</th>
+                    <th class="right">Valor em Diárias</th>
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+                <tfoot>
+                  <tr>
+                    <th colspan="4" class="right">⚖ Total se todos fossem GR (2%)</th>
+                    <th class="money-cell">${formatMoney(totalGR_todos)}</th>
+                    <th>—</th>
+                  </tr>
+                  <tr>
+                    <th colspan="4" class="right">⚖ Total se todos fossem DR (Diária)</th>
+                    <th>—</th>
+                    <th class="money-cell">${formatMoney(totalDR_todos)}</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+      document.querySelectorAll('#manningContainer [data-mission-panel]').forEach(panel => {
+        panel.classList.toggle('print-target', panel.dataset.missionPanel === mission.id);
+      });
+    };
+
+    window.printManningMission = function printManningMissionBloco7(missionId) {
+      if (missionId) manningState.selectedMissionId = String(missionId);
+      renderManningMissions();
+      const selectedId = manningState.selectedMissionId;
+      document.querySelectorAll('#manningContainer [data-mission-panel]').forEach(panel => {
+        panel.classList.toggle('print-target', panel.dataset.missionPanel === selectedId);
+      });
+      document.body.classList.add('print-mission');
+      window.print();
+      setTimeout(() => {
+        document.body.classList.remove('print-mission');
+        document.querySelectorAll('#manningContainer [data-mission-panel]').forEach(panel => panel.classList.remove('print-target'));
+      }, 250);
+    };
+
+    const previousRenderAll = renderAll;
+    renderAll = function renderAllBloco7() {
+      const result = previousRenderAll.apply(this, arguments);
+      renderManningMissions();
+      return result;
+    };
+
+    renderManningMissions();
+  })();
+  </script>
+
+
+<script>
+(function(){
+  if (window.__manningFix7BApplied) return;
+  window.__manningFix7BApplied = true;
+
+  const manningState = window.__manningState = Object.assign({ query:'', selectedMissionId:'', hasChosenMission:false }, window.__manningState || {});
+  if (typeof manningState.hasChosenMission !== 'boolean') {
+    manningState.hasChosenMission = !!manningState.selectedMissionId;
+  }
+
+  function getPrintButton() {
+    return document.getElementById('manningPrintBtn') || document.querySelector('#tab11 .manning-print-toolbar button');
+  }
+
+  function setPrintButtonState(enabled) {
+    const btn = getPrintButton();
+    if (!btn) return;
+    btn.disabled = !enabled;
+    btn.style.opacity = enabled ? '1' : '0.55';
+    btn.style.cursor = enabled ? 'pointer' : 'not-allowed';
+  }
+
+  function missionSearchTextLocal(mission) {
+    return normalizeText([
+      mission?.name || '',
+      mission?.city || '',
+      mission?.stateUf || '',
+      mission?.start || '',
+      mission?.end || ''
+    ].join(' '));
+  }
+
+  function getFilteredMissionsLocal() {
+    const query = normalizeText(manningState.query || '');
+    if (!query) return [...state.missions];
+    return state.missions.filter(mission => missionSearchTextLocal(mission).includes(query));
+  }
+
+  function getSelectedMissionLocal(filteredMissions) {
+    if (!manningState.hasChosenMission || !manningState.selectedMissionId) return null;
+    const base = Array.isArray(filteredMissions) ? filteredMissions : getFilteredMissionsLocal();
+    return base.find(mission => mission.id === manningState.selectedMissionId) || null;
+  }
+
+  function syncControlsLocal(filteredMissions) {
+    const searchInput = document.getElementById('manningMissionSearch');
+    const select = document.getElementById('manningMissionSelect');
+    if (searchInput && searchInput.value !== manningState.query) searchInput.value = manningState.query;
+    if (!select) return;
+
+    if (!state.missions.length) {
+      select.innerHTML = '<option value="">Nenhuma missão cadastrada</option>';
+      select.value = '';
+      setPrintButtonState(false);
+      return;
+    }
+
+    if (!filteredMissions.length) {
+      select.innerHTML = '<option value="">Nenhuma missão encontrada</option>';
+      select.value = '';
+      setPrintButtonState(false);
+      return;
+    }
+
+    const options = filteredMissions.map(mission => {
+      const label = `${mission.name} — ${mission.city || '-'} / ${mission.stateUf || '-'} — ${formatDate(mission.start)} a ${formatDate(mission.end)}`;
+      return `<option value="${mission.id}">${escapeHtml(label)}</option>`;
+    }).join('');
+
+    select.innerHTML = `<option value="">Selecione uma missão</option>${options}`;
+
+    const selectedVisible = !!(manningState.selectedMissionId && filteredMissions.some(mission => mission.id === manningState.selectedMissionId));
+    if (!selectedVisible) {
+      select.value = '';
+      if (manningState.hasChosenMission) {
+        manningState.selectedMissionId = '';
+        manningState.hasChosenMission = false;
+      }
+      setPrintButtonState(false);
+      return;
+    }
+
+    select.value = manningState.selectedMissionId;
+    setPrintButtonState(true);
+  }
+
+  function getAssignedPeopleLocal(mission) {
+    return state.personnel.filter(person => {
+      const status = typeof getAssignmentStatus === 'function'
+        ? String(getAssignmentStatus(mission.id, person.id) || '').trim().toUpperCase()
+        : String(getAssignment(mission.id, person.id)?.status || '').trim().toUpperCase();
+      return ['GR','DR','CM'].includes(status);
+    });
+  }
+
+  function getStatusLocal(missionId, personId) {
+    if (typeof getAssignmentStatus === 'function') return String(getAssignmentStatus(missionId, personId) || '').trim().toUpperCase();
+    return String(getAssignment(missionId, personId)?.status || '').trim().toUpperCase();
+  }
+
+  function getStatusBadgeLocal(status) {
+    if (typeof getAssignmentBadge === 'function') return getAssignmentBadge(status);
+    if (status === 'GR') return '<span class="badge badge-gr">GR</span>';
+    if (status === 'DR') return '<span class="badge badge-dr">DR</span>';
+    if (status === 'CM') return '<span class="badge badge-cm">CM</span>';
+    return '<span class="badge">—</span>';
+  }
+
+  function getManningValueLocal(person, mission, status) {
+    const multiplier = getMissionMultiplier(mission);
+    if (status === 'GR') return getPersonnel2Percent(person) * multiplier;
+    if (status === 'DR') return getDiaryRate(person.ptgrad, mission) * multiplier;
+    return 0;
+  }
+
+  window.onManningMissionSearchInput = function onManningMissionSearchInputFix(value) {
+    manningState.query = String(value || '');
+    const filteredMissions = getFilteredMissionsLocal();
+    if (!filteredMissions.some(mission => mission.id === manningState.selectedMissionId)) {
+      manningState.selectedMissionId = '';
+      manningState.hasChosenMission = false;
+    }
+    renderManningMissions();
+  };
+
+  window.onManningMissionSelect = function onManningMissionSelectFix(value) {
+    manningState.selectedMissionId = String(value || '');
+    manningState.hasChosenMission = !!manningState.selectedMissionId;
+    renderManningMissions();
+  };
+
+  window.renderManningMissions = function renderManningMissionsFix() {
+    const container = document.getElementById('manningContainer');
+    if (!container) return;
+    const filteredMissions = getFilteredMissionsLocal();
+    syncControlsLocal(filteredMissions);
+
+    if (!state.missions.length) {
+      container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Nenhuma missão cadastrada.</div></div>';
+      return;
+    }
+
+    if (!filteredMissions.length) {
+      container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Nenhuma missão encontrada para a busca informada.</div></div>';
+      return;
+    }
+
+    const mission = getSelectedMissionLocal(filteredMissions);
+    if (!mission) {
+      document.querySelectorAll('#manningContainer [data-mission-panel]').forEach(panel => panel.classList.remove('print-target'));
+      container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Selecione uma missão para visualizar o manning.</div></div>';
+      return;
+    }
+
+    const assigned = getAssignedPeopleLocal(mission);
+    const multiplierLocal = getMissionMultiplier(mission);
+    const rows = assigned.length ? assigned.map(person => {
+      const status = getStatusLocal(mission.id, person.id);
+      const badge = getStatusBadgeLocal(status);
+      return `
+        <tr>
+          <td>${escapeHtml(person.ptgrad || '—')}</td>
+          <td><div class="manning-mode-stack">${badge}<span>${escapeHtml(person.nomeGuerra || '—')}</span></div></td>
+          <td>${escapeHtml(person.trigrama || '—')}</td>
+          <td>${buildFopControl(mission.id, person)}</td>
+          <td>${badge}</td>
+        </tr>
+      `;
+    }).join('') : '<tr><td colspan="5">Nenhum militar escalado nesta missão.</td></tr>';
+
+    const totalDias = getMissionDays(mission);
+    const totalGR_dec = assigned.reduce((acc, p) => acc + getPersonnel2Percent(p) * multiplierLocal, 0);
+    const totalDR_dec = assigned.reduce((acc, p) => acc + getDiaryRate(p.ptgrad, mission) * multiplierLocal, 0);
+    const localityLabel = `${mission.city || '-'} / ${mission.stateUf || '-'}`;
+
+    container.innerHTML = `
+      <div class="manning-single-panel mission-card" data-mission-panel="${mission.id}">
+        <div class="manning-mission-head" style="background:${mission.color};">
+          <div class="mission-title-main">${escapeHtml(mission.name)}</div>
+          <div class="mission-subtitle-main">${escapeHtml(localityLabel)} • ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+        </div>
+        <div class="manning-mission-body">
+          <div class="manning-summary-grid">
+            <div class="manning-summary-card"><span>Local</span><strong>${escapeHtml(localityLabel)}</strong></div>
+            <div class="manning-summary-card"><span>Período</span><strong>${formatDate(mission.start)} a ${formatDate(mission.end)}</strong></div>
+            <div class="manning-summary-card"><span>Dias</span><strong>${totalDias}</strong></div>
+            <div class="manning-summary-card" style="border:1px solid rgba(214,171,30,0.5); background:rgba(214,171,30,0.08);">
+              <span style="color:rgba(214,171,30,0.9); font-weight:700;">⚖ Ferramenta de Decisão</span>
+              <div style="margin-top:6px; font-size:11px; color:var(--muted);">Total se todos GR (2%)</div>
+              <strong>${formatMoney(totalGR_dec)}</strong>
+              <div style="margin-top:4px; font-size:11px; color:var(--muted);">Total se todos DR (Diária)</div>
+              <strong>${formatMoney(totalDR_dec)}</strong>
+            </div>
+          </div>
+          <div class="table-wrap" style="margin-top:8px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>PT/GRAD</th>
+                  <th>Nome de Guerra</th>
+                  <th>Trigrama</th>
+                  <th>FOP</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="4" class="right">SUBTOTAL GR</th>
+                  <th class="money-cell">${formatMoney(subtotalGR)}</th>
+                </tr>
+                <tr>
+                  <th colspan="4" class="right">SUBTOTAL DR</th>
+                  <th class="money-cell">${formatMoney(subtotalDR)}</th>
+                </tr>
+                <tr>
+                  <th colspan="4" class="right">TOTAL GERAL (GR + DR)</th>
+                  <th class="money-cell">${formatMoney(totalGeral)}</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.querySelectorAll('#manningContainer [data-mission-panel]').forEach(panel => {
+      panel.classList.toggle('print-target', panel.dataset.missionPanel === mission.id);
+    });
+    setPrintButtonState(true);
+  };
+
+  window.printManningMission = function printManningMissionFix(missionId) {
+    if (missionId) {
+      manningState.selectedMissionId = String(missionId || '');
+      manningState.hasChosenMission = !!manningState.selectedMissionId;
+    }
+    const filteredMissions = getFilteredMissionsLocal();
+    const mission = getSelectedMissionLocal(filteredMissions);
+    if (!mission) return;
+    renderManningMissions();
+    document.querySelectorAll('#manningContainer [data-mission-panel]').forEach(panel => {
+      panel.classList.toggle('print-target', panel.dataset.missionPanel === mission.id);
+    });
+    document.body.classList.add('print-mission');
+    window.print();
+    setTimeout(() => {
+      document.body.classList.remove('print-mission');
+      document.querySelectorAll('#manningContainer [data-mission-panel]').forEach(panel => panel.classList.remove('print-target'));
+    }, 250);
+  };
+
+  window.renderManningMissions();
+})();
+</script>
+
+
+<script>
+(function(){
+  if (window.__manningFix7CApplied) return;
+  window.__manningFix7CApplied = true;
+
+  const manningState = window.__manningState = Object.assign({ query:'', selectedMissionId:'' }, window.__manningState || {});
+
+  function getPrintButton(){
+    return document.getElementById('manningPrintBtn') || document.querySelector('#tab11 .manning-print-toolbar button');
+  }
+
+  function setPrintButtonState(enabled){
+    const btn = getPrintButton();
+    if (!btn) return;
+    btn.disabled = !enabled;
+    btn.style.opacity = enabled ? '1' : '0.55';
+    btn.style.cursor = enabled ? 'pointer' : 'not-allowed';
+  }
+
+  function getAllMissions(){
+    return Array.isArray(state?.missions) ? state.missions : [];
+  }
+
+  function getAllPersonnel(){
+    return Array.isArray(state?.personnel) ? state.personnel : [];
+  }
+
+  function normalizeMissionSearchText(mission){
+    return normalizeText([
+      mission?.name || '',
+      mission?.city || '',
+      mission?.stateUf || '',
+      mission?.start || '',
+      mission?.end || ''
+    ].join(' '));
+  }
+
+  function getFilteredMissions(){
+    const missions = getAllMissions();
+    const query = normalizeText(manningState.query || '');
+    if (!query) return [...missions];
+    return missions.filter(mission => normalizeMissionSearchText(mission).includes(query));
+  }
+
+  function rawAssignmentFor(missionId, personId){
+    const assignments = state?.assignments || {};
+    const missionMap = assignments[missionId] || assignments[String(missionId)] || null;
+    if (!missionMap || typeof missionMap !== 'object') return null;
+    return missionMap[personId] || missionMap[String(personId)] || null;
+  }
+
+  function parseAssignmentStatus(raw){
+    if (!raw) return '';
+    if (typeof raw === 'string') {
+      const direct = String(raw || '').trim().toUpperCase();
+      if (['GR','DR','CM'].includes(direct)) return direct;
+      return '';
+    }
+    let status = String(raw.status || raw.tipo || raw.mode || raw.natureza || '').trim().toUpperCase();
+    if (['GR','DR','CM'].includes(status)) return status;
+    if (raw.dr === true || raw.diaria === true) return 'DR';
+    if (raw.cm === true || raw.com === true || raw.commissioned === true) return 'CM';
+    if (raw.gr === true) return 'GR';
+    if (raw.selected || raw.escalado || raw.esc) return raw.commissioned || raw.com || raw.cm ? 'CM' : 'GR';
+    return '';
+  }
+
+  function getAssignmentStatusSafe(missionId, personId){
+    try {
+      if (typeof getAssignmentStatus === 'function') {
+        const value = String(getAssignmentStatus(missionId, personId) || '').trim().toUpperCase();
+        if (['GR','DR','CM'].includes(value)) return value;
+      }
+    } catch (e) {}
+    return parseAssignmentStatus(rawAssignmentFor(missionId, personId));
+  }
+
+  function getStatusBadgeSafe(status){
+    try {
+      if (typeof getAssignmentBadge === 'function') return getAssignmentBadge(status);
+    } catch (e) {}
+    if (status === 'GR') return '<span class="badge badge-gr">GR</span>';
+    if (status === 'DR') return '<span class="badge badge-dr">DR</span>';
+    if (status === 'CM') return '<span class="badge badge-cm">CM</span>';
+    return '<span class="badge">—</span>';
+  }
+
+  function getAssignedPeopleForMission(mission){
+    return getAllPersonnel().filter(person => ['GR','DR','CM'].includes(getAssignmentStatusSafe(mission.id, person.id)));
+  }
+
+  function syncControls(filteredMissions){
+    const searchInput = document.getElementById('manningMissionSearch');
+    const select = document.getElementById('manningMissionSelect');
+    if (searchInput && searchInput.value !== manningState.query) searchInput.value = manningState.query;
+    if (!select) return;
+
+    if (!getAllMissions().length) {
+      select.innerHTML = '<option value="">Nenhuma missão cadastrada</option>';
+      select.value = '';
+      setPrintButtonState(false);
+      return;
+    }
+
+    if (!filteredMissions.length) {
+      select.innerHTML = '<option value="">Nenhuma missão encontrada</option>';
+      select.value = '';
+      setPrintButtonState(false);
+      return;
+    }
+
+    select.innerHTML = '<option value="">Selecione uma missão</option>' + filteredMissions.map(mission => {
+      const label = `${mission.name} — ${mission.city || '-'} / ${mission.stateUf || '-'} — ${formatDate(mission.start)} a ${formatDate(mission.end)}`;
+      return `<option value="${mission.id}">${escapeHtml(label)}</option>`;
+    }).join('');
+
+    if (!manningState.selectedMissionId || !filteredMissions.some(mission => String(mission.id) === String(manningState.selectedMissionId))) {
+      manningState.selectedMissionId = '';
+      select.value = '';
+      setPrintButtonState(false);
+      return;
+    }
+
+    select.value = String(manningState.selectedMissionId);
+    setPrintButtonState(true);
+  }
+
+  function getSelectedMission(filteredMissions){
+    if (!manningState.selectedMissionId) return null;
+    const selectedId = String(manningState.selectedMissionId);
+    const pool = Array.isArray(filteredMissions) ? filteredMissions : getFilteredMissions();
+    return pool.find(mission => String(mission.id) === selectedId) || null;
+  }
+
+  function bindControls(){
+    const searchInput = document.getElementById('manningMissionSearch');
+    const select = document.getElementById('manningMissionSelect');
+    if (searchInput && !searchInput.dataset.fix7cBound) {
+      searchInput.dataset.fix7cBound = '1';
+      searchInput.addEventListener('input', event => window.onManningMissionSearchInput(event.target.value));
+    }
+    if (select && !select.dataset.fix7cBound) {
+      select.dataset.fix7cBound = '1';
+      select.addEventListener('change', event => window.onManningMissionSelect(event.target.value));
+    }
+  }
+
+  window.onManningMissionSearchInput = function(value){
+    manningState.query = String(value || '');
+    const filtered = getFilteredMissions();
+    if (!filtered.some(mission => String(mission.id) === String(manningState.selectedMissionId))) {
+      manningState.selectedMissionId = '';
+    }
+    window.renderManningMissions();
+  };
+
+  window.onManningMissionSelect = function(value){
+    manningState.selectedMissionId = String(value || '');
+    window.renderManningMissions();
+  };
+
+  window.renderManningMissions = function(){
+    const container = document.getElementById('manningContainer');
+    if (!container) return;
+    bindControls();
+    const filtered = getFilteredMissions();
+    syncControls(filtered);
+
+    if (!getAllMissions().length) {
+      container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Nenhuma missão cadastrada.</div></div>';
+      return;
+    }
+
+    if (!filtered.length) {
+      container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Nenhuma missão encontrada para a busca informada.</div></div>';
+      return;
+    }
+
+    const mission = getSelectedMission(filtered);
+    if (!mission) {
+      container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Selecione uma missão para visualizar o manning.</div></div>';
+      return;
+    }
+
+    const assigned = getAssignedPeopleForMission(mission);
+    const multiplier = getMissionMultiplier(mission);
+    const totalDias = getMissionDays(mission);
+    const localityLabel = `${mission.city || '-'} / ${mission.stateUf || '-'}`;
+
+    const rows = assigned.length ? assigned.map(person => {
+      const status = getAssignmentStatusSafe(mission.id, person.id);
+      const badge = getStatusBadgeSafe(status);
+      return `
+        <tr>
+          <td>${escapeHtml(person.ptgrad || '—')}</td>
+          <td><div class="manning-mode-stack">${badge}<span>${escapeHtml(person.nomeGuerra || '—')}</span></div></td>
+          <td>${escapeHtml(person.trigrama || '—')}</td>
+          <td>${buildFopControl(mission.id, person)}</td>
+          <td>${badge}</td>
+        </tr>
+      `;
+    }).join('') : '<tr><td colspan="5">Nenhum militar escalado nesta missão.</td></tr>';
+
+    const totalGR_dec = assigned.reduce((acc, p) => acc + getPersonnel2Percent(p) * multiplier, 0);
+    const totalDR_dec = assigned.reduce((acc, p) => acc + getDiaryRate(p.ptgrad, mission) * multiplier, 0);
+
+    container.innerHTML = `
+      <div class="manning-single-panel mission-card print-target" data-mission-panel="${mission.id}">
+        <div class="manning-mission-head" style="background:${mission.color};">
+          <div class="mission-title-main">${escapeHtml(mission.name)}</div>
+          <div class="mission-subtitle-main">${escapeHtml(localityLabel)} • ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+        </div>
+        <div class="manning-mission-body">
+          <div class="manning-summary-grid">
+            <div class="manning-summary-card"><span>Local</span><strong>${escapeHtml(localityLabel)}</strong></div>
+            <div class="manning-summary-card"><span>Período</span><strong>${formatDate(mission.start)} a ${formatDate(mission.end)}</strong></div>
+            <div class="manning-summary-card"><span>Dias</span><strong>${totalDias}</strong></div>
+            <div class="manning-summary-card" style="border:1px solid rgba(214,171,30,0.5); background:rgba(214,171,30,0.08);">
+              <span style="color:rgba(214,171,30,0.9); font-weight:700;">⚖ Ferramenta de Decisão</span>
+              <div style="margin-top:6px; font-size:11px; color:var(--muted);">Total se todos GR (2%)</div>
+              <strong>${formatMoney(totalGR_dec)}</strong>
+              <div style="margin-top:4px; font-size:11px; color:var(--muted);">Total se todos DR (Diária)</div>
+              <strong>${formatMoney(totalDR_dec)}</strong>
+            </div>
+          </div>
+          <div class="table-wrap" style="margin-top:8px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>PT/GRAD</th>
+                  <th>Nome de Guerra</th>
+                  <th>Trigrama</th>
+                  <th>FOP</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="4" class="right">SUBTOTAL GR</th>
+                  <th class="money-cell">${formatMoney(subtotalGR)}</th>
+                </tr>
+                <tr>
+                  <th colspan="4" class="right">SUBTOTAL DR</th>
+                  <th class="money-cell">${formatMoney(subtotalDR)}</th>
+                </tr>
+                <tr>
+                  <th colspan="4" class="right">TOTAL GERAL (GR + DR)</th>
+                  <th class="money-cell">${formatMoney(totalGeral)}</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+
+    setPrintButtonState(true);
+  };
+
+  window.printManningMission = function(missionId){
+    if (missionId != null && missionId !== '') {
+      manningState.selectedMissionId = String(missionId);
+    }
+    const filtered = getFilteredMissions();
+    const mission = getSelectedMission(filtered);
+    if (!mission) return;
+    window.renderManningMissions();
+    document.body.classList.add('print-mission');
+    window.print();
+    setTimeout(() => document.body.classList.remove('print-mission'), 250);
+  };
+
+  bindControls();
+  window.renderManningMissions();
+})();
+</script>
+
+
+<style id="block89Styles">
+  #block89PrintRoot { display:none; }
+  .idprep-print-group { display:flex; align-items:center; gap:8px; }
+  .course-search-stack { display:grid; gap:14px; }
+  .course-action-row { display:grid; grid-template-columns:minmax(260px,1fr) auto; gap:12px; align-items:end; }
+  .course-results-stack { display:grid; gap:14px; margin-top:14px; }
+  .course-result-card ul { margin:8px 0 0 18px; }
+  .course-result-card li { margin:4px 0; }
+  .course-actions .btn { min-width:120px; }
+  @media (max-width: 900px) {
+    .course-action-row { grid-template-columns:1fr; }
+  }
+  @media print {
+    body.printing-block89 > *:not(#block89PrintRoot) { display:none !important; }
+    body.printing-block89 #block89PrintRoot {
+      display:block !important;
+      position:static !important;
+      inset:auto !important;
+      width:100% !important;
+      background:#fff !important;
+      color:#000 !important;
+      padding:0 !important;
+      margin:0 !important;
+    }
+    body.printing-block89 #block89PrintRoot,
+    body.printing-block89 #block89PrintRoot * {
+      visibility:visible !important;
+      color:#000 !important;
+    }
+    body.printing-block89 #block89PrintRoot .card,
+    body.printing-block89 #block89PrintRoot .list-card,
+    body.printing-block89 #block89PrintRoot .table-wrap {
+      border:none !important;
+      box-shadow:none !important;
+      background:#fff !important;
+    }
+    body.printing-block89 #block89PrintRoot table {
+      width:100% !important;
+      border-collapse:collapse !important;
+    }
+    body.printing-block89 #block89PrintRoot th,
+    body.printing-block89 #block89PrintRoot td {
+      border:1px solid #000 !important;
+      padding:6px 8px !important;
+      background:#fff !important;
+      color:#000 !important;
+    }
+    body.printing-block89 #block89PrintRoot input,
+    body.printing-block89 #block89PrintRoot select,
+    body.printing-block89 #block89PrintRoot textarea,
+    body.printing-block89 #block89PrintRoot button {
+      border:none !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      padding:0 !important;
+      color:#000 !important;
+    }
+    body.printing-block89 #block89PrintRoot .print-title {
+      font-size:20px !important;
+      font-weight:700 !important;
+      margin:0 0 12px 0 !important;
+    }
+  }
+</style>
+<script id="block89Patch">
+(function(){
+  const courseSearchState = window.block89CourseSearchState || { personId:'', courseName:'' };
+  window.block89CourseSearchState = courseSearchState;
+
+  function safeText(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function ensurePrintRoot() {
+    let root = document.getElementById('block89PrintRoot');
+    if (!root) {
+      root = document.createElement('div');
+      root.id = 'block89PrintRoot';
+      document.body.appendChild(root);
+    }
+    return root;
+  }
+
+  function clearBlock89Print() {
+    document.body.classList.remove('printing-block89');
+    const root = document.getElementById('block89PrintRoot');
+    if (root) root.innerHTML = '';
+  }
+
+  window.addEventListener('afterprint', clearBlock89Print);
+
+  function cloneForPrint(container) {
+    const clone = container.cloneNode(true);
+    clone.querySelectorAll('input, select, textarea, button').forEach(el => {
+      if (el.tagName === 'BUTTON') {
+        el.remove();
+        return;
+      }
+      const span = document.createElement('span');
+      if (el.tagName === 'SELECT') {
+        span.textContent = el.selectedOptions && el.selectedOptions[0] ? el.selectedOptions[0].textContent : (el.value || '');
+      } else if (el.type === 'checkbox') {
+        span.textContent = el.checked ? 'Sim' : 'Não';
+      } else {
+        span.textContent = el.value || '';
+      }
+      el.replaceWith(span);
+    });
+    return clone.innerHTML;
+  }
+
+  function printHtmlBlock89(title, innerHtml) {
+    const root = ensurePrintRoot();
+    root.innerHTML = '<div class="card"><h2 class="print-title">' + safeText(title) + '</h2>' + innerHtml + '</div>';
+    document.body.classList.add('printing-block89');
+    requestAnimationFrame(() => window.print());
+  }
+
+  function ensureIdprepButtons() {
+    const specs = [
+      { tabId:'tab12', btnId:'idprep11PrintBtn', title:'IDPREP 1.1', handler:'printCurrentIdprep11' },
+      { tabId:'tab13', btnId:'idprep12PrintBtn', title:'IDPREP 1.2', handler:'printCurrentIdprep12' }
+    ];
+    specs.forEach(spec => {
+      const tab = document.getElementById(spec.tabId);
+      if (!tab) return;
+      const subtabBar = tab.querySelector('.subtab-bar');
+      if (!subtabBar) return;
+      let group = subtabBar.querySelector('.idprep-print-group');
+      if (!group) {
+        group = document.createElement('div');
+        group.className = 'idprep-print-group';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn-primary btn-mini';
+        btn.id = spec.btnId;
+        btn.textContent = 'Imprimir / Gerar PDF';
+        btn.onclick = () => window[spec.handler]();
+        group.appendChild(btn);
+        subtabBar.appendChild(group);
+      }
+    });
+  }
+
+  window.printCurrentIdprep11 = function() {
+    const container = document.getElementById('idprep11Container');
+    if (!container) return;
+    const html = cloneForPrint(container);
+    const modeLabel = (typeof idprep11Mode !== 'undefined' && idprep11Mode === 'quantitativo') ? 'Quantitativo' : 'Efetivo';
+    printHtmlBlock89('IDPREP 1.1 — ' + modeLabel, html || '<div>Nenhum dado disponível.</div>');
+  };
+
+  window.printCurrentIdprep12 = function() {
+    const container = document.getElementById('idprep12Container');
+    if (!container) return;
+    const html = cloneForPrint(container);
+    const modeLabel = (typeof idprep12Mode !== 'undefined' && idprep12Mode === 'quantitativo') ? 'Quantitativo' : 'Efetivo';
+    printHtmlBlock89('IDPREP 1.2 — ' + modeLabel, html || '<div>Nenhum dado disponível.</div>');
+  };
+
+  function ensureCoursesTabLayout() {
+    const tab = document.getElementById('tab14');
+    if (!tab) return;
+    tab.innerHTML = `
+      <div class="card">
+        <h3 class="section-title" data-title-key="tab14" data-title-default="Cursos"></h3>
+        <div class="course-search-stack">
+          <div class="course-action-row">
+            <div class="field">
+              <label for="coursePersonSelect">Busca por militar</label>
+              <select id="coursePersonSelect"></select>
+            </div>
+            <div class="field course-actions">
+              <label>&nbsp;</label>
+              <button type="button" class="btn btn-primary" id="coursePersonSearchBtn">Pesquisar</button>
+            </div>
+          </div>
+          <div class="course-action-row">
+            <div class="field">
+              <label for="courseLookupInput">Busca por curso</label>
+              <input id="courseLookupInput" list="courseLookupList" placeholder="Digite ou selecione um curso" />
+            </div>
+            <div class="field course-actions">
+              <label>&nbsp;</label>
+              <button type="button" class="btn btn-primary" id="courseLookupSearchBtn">Pesquisar</button>
+            </div>
+          </div>
+        </div>
+        <div id="coursesContainerView" class="course-results-stack"></div>
+      </div>`;
+
+    document.getElementById('coursePersonSearchBtn')?.addEventListener('click', () => {
+      courseSearchState.personId = document.getElementById('coursePersonSelect')?.value || '';
+      window.renderCoursesTabView();
+    });
+    document.getElementById('courseLookupSearchBtn')?.addEventListener('click', () => {
+      courseSearchState.courseName = String(document.getElementById('courseLookupInput')?.value || '').trim();
+      window.renderCoursesTabView();
+    });
+  }
+
+  function populateCourseControls() {
+    const select = document.getElementById('coursePersonSelect');
+    if (select) {
+      const prevValue = select.value || courseSearchState.personId || '';
+      select.innerHTML = ['<option value="">Selecione</option>']
+        .concat((typeof state !== 'undefined' ? state.personnel : []).map(person => '<option value="' + safeText(person.id) + '">' + safeText(person.ptgrad) + ' — ' + safeText(person.nomeGuerra) + '</option>'))
+        .join('');
+      if ((typeof state !== 'undefined' ? state.personnel : []).some(person => person.id === prevValue)) {
+        select.value = prevValue;
+      }
+    }
+    const input = document.getElementById('courseLookupInput');
+    if (input && !input.value && courseSearchState.courseName) input.value = courseSearchState.courseName;
+    const datalist = document.getElementById('courseLookupList');
+    if (datalist) {
+      const names = Array.from(new Set((typeof state !== 'undefined' ? state.personnel : []).flatMap(person => [
+        ...(person.cursos || []).map(curso => String(curso.nome || '').trim()).filter(Boolean),
+        ...(person.cursosPretendidos || []).map(nome => String(nome || '').trim()).filter(Boolean)
+      ]))).sort((a,b) => a.localeCompare(b, 'pt-BR'));
+      datalist.innerHTML = names.map(item => '<option value="' + safeText(item) + '"></option>').join('');
+    }
+  }
+
+  window.renderCoursesTabView = function() {
+    const container = document.getElementById('coursesContainerView');
+    if (!container) return;
+    const people = (typeof state !== 'undefined' ? state.personnel : []);
+    if (!people.some(person => person.id === courseSearchState.personId)) {
+      courseSearchState.personId = '';
+    }
+
+    const selectedPerson = people.find(person => person.id === courseSearchState.personId);
+    let personHtml = '<div class="card list-card course-result-card"><div class="empty">Selecione um militar e clique em Pesquisar.</div></div>';
+    if (selectedPerson) {
+      const cursos = Array.isArray(selectedPerson.cursos) ? selectedPerson.cursos : [];
+      personHtml = `
+        <div class="card list-card course-result-card">
+          <h4 class="section-title" style="font-size:15px;">Cursos do militar</h4>
+          <div style="margin-bottom:10px;"><strong>${safeText(selectedPerson.ptgrad)} — ${safeText(selectedPerson.nomeGuerra)}</strong></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Curso</th><th>Ano</th></tr></thead>
+              <tbody>${cursos.length ? cursos.map(curso => '<tr><td>' + safeText(curso.nome || '—') + '</td><td>' + safeText(curso.ano || '—') + '</td></tr>').join('') : '<tr><td colspan="2">Nenhum curso cadastrado.</td></tr>'}</tbody>
+            </table>
+          </div>
+        </div>`;
+    }
+
+    const chosenCourse = String(courseSearchState.courseName || '').trim();
+    let courseHtml = '<div class="card list-card course-result-card"><div class="empty">Digite ou selecione um curso e clique em Pesquisar.</div></div>';
+    if (chosenCourse) {
+      const whoHas = [];
+      const whoWants = [];
+      people.forEach(person => {
+        (person.cursos || []).forEach(curso => {
+          if (String(curso?.nome || '').trim().toLowerCase() === chosenCourse.toLowerCase()) {
+            whoHas.push({ person, ano: curso.ano || '—' });
+          }
+        });
+        if ((person.cursosPretendidos || []).some(nome => String(nome || '').trim().toLowerCase() === chosenCourse.toLowerCase())) {
+          whoWants.push(person);
+        }
+      });
+      courseHtml = `
+        <div class="card list-card course-result-card">
+          <h4 class="section-title" style="font-size:15px;">Curso pesquisado</h4>
+          <div style="margin-bottom:10px;"><strong>${safeText(chosenCourse)}</strong></div>
+          <h4 class="section-title" style="font-size:15px;">Quem já tem</h4>
+          ${whoHas.length ? '<ul>' + whoHas.map(item => '<li>' + safeText(item.person.ptgrad) + ' — ' + safeText(item.person.nomeGuerra) + ' <strong>(' + safeText(item.ano) + ')</strong></li>').join('') + '</ul>' : '<div class="empty">Nenhum militar com esse curso no cadastro.</div>'}
+          <h4 class="section-title" style="font-size:15px; margin-top:12px;">Quem pretende fazer</h4>
+          ${whoWants.length ? '<ul>' + whoWants.map(item => '<li>' + safeText(item.ptgrad) + ' — ' + safeText(item.nomeGuerra) + '</li>').join('') + '</ul>' : '<div class="empty">Nenhum militar informou esse curso como pretendido.</div>'}
+        </div>`;
+    }
+
+    container.innerHTML = personHtml + courseHtml;
+  };
+
+  const oldRenderMissionSelects = typeof window.renderMissionSelects === 'function' ? window.renderMissionSelects : null;
+  window.renderMissionSelects = function() {
+    if (oldRenderMissionSelects) oldRenderMissionSelects.apply(this, arguments);
+    populateCourseControls();
+  };
+
+  const oldRenderAll = typeof window.renderAll === 'function' ? window.renderAll : null;
+  window.renderAll = function() {
+    if (oldRenderAll) oldRenderAll.apply(this, arguments);
+    ensureIdprepButtons();
+    ensureCoursesTabLayout();
+    populateCourseControls();
+    window.renderCoursesTabView();
+  };
+
+  ensureIdprepButtons();
+  ensureCoursesTabLayout();
+  populateCourseControls();
+  window.renderCoursesTabView();
+})();
+</script>
+
+
+<script id="manning-final-fix-script">
+(function(){
+  if (window.__manningFinalFixApplied) return;
+  window.__manningFinalFixApplied = true;
+
+  const manningState = window.__manningState = Object.assign({ query:'', selectedMissionId:'' }, window.__manningState || {});
+
+  function getMissions(){ return Array.isArray(state?.missions) ? state.missions : []; }
+  function getPersonnel(){ return Array.isArray(state?.personnel) ? state.personnel : []; }
+  function searchText(mission){
+    return normalizeText([
+      mission?.name || '', mission?.city || '', mission?.stateUf || '', mission?.start || '', mission?.end || ''
+    ].join(' '));
+  }
+  function filteredMissions(){
+    const q = normalizeText(manningState.query || '');
+    const missions = getMissions();
+    if (!q) return [...missions];
+    return missions.filter(m => searchText(m).includes(q));
+  }
+  function syncControls(list){
+    const search = document.getElementById('manningMissionSearch');
+    const select = document.getElementById('manningMissionSelect');
+    const btn = document.getElementById('manningPrintBtn');
+    if (search && search.value !== (manningState.query || '')) search.value = manningState.query || '';
+    if (!select) return;
+
+    if (!getMissions().length) {
+      select.innerHTML = '<option value="">Nenhuma missão cadastrada</option>';
+      select.value = '';
+      if (btn) btn.disabled = true;
+      return;
+    }
+    if (!list.length) {
+      select.innerHTML = '<option value="">Nenhuma missão encontrada</option>';
+      select.value = '';
+      if (btn) btn.disabled = true;
+      return;
+    }
+    const options = list.map(m => {
+      const label = `${m.name} — ${m.city || '-'} / ${m.stateUf || '-'} — ${formatDate(m.start)} a ${formatDate(m.end)}`;
+      return `<option value="${escapeHtml(String(m.id))}">${escapeHtml(label)}</option>`;
+    }).join('');
+    select.innerHTML = '<option value="">Selecione uma missão</option>' + options;
+    if (!manningState.selectedMissionId || !list.some(m => String(m.id) === String(manningState.selectedMissionId))) {
+      select.value = '';
+      if (btn) btn.disabled = true;
+      return;
+    }
+    select.value = String(manningState.selectedMissionId);
+    if (btn) btn.disabled = false;
+  }
+  function parseStatus(raw){
+    if (!raw) return '';
+    if (typeof raw === 'string') {
+      const s = String(raw).trim().toUpperCase();
+      return ['GR','DR','CM'].includes(s) ? s : '';
+    }
+    const s = String(raw.status || raw.tipo || raw.mode || raw.natureza || '').trim().toUpperCase();
+    if (['GR','DR','CM'].includes(s)) return s;
+    if (raw.dr === true || raw.diaria === true) return 'DR';
+    if (raw.cm === true || raw.com === true || raw.commissioned === true) return 'CM';
+    if (raw.gr === true) return 'GR';
+    if (raw.selected || raw.escalado || raw.esc) return (raw.commissioned || raw.com || raw.cm) ? 'CM' : 'GR';
+    return '';
+  }
+  function getStatus(missionId, personId){
+    try {
+      if (typeof getAssignmentStatus === 'function') {
+        const s = String(getAssignmentStatus(missionId, personId) || '').trim().toUpperCase();
+        if (['GR','DR','CM'].includes(s)) return s;
+      }
+    } catch(e){}
+    const assignments = state?.assignments || {};
+    const missionMap = assignments[missionId] || assignments[String(missionId)] || {};
+    return parseStatus(missionMap[personId] || missionMap[String(personId)] || null);
+  }
+  function badge(status){
+    try {
+      if (typeof getAssignmentBadge === 'function') return getAssignmentBadge(status);
+    } catch(e){}
+    if (status === 'GR') return '<span class="badge badge-gr">GR</span>';
+    if (status === 'DR') return '<span class="badge badge-dr">DR</span>';
+    if (status === 'CM') return '<span class="badge badge-cm">CM</span>';
+    return '<span class="badge">—</span>';
+  }
+  function assignedPeople(mission){
+    return getPersonnel().filter(person => ['GR','DR','CM'].includes(getStatus(mission.id, person.id)));
+  }
+  function missionValue(person, mission, status){
+    const mult = getMissionMultiplier(mission);
+    if (status === 'GR') return getPersonnel2Percent(person) * mult;
+    if (status === 'DR') return getDiaryRate(person.ptgrad, mission) * mult;
+    return 0;
+  }
+
+  window.onManningMissionSearchInput = function(value){
+    manningState.query = String(value || '');
+    const list = filteredMissions();
+    if (!list.some(m => String(m.id) === String(manningState.selectedMissionId))) {
+      manningState.selectedMissionId = '';
+    }
+    window.renderManningMissions();
+  };
+
+  window.onManningMissionSelect = function(value){
+    manningState.selectedMissionId = String(value || '');
+    window.renderManningMissions();
+  };
+
+  window.renderManningMissions = function(){
+    const container = document.getElementById('manningContainer');
+    if (!container) return;
+    const list = filteredMissions();
+    syncControls(list);
+
+    if (!getMissions().length) {
+      container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Nenhuma missão cadastrada.</div></div>';
+      return;
+    }
+    if (!list.length) {
+      container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Nenhuma missão encontrada para a busca informada.</div></div>';
+      return;
+    }
+    if (!manningState.selectedMissionId) {
+      container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Selecione uma missão para visualizar o manning.</div></div>';
+      return;
+    }
+    const mission = list.find(m => String(m.id) === String(manningState.selectedMissionId));
+    if (!mission) {
+      container.innerHTML = '<div class="card manning-empty-state"><div class="empty">Selecione uma missão para visualizar o manning.</div></div>';
+      return;
+    }
+
+    const assigned = assignedPeople(mission);
+    const multiplierFinal = getMissionMultiplier(mission);
+    const locality = `${mission.city || '-'} / ${mission.stateUf || '-'}`;
+    const rows = assigned.length ? assigned.map(person => {
+      const status = getStatus(mission.id, person.id);
+      const statusBadge = badge(status);
+      return `
+        <tr>
+          <td>${escapeHtml(person.ptgrad || '—')}</td>
+          <td><div class="manning-mode-stack"><span>${escapeHtml(person.nomeGuerra || '—')}</span>${statusBadge}</div></td>
+          <td>${escapeHtml(person.trigrama || '—')}</td>
+          <td>${buildFopControl(mission.id, person)}</td>
+          <td>${statusBadge}</td>
+        </tr>`;
+    }).join('') : '<tr><td colspan="5">Nenhum militar escalado nesta missão.</td></tr>';
+    const totalGR_dec = assigned.reduce((acc, p) => acc + getPersonnel2Percent(p) * multiplierFinal, 0);
+    const totalDR_dec = assigned.reduce((acc, p) => acc + getDiaryRate(p.ptgrad, mission) * multiplierFinal, 0);
+
+    container.innerHTML = `
+      <div class="manning-single-panel mission-card print-target" data-mission-panel="${escapeHtml(String(mission.id))}">
+        <div class="manning-mission-head" style="background:${mission.color};">
+          <div class="mission-title-main">${escapeHtml(mission.name || '—')}</div>
+          <div class="mission-subtitle-main">${escapeHtml(locality)} • ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+        </div>
+        <div class="manning-mission-body">
+          <div class="manning-summary-grid">
+            <div class="manning-summary-card"><span>Local</span><strong>${escapeHtml(locality)}</strong></div>
+            <div class="manning-summary-card"><span>Período</span><strong>${formatDate(mission.start)} a ${formatDate(mission.end)}</strong></div>
+            <div class="manning-summary-card"><span>Dias</span><strong>${getMissionDays(mission)}</strong></div>
+            <div class="manning-summary-card" style="border:1px solid rgba(214,171,30,0.5); background:rgba(214,171,30,0.08);">
+              <span style="color:rgba(214,171,30,0.9); font-weight:700;">⚖ Ferramenta de Decisão</span>
+              <div style="margin-top:6px; font-size:11px; color:var(--muted);">Total se todos GR (2%)</div>
+              <strong>${formatMoney(totalGR_dec)}</strong>
+              <div style="margin-top:4px; font-size:11px; color:var(--muted);">Total se todos DR (Diária)</div>
+              <strong>${formatMoney(totalDR_dec)}</strong>
+            </div>
+          </div>
+          <div class="table-wrap" style="margin-top:8px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>PT/GRAD</th>
+                  <th>Nome de Guerra</th>
+                  <th>Trigrama</th>
+                  <th>FOP</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+              <tfoot>
+                <tr><th colspan="4" class="right">⚖ Total se todos GR (2%)</th><th class="money-cell">${formatMoney(totalGR_dec)}</th></tr>
+                <tr><th colspan="4" class="right">⚖ Total se todos DR (Diária)</th><th class="money-cell">${formatMoney(totalDR_dec)}</th></tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>`;
+  };
+
+  window.printManningMission = function(missionId){
+    if (missionId != null && missionId !== '') {
+      manningState.selectedMissionId = String(missionId);
+    }
+    window.renderManningMissions();
+    if (!manningState.selectedMissionId) return;
+    document.body.classList.add('print-mission');
+    window.print();
+    setTimeout(() => document.body.classList.remove('print-mission'), 250);
+  };
+
+  const prevRenderAll = window.renderAll;
+  if (typeof prevRenderAll === 'function' && !prevRenderAll.__manningFinalWrapped) {
+    const wrapped = function(){
+      const result = prevRenderAll.apply(this, arguments);
+      try { window.renderManningMissions(); } catch(e) {}
+      return result;
+    };
+    wrapped.__manningFinalWrapped = true;
+    window.renderAll = wrapped;
+    try { renderAll = wrapped; } catch(e) {}
+  }
+
+  const observerTarget = document.getElementById('manningContainer');
+  if (observerTarget && !observerTarget.__manningObserverBound) {
+    observerTarget.__manningObserverBound = true;
+    const observer = new MutationObserver(() => {
+      const panels = observerTarget.querySelectorAll('[data-mission-panel], [data-mission-card], .mission-card');
+      if (panels.length > 1 || (manningState.selectedMissionId && observerTarget.querySelectorAll('[data-mission-panel]').length > 1)) {
+        observer.disconnect();
+        try { window.renderManningMissions(); } finally {
+          observer.observe(observerTarget, { childList:true, subtree:true });
+        }
+      }
+    });
+    observer.observe(observerTarget, { childList:true, subtree:true });
+  }
+
+  window.renderManningMissions();
+})();
+</script>
+
+
+
+<script id="rebuild-manning-tab-script">
+(function(){
+  if (window.__rebuiltManningTabApplied) return;
+  window.__rebuiltManningTabApplied = true;
+
+  const manningTabState = { missionId: '' };
+
+  function ensureManningStyles(){
+    if (document.getElementById('rebuildManningStyle')) return;
+    const style = document.createElement('style');
+    style.id = 'rebuildManningStyle';
+    style.textContent = `
+      #tab11 .manning-shell { display:flex; flex-direction:column; gap:12px; }
+      #tab11 .manning-toolbar { display:grid; grid-template-columns:minmax(320px, 540px); gap:12px; margin-bottom:4px; }
+      #tab11 .manning-summary-strip { display:grid; grid-template-columns:repeat(5, minmax(150px, 1fr)); gap:10px; }
+      #tab11 .manning-summary-box {
+        border-radius:12px; border:1px solid var(--line-soft); padding:12px;
+        background:linear-gradient(180deg, rgba(36,42,39,1), rgba(30,35,32,1));
+      }
+      #tab11 .manning-summary-box span { display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
+      #tab11 .manning-summary-box strong { display:block; font-family:'Oswald', sans-serif; font-size:26px; letter-spacing:0.4px; }
+      #tab11 .manning-mission-head {
+        display:flex; flex-direction:column; gap:4px; padding:14px 16px; border-radius:12px 12px 0 0;
+        color:#fff; font-family:'Oswald', sans-serif; letter-spacing:0.3px;
+      }
+      #tab11 .manning-mission-meta { font-family:'Roboto Condensed', Arial, sans-serif; font-size:13px; color:rgba(255,255,255,0.92); }
+      #tab11 .manning-panel-body { padding:12px; }
+      #tab11 .manning-name-status { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+      #tab11 .manning-empty { padding:22px; border:1px dashed rgba(255,255,255,0.16); border-radius:12px; color:var(--muted); }
+      #tab11 .manning-fop-wrap { min-width:220px; display:flex; flex-direction:column; gap:8px; }
+      #tab11 .manning-fop-wrap .manual-inline { display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); }
+      #tab11 .manning-fop-wrap input[type="checkbox"] { width:15px; height:15px; }
+      #tab11 .manning-table td, #tab11 .manning-table th { vertical-align:top; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function ensureTabMeta(){
+    const entry = {
+      id: 'tab11',
+      label: '10. Manning de Missões',
+      subtitle: 'Consulta por missão dos militares escalados, FOP e custos em 2% e diárias.'
+    };
+    if (typeof TAB_META !== 'undefined' && Array.isArray(TAB_META)) {
+      const existingIndex = TAB_META.findIndex(item => item && item.id === 'tab11');
+      if (existingIndex === -1) {
+        const afterIndex = TAB_META.findIndex(item => item && item.id === 'tab9');
+        if (afterIndex >= 0) TAB_META.splice(afterIndex + 1, 0, entry);
+        else TAB_META.push(entry);
+      } else {
+        TAB_META[existingIndex] = entry;
+      }
+    }
+    if (typeof TITLE_DEFAULTS !== 'undefined' && TITLE_DEFAULTS && typeof TITLE_DEFAULTS === 'object') {
+      TITLE_DEFAULTS.tab11 = 'Manning de Missões';
+    }
+  }
+
+  function ensureTabSection(){
+    if (document.getElementById('tab11')) return;
+    const after = document.getElementById('tab9');
+    if (!after) return;
+    after.insertAdjacentHTML('afterend', `
+      <section class="tab-content" id="tab11">
+        <div class="card">
+          <h3 class="section-title" data-title-key="tab11" data-title-default="Manning de Missões">Manning de Missões</h3>
+          <div class="manning-shell">
+            <div class="manning-toolbar">
+              <div class="field">
+                <label for="manningMissionSelect">Missão</label>
+                <select id="manningMissionSelect" onchange="onManningMissionSelect(this.value)"></select>
+              </div>
+            </div>
+            <div id="manningContainer"></div>
+          </div>
+        </div>
+      </section>
+    `);
+  }
+
+  function sortMissions(list){
+    return (Array.isArray(list) ? [...list] : []).sort((a,b) => {
+      const da = String(a?.start || '9999-12-31');
+      const db = String(b?.start || '9999-12-31');
+      if (da !== db) return da.localeCompare(db);
+      return String(a?.name || '').localeCompare(String(b?.name || ''), 'pt-BR', { sensitivity:'base' });
+    });
+  }
+
+  function getMissionsSafe(){
+    return sortMissions(Array.isArray(state?.missions) ? state.missions : []);
+  }
+
+  function parseStatusSafe(raw){
+    if (!raw) return '';
+    if (typeof raw === 'string') {
+      const value = String(raw).trim().toUpperCase();
+      return ['GR','DR','CM'].includes(value) ? value : '';
+    }
+    const direct = String(raw.status || raw.tipo || raw.mode || raw.natureza || '').trim().toUpperCase();
+    if (['GR','DR','CM'].includes(direct)) return direct;
+    if (raw.dr === true || raw.diaria === true) return 'DR';
+    if (raw.cm === true || raw.com === true || raw.commissioned === true) return 'CM';
+    if (raw.gr === true) return 'GR';
+    if (raw.selected || raw.escalado || raw.esc) return (raw.commissioned || raw.com || raw.cm) ? 'CM' : 'GR';
+    return '';
+  }
+
+  function getStatusSafe(missionId, personId){
+    try {
+      if (typeof getAssignmentStatus === 'function') {
+        const status = String(getAssignmentStatus(missionId, personId) || '').trim().toUpperCase();
+        if (['GR','DR','CM'].includes(status)) return status;
+      }
+    } catch (error) {}
+    const missionMap = state?.assignments?.[missionId] || state?.assignments?.[String(missionId)] || {};
+    return parseStatusSafe(missionMap?.[personId] || missionMap?.[String(personId)] || null);
+  }
+
+  function getStatusBadgeSafe(status){
+    try {
+      if (typeof getAssignmentBadge === 'function') return getAssignmentBadge(status);
+    } catch (error) {}
+    if (status === 'GR') return '<span class="badge badge-gr">GR</span>';
+    if (status === 'DR') return '<span class="badge badge-dr">DR</span>';
+    if (status === 'CM') return '<span class="badge badge-cm">CM</span>';
+    return '<span class="badge">—</span>';
+  }
+
+  function getAssignedPeople(mission){
+    return (Array.isArray(state?.personnel) ? state.personnel : []).filter(person => ['GR','DR','CM'].includes(getStatusSafe(mission.id, person.id)));
+  }
+
+  function getMissionTotalDays(mission){
+    const days = typeof getMissionDays === 'function' ? Number(getMissionDays(mission)) : 0;
+    return Number.isFinite(days) && days > 0 ? days : 0;
+  }
+
+  function getTwoPercentTotalForPerson(person, mission, status){
+    // Sempre calcula — ferramenta de decisão visual
+    const mult = typeof getMissionMultiplier === 'function' ? getMissionMultiplier(mission) : getMissionTotalDays(mission);
+    return (typeof getPersonnel2Percent === 'function' ? getPersonnel2Percent(person) : 0) * mult;
+  }
+
+  function getDiaryTotalForPerson(person, mission, status){
+    // Sempre calcula — ferramenta de decisão visual
+    const mult = typeof getMissionMultiplier === 'function' ? getMissionMultiplier(mission) : getMissionTotalDays(mission);
+    return (typeof getDiaryRate === 'function' ? getDiaryRate(person.ptgrad, mission) : 0) * mult;
+  }
+
+  function buildFopControlSafe(missionId, person){
+    const assignment = typeof getAssignment === 'function' ? getAssignment(missionId, person.id) : { fop:'', fopManual:false };
+    const available = typeof getPersonAvailableFops === 'function'
+      ? getPersonAvailableFops(person)
+      : [person?.fop1, person?.fop2, person?.fop3, person?.fop4].map(v => String(v || '').trim()).filter(Boolean);
+    const current = String(assignment?.fop || '').trim();
+    const manual = !!assignment?.fopManual;
+    const options = ['<option value="">Selecione</option>'].concat(available.map(item => `<option value="${escapeHtml(item)}" ${current === item ? 'selected' : ''}>${escapeHtml(item)}</option>`)).join('');
+    const control = manual
+      ? `<input type="text" value="${escapeHtml(current)}" onchange="updateAssignmentFop('${missionId}','${person.id}', this.value)" placeholder="FOP livre" />`
+      : `<select onchange="updateAssignmentFop('${missionId}','${person.id}', this.value)">${options}</select>`;
+    return `<div class="manning-fop-wrap">${control}<label class="manual-inline"><input type="checkbox" ${manual ? 'checked' : ''} onchange="updateAssignmentFopMode('${missionId}','${person.id}', this.checked)" /> Editar manualmente</label></div>`;
+  }
+
+  function syncMissionSelect(){
+    const select = document.getElementById('manningMissionSelect');
+    if (!select) return;
+    const missions = getMissionsSafe();
+    if (!missions.length) {
+      manningTabState.missionId = '';
+      select.innerHTML = '<option value="">Nenhuma missão cadastrada</option>';
+      return;
+    }
+    const options = missions.map(mission => {
+      const label = `${mission.name || 'Missão'} — ${mission.city || '-'} / ${mission.stateUf || '-'} — ${formatDate(mission.start)} a ${formatDate(mission.end)}`;
+      return `<option value="${escapeHtml(String(mission.id))}">${escapeHtml(label)}</option>`;
+    }).join('');
+    select.innerHTML = '<option value="">Selecione uma missão</option>' + options;
+    if (!missions.some(mission => String(mission.id) === String(manningTabState.missionId))) {
+      manningTabState.missionId = '';
+    }
+    select.value = String(manningTabState.missionId || '');
+  }
+
+  window.onManningMissionSelect = function(value){
+    manningTabState.missionId = String(value || '');
+    window.renderManningMissions();
+  };
+
+  window.renderManningMissions = function(){
+    ensureManningStyles();
+    ensureTabSection();
+    syncMissionSelect();
+    const container = document.getElementById('manningContainer');
+    if (!container) return;
+    const missions = getMissionsSafe();
+    if (!missions.length) {
+      container.innerHTML = '<div class="manning-empty">Nenhuma missão cadastrada.</div>';
+      return;
+    }
+    if (!manningTabState.missionId) {
+      container.innerHTML = '<div class="manning-empty">Selecione uma missão para visualizar somente os militares escalados naquela missão.</div>';
+      return;
+    }
+    const mission = missions.find(item => String(item.id) === String(manningTabState.missionId));
+    if (!mission) {
+      container.innerHTML = '<div class="manning-empty">Selecione uma missão válida.</div>';
+      return;
+    }
+    const assigned = getAssignedPeople(mission);
+    const days = getMissionTotalDays(mission);
+    let total2 = 0;
+    let totalDiarias = 0;
+    const rows = assigned.length ? assigned.map(person => {
+      const status = getStatusSafe(mission.id, person.id);
+      const badge = getStatusBadgeSafe(status);
+      total2 += getTwoPercentTotalForPerson(person, mission, status);
+      totalDiarias += getDiaryTotalForPerson(person, mission, status);
+      return `
+        <tr>
+          <td>${escapeHtml(person.ptgrad || '—')}</td>
+          <td>${escapeHtml(person.nomeGuerra || '—')}</td>
+          <td>${escapeHtml(person.trigrama || '—')}</td>
+          <td>${badge}</td>
+          <td>${buildFopControlSafe(mission.id, person)}</td>
+        </tr>`;
+    }).join('') : '<tr><td colspan="5">Nenhum militar escalado nesta missão.</td></tr>';
+
+    container.innerHTML = `
+      <div class="mission-card">
+        <div class="manning-mission-head" style="background:${escapeHtml(mission.color || '#4a7c59')};">
+          <div class="mission-title-main">${escapeHtml(mission.name || '—')}</div>
+          <div class="manning-mission-meta">${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')} • ${formatDate(mission.start)} até ${formatDate(mission.end)}</div>
+        </div>
+        <div class="manning-panel-body">
+          <div class="manning-summary-strip">
+            <div class="manning-summary-box"><span>Local</span><strong>${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')}</strong></div>
+            <div class="manning-summary-box"><span>Período</span><strong>${formatDate(mission.start)} a ${formatDate(mission.end)}</strong></div>
+            <div class="manning-summary-box"><span>Dias</span><strong>${days}</strong></div>
+            <div class="manning-summary-box" style="border:1px solid rgba(214,171,30,0.5); background:rgba(214,171,30,0.08); grid-column: span 2;">
+              <span style="color:rgba(214,171,30,0.9); font-weight:700;">⚖ Ferramenta de Decisão</span>
+              <div style="display:flex; gap:24px; margin-top:6px; flex-wrap:wrap;">
+                <div><div style="font-size:11px; color:var(--muted);">Total se todos GR (2%)</div><strong>${formatMoney(total2)}</strong></div>
+                <div><div style="font-size:11px; color:var(--muted);">Total se todos DR (Diária)</div><strong>${formatMoney(totalDiarias)}</strong></div>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrap" style="margin-top:12px;">
+            <table class="manning-table">
+              <thead>
+                <tr>
+                  <th>PT/GRAD</th>
+                  <th>Nome de Guerra</th>
+                  <th>Trigrama</th>
+                  <th>Status</th>
+                  <th>FOP</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+  };
+
+  const previousUpdateAssignmentFop = window.updateAssignmentFop;
+  if (typeof previousUpdateAssignmentFop === 'function' && !previousUpdateAssignmentFop.__rebuiltManningWrapped) {
+    const wrappedFop = function(){
+      const result = previousUpdateAssignmentFop.apply(this, arguments);
+      try { window.renderManningMissions(); } catch (error) {}
+      return result;
+    };
+    wrappedFop.__rebuiltManningWrapped = true;
+    window.updateAssignmentFop = wrappedFop;
+  }
+
+  const previousUpdateAssignmentFopMode = window.updateAssignmentFopMode;
+  if (typeof previousUpdateAssignmentFopMode === 'function' && !previousUpdateAssignmentFopMode.__rebuiltManningWrapped) {
+    const wrappedFopMode = function(){
+      const result = previousUpdateAssignmentFopMode.apply(this, arguments);
+      try { window.renderManningMissions(); } catch (error) {}
+      return result;
+    };
+    wrappedFopMode.__rebuiltManningWrapped = true;
+    window.updateAssignmentFopMode = wrappedFopMode;
+  }
+
+  const prevRenderAll = window.renderAll;
+  if (typeof prevRenderAll === 'function' && !prevRenderAll.__rebuiltManningTabWrapped) {
+    const wrappedRenderAll = function(){
+      const result = prevRenderAll.apply(this, arguments);
+      try {
+        ensureTabMeta();
+        ensureTabSection();
+        window.renderManningMissions();
+      } catch (error) {
+        console.error(error);
+      }
+      return result;
+    };
+    wrappedRenderAll.__rebuiltManningTabWrapped = true;
+    window.renderAll = wrappedRenderAll;
+    try { renderAll = wrappedRenderAll; } catch (error) {}
+  }
+
+  ensureTabMeta();
+  ensureTabSection();
+  try { renderMenu(); } catch (error) {}
+  try { window.renderManningMissions(); } catch (error) { console.error(error); }
+})();
+</script>
+
+
+
+<script id="board-cleanup-patch">
+(function(){
+  if (window.__boardCleanupPatchApplied) return;
+  window.__boardCleanupPatchApplied = true;
+
+  const STATUS_OPTIONS = ['', 'GR', 'DR', 'CM'];
+  const STATUS_BADGES = {
+    '': '<span class="badge">—</span>',
+    GR: '<span class="badge badge-gr">GR</span>',
+    DR: '<span class="badge badge-dr">DR</span>',
+    CM: '<span class="badge badge-cm">CM</span>'
+  };
+
+  function canonicalStatus(raw){
+    if (!raw) return '';
+    if (typeof raw === 'string') {
+      const s = String(raw).trim().toUpperCase();
+      return STATUS_OPTIONS.includes(s) ? s : '';
+    }
+    const direct = String(raw.status || raw.tipo || raw.mode || raw.natureza || '').trim().toUpperCase();
+    if (STATUS_OPTIONS.includes(direct)) return direct;
+    if (raw.dr === true || raw.diaria === true) return 'DR';
+    if (raw.cm === true || raw.com === true || raw.commissioned === true) return 'CM';
+    if (raw.gr === true) return 'GR';
+    if (raw.selected || raw.escalado || raw.esc) return (raw.commissioned || raw.com || raw.cm) ? 'CM' : 'GR';
+    return '';
+  }
+
+  function canonicalAssignment(raw){
+    const status = canonicalStatus(raw);
+    return {
+      status,
+      selected: status !== '',
+      commissioned: status === 'CM',
+      additional: typeof currencyToNumber === 'function' ? currencyToNumber(raw && raw.additional) : Number(raw && raw.additional || 0) || 0,
+      fop: String(raw && raw.fop || '').trim(),
+      fopManual: !!(raw && raw.fopManual)
+    };
+  }
+
+  function migrateAssignments(){
+    if (!window.state) return;
+    const source = (state.assignments && typeof state.assignments === 'object') ? state.assignments : {};
+    const migrated = {};
+    Object.entries(source).forEach(([missionId, missionMap]) => {
+      migrated[missionId] = {};
+      if (!missionMap || typeof missionMap !== 'object') return;
+      Object.entries(missionMap).forEach(([personId, raw]) => {
+        migrated[missionId][personId] = canonicalAssignment(raw);
+      });
+    });
+    state.assignments = migrated;
+  }
+
+  function getAssignmentSafe(missionId, personId){
+    if (!state.assignments || typeof state.assignments !== 'object') state.assignments = {};
+    if (!state.assignments[missionId] || typeof state.assignments[missionId] !== 'object') state.assignments[missionId] = {};
+    if (!state.assignments[missionId][personId]) state.assignments[missionId][personId] = canonicalAssignment({ status: '' });
+    state.assignments[missionId][personId] = canonicalAssignment(state.assignments[missionId][personId]);
+    return state.assignments[missionId][personId];
+  }
+
+  function getStatus(missionId, personId){
+    return getAssignmentSafe(missionId, personId).status || '';
+  }
+
+  function getBadge(status){
+    return STATUS_BADGES[STATUS_OPTIONS.includes(String(status || '').toUpperCase()) ? String(status || '').toUpperCase() : ''] || STATUS_BADGES[''];
+  }
+
+  function getBoardCellClass(status){
+    if (status === 'GR') return 'status-gr';
+    if (status === 'DR') return 'status-dr';
+    if (status === 'CM') return 'status-cm';
+    return '';
+  }
+
+  function buildBoardHeaderClean(days){
+    const stickyLeft = typeof getStickyLeftMap === 'function' ? getStickyLeftMap() : { ptgrad:0, nomeGuerra:120, trigrama:340 };
+    const missions = Array.isArray(state.missions) ? state.missions : [];
+    const monthCounts = days.reduce((acc, day) => {
+      acc[day.month] = (acc[day.month] || 0) + 1;
+      return acc;
+    }, {});
+
+    let row1 = '<tr>' +
+      `<th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">PT/GRAD</th>` +
+      `<th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">Nome de Guerra</th>` +
+      `<th class="sticky-col sticky-main" rowspan="3" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">Trig.</th>`;
+    missions.forEach(mission => { row1 += `<th class="mission-head" rowspan="3">${escapeHtml(mission.name)}</th>`; });
+    MONTHS_PT.forEach((monthName, index) => { row1 += `<th class="month-head" colspan="${monthCounts[index] || 0}">${monthName}</th>`; });
+    row1 += '</tr>';
+
+    let row2 = '<tr>';
+    days.forEach(day => {
+      const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
+      const holidayAttr = day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}" title="${escapeHtml(day.holidayName)}"` : '';
+      row2 += `<th class="day-head ${cls}" ${holidayAttr}>${day.day}</th>`;
+    });
+    row2 += '</tr>';
+
+    let row3 = '<tr>';
+    days.forEach(day => {
+      const cls = day.isHoliday ? 'holiday-head' : (day.isWeekend ? 'weekend-head' : '');
+      const holidayAttr = day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}" title="${escapeHtml(day.holidayName)}"` : '';
+      row3 += `<th class="weekday-head ${cls}" ${holidayAttr}>${day.weekdayShort}</th>`;
+    });
+    row3 += '</tr>';
+    return `<thead>${row1}${row2}${row3}</thead>`;
+  }
+
+  function syncBoardStickyOffsetsClean(){
+    const table = document.getElementById('boardTable');
+    if (!table) return;
+    const rows = table.querySelectorAll('thead tr');
+    if (!rows.length) return;
+    const h1 = rows[0] && rows[0].getBoundingClientRect().height || 0;
+    const h2 = rows[1] && rows[1].getBoundingClientRect().height || 0;
+    table.style.setProperty('--board-top-row-1', '0px');
+    table.style.setProperty('--board-top-row-2', `${Math.round(h1)}px`);
+    table.style.setProperty('--board-top-row-3', `${Math.round(h1 + h2)}px`);
+  }
+
+  normalizeAssignments = function(rawAssignments){
+    const result = {};
+    if (!rawAssignments || typeof rawAssignments !== 'object') return result;
+    Object.entries(rawAssignments).forEach(([missionId, missionMap]) => {
+      result[missionId] = {};
+      if (!missionMap || typeof missionMap !== 'object') return;
+      Object.entries(missionMap).forEach(([personId, raw]) => {
+        result[missionId][personId] = canonicalAssignment(raw);
+      });
+    });
+    return result;
+  };
+
+  getAssignment = getAssignmentSafe;
+  getAssignmentStatus = getStatus;
+  isPersonAssignedToMission = function(personId, missionId){ return getStatus(missionId, personId) !== ''; };
+  isPersonCommissionedInMission = function(personId, missionId){ return getStatus(missionId, personId) === 'CM'; };
+  getAssignmentBadge = getBadge;
+
+  window.updateAssignmentStatus = function(missionId, personId, value){
+    if (typeof requireAuth === 'function' && !requireAuth()) return;
+    const next = STATUS_OPTIONS.includes(String(value || '').toUpperCase()) ? String(value || '').toUpperCase() : '';
+    state.assignments[missionId] = state.assignments[missionId] || {};
+    state.assignments[missionId][personId] = canonicalAssignment({ ...getAssignmentSafe(missionId, personId), status: next });
+    if (typeof saveState === 'function') saveState();
+    if (typeof renderAll === 'function') renderAll();
+  };
+
+  toggleAssignment = function(missionId, personId, key, checked){
+    if (typeof requireAuth === 'function' && !requireAuth()) return;
+    if (key === 'selected') {
+      window.updateAssignmentStatus(missionId, personId, checked ? 'GR' : '');
+      return;
+    }
+    if (key === 'commissioned') {
+      window.updateAssignmentStatus(missionId, personId, checked ? 'CM' : 'GR');
+    }
+  };
+
+  // Versão definitiva e correta do renderBoard — usa GR/DR/CM com lista suspensa
+  // Registrada também como window.__renderBoardClean para que versões antigas possam redirecionar aqui
+  renderBoard = window.__renderBoardClean = function(){
+    const table = document.getElementById('boardTable');
+    if (!table) return;
+    const select = document.getElementById('boardYearSelect');
+    const label = document.getElementById('boardYearLabel');
+    if (select) select.value = String(window.boardYearView);
+    if (label) label.textContent = String(window.boardYearView);
+    if (!Array.isArray(state.personnel) || !state.personnel.length) {
+      table.innerHTML = '<tbody><tr><td class="empty">Cadastre o efetivo para montar o quadro.</td></tr></tbody>';
+      return;
+    }
+    const days = typeof getBoardDays === 'function' ? getBoardDays(window.boardYearView) : (typeof getDaysOfYear === 'function' ? getDaysOfYear(window.boardYearView) : []);
+    const stickyLeft = typeof getStickyLeftMap === 'function' ? getStickyLeftMap() : { ptgrad:0, nomeGuerra:120, trigrama:340 };
+    const canEdit = typeof isAuthenticated === 'function' ? isAuthenticated() : true;
+    const missions = Array.isArray(state.missions) ? state.missions : [];
+    const rows = state.personnel.map(person => {
+      let row = '<tr>';
+      row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.ptgrad}px; min-width:${BOARD_WIDTHS.ptgrad}px; width:${BOARD_WIDTHS.ptgrad}px;">${escapeHtml(person.ptgrad || '')}</td>`;
+      row += `<td class="sticky-col sticky-person" style="left:${stickyLeft.nomeGuerra}px; min-width:${BOARD_WIDTHS.nomeGuerra}px; width:${BOARD_WIDTHS.nomeGuerra}px;">${escapeHtml(person.nomeGuerra || '')}</td>`;
+      row += `<td class="sticky-col sticky-person center" style="left:${stickyLeft.trigrama}px; min-width:${BOARD_WIDTHS.trigrama}px; width:${BOARD_WIDTHS.trigrama}px;">${escapeHtml(person.trigrama || '')}</td>`;
+      missions.forEach(mission => {
+        const status = getStatus(mission.id, person.id);
+        row += `<td class="mission-select-cell ${getBoardCellClass(status)}"><select class="board-assignment-select" ${canEdit ? '' : 'disabled'} onchange="updateAssignmentStatus('${mission.id}','${person.id}', this.value)"><option value="" ${status === '' ? 'selected' : ''}></option><option value="GR" ${status === 'GR' ? 'selected' : ''}>GR</option><option value="DR" ${status === 'DR' ? 'selected' : ''}>DR</option><option value="CM" ${status === 'CM' ? 'selected' : ''}>CM</option></select></td>`;
+      });
+      days.forEach(day => {
+        let cellStyle = '';
+        let cellClass = 'cell-day';
+        if (typeof personOnVacation === 'function' && personOnVacation(person, day.iso)) {
+          cellClass += ' vacation-cell';
+        } else {
+          const activeMission = missions.find(mission => typeof missionAppliesToDay === 'function' && missionAppliesToDay(person, mission, day.iso));
+          if (activeMission && activeMission.color) cellStyle = `background:${activeMission.color};`;
+        }
+        const holidayAttr = day.holidayName ? `data-holiday-name="${escapeHtml(day.holidayName)}" title="${escapeHtml(day.holidayName)}"` : '';
+        row += `<td class="${cellClass}" style="${cellStyle}" ${holidayAttr}></td>`;
+      });
+      row += '</tr>';
+      return row;
+    }).join('');
+    table.innerHTML = buildBoardHeaderClean(days) + `<tbody>${rows}</tbody>`;
+    requestAnimationFrame(() => {
+      syncBoardStickyOffsetsClean();
+      if (typeof scheduleContrastPass === 'function') scheduleContrastPass();
+    });
+  };
+
+  renderMissionDashboard = function(){
+    const container = document.getElementById('missionDashboard');
+    if (!container) return;
+    const missions = Array.isArray(state.missions) ? state.missions : [];
+    if (!missions.length) {
+      container.innerHTML = '<div class="empty">Nenhuma missão cadastrada.</div>';
+      return;
+    }
+    container.innerHTML = `<div class="cards-grid">${missions.map(mission => {
+      const assigned = (state.personnel || []).filter(person => getStatus(mission.id, person.id) !== '');
+      const locality = typeof getLocalityClass === 'function' ? getLocalityClass(mission) : { label: '-' };
+      return `<div class="mission-card"><div class="mission-card-head" style="background:${mission.color};"><strong>${escapeHtml(mission.name)}</strong></div><div class="mission-card-body"><div><strong>Período:</strong> ${formatDate(mission.start)} até ${formatDate(mission.end)}</div><div><strong>Dias:</strong> ${getMissionDays(mission)} | <strong>Multiplicador:</strong> ${String((getMissionMultiplier(mission) || 0)).replace('.', ',')}</div><div><strong>Local:</strong> ${escapeHtml(mission.city || '-')} / ${escapeHtml(mission.stateUf || '-')} — ${escapeHtml(locality.label || '-')}</div><div style="margin-top:8px;"><strong>Militares escalados:</strong></div>${assigned.length ? `<ul class="mission-list">${assigned.map(person => `<li><span class="mission-mode-inline">${escapeHtml(person.ptgrad || '')} — ${escapeHtml(person.trigrama || '')} — ${escapeHtml(person.nomeGuerra || '')} ${getBadge(getStatus(mission.id, person.id))}</span></li>`).join('')}</ul>` : '<div class="empty">Nenhum militar escalado.</div>'}</div></div>`;
+    }).join('')}</div>`;
+  };
+
+  renderPersonMissionMatrix = function(){
+    const head = document.getElementById('personMissionHead');
+    const body = document.getElementById('personMissionBody');
+    if (!head || !body) return;
+    const missions = Array.isArray(state.missions) ? state.missions : [];
+    if (!Array.isArray(state.personnel) || !state.personnel.length) {
+      head.innerHTML = '';
+      body.innerHTML = '<tr><td class="empty">Nenhum militar cadastrado.</td></tr>';
+      return;
+    }
+    head.innerHTML = `<tr><th>PT/GRAD</th><th>Nome de Guerra</th>${missions.map(mission => `<th>${escapeHtml(mission.name)}</th>`).join('')}</tr>`;
+    body.innerHTML = state.personnel.map(person => `<tr><td>${escapeHtml(person.ptgrad || '')}</td><td>${escapeHtml(person.nomeGuerra || '')}</td>${missions.map(mission => { const status = getStatus(mission.id, person.id); return `<td class="center" style="background:${status ? mission.color : 'transparent'}; color:${status ? '#fff' : 'inherit'};">${status ? getBadge(status) : '—'}</td>`; }).join('')}</tr>`).join('');
+  };
+
+  migrateAssignments();
+
+  const prevRenderAll = window.renderAll;
+  if (typeof prevRenderAll === 'function' && !prevRenderAll.__boardCleanupWrapped) {
+    const wrapped = function(){
+      const result = prevRenderAll.apply(this, arguments);
+      migrateAssignments();
+      try { renderBoard(); } catch (error) { console.error(error); }
+      try { renderMissionDashboard(); } catch (error) { console.error(error); }
+      try { renderPersonMissionMatrix(); } catch (error) { console.error(error); }
+      return result;
+    };
+    wrapped.__boardCleanupWrapped = true;
+    window.renderAll = wrapped;
+    try { renderAll = wrapped; } catch (error) {}
+  }
+
+  window.addEventListener('resize', syncBoardStickyOffsetsClean);
+  migrateAssignments();
+  try { renderBoard(); } catch (error) { console.error(error); }
+  try { renderMissionDashboard(); } catch (error) { console.error(error); }
+  try { renderPersonMissionMatrix(); } catch (error) { console.error(error); }
+})();
+</script>
+
+
+<script>
+(function(){
+  const LEGEND_HTML = `
+    <div class="legend-item"><span class="legend-swatch" style="background: var(--weekend);"></span>Sábado/Domingo</div>
+    <div class="legend-item"><span class="legend-swatch" style="background: var(--holiday);"></span>Feriado Nacional</div>
+    <div class="legend-item"><span class="legend-swatch" style="background: #000;"></span>Férias</div>
+    <div class="legend-item"><span class="legend-swatch" style="background: rgba(214,171,30,0.82);"></span>GR (Gratificação de Representação)</div>
+    <div class="legend-item"><span class="legend-swatch" style="background: rgba(170,58,58,0.82);"></span>DR (Diária)</div>
+    <div class="legend-item"><span class="legend-swatch" style="background: rgba(47,125,63,0.82);"></span>CM (Comissionamento)</div>`;
+
+  function fixBoardLegend(){
+    const legend = document.querySelector('#tab3 .legend');
+    if (legend && legend.innerHTML !== LEGEND_HTML.trim()) {
+      legend.innerHTML = LEGEND_HTML;
+    }
+  }
+
+  // tableHasLegacyEscCom e healIfNeeded foram desativados pois o código antigo ESC/COM
+  // já foi removido e o observer causava loop ao detectar "CM" nos badges da tabela,
+  // revertendo a mudança de ano toda vez que o board era re-renderizado.
+  function tableHasLegacyEscCom(){ return false; }
+  function healIfNeeded(){ fixBoardLegend(); }
+
+  function installBoardObserver(){
+    // Observer desativado — não é mais necessário pois o código legado ESC/COM foi removido.
+    // Manter o observer ativo causava loop: ao mudar o ano, o render do board
+    // disparava o observer, que chamava forceCleanBoard, que chamava renderBoard novamente,
+    // revertendo o ano para o estado anterior.
+    const tab3 = document.getElementById('tab3');
+    if (!tab3 || tab3.__boardLegendObserverInstalled) return;
+    tab3.__boardLegendObserverInstalled = true;
+    // Apenas fixa a legenda uma vez sem observar mutações
+    fixBoardLegend();
+  }
+
+  function boot(){
+    forceCleanBoard();
+    installBoardObserver();
+    setTimeout(healIfNeeded, 0);
+    setTimeout(healIfNeeded, 120);
+    setTimeout(healIfNeeded, 500);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
+  }
+  window.addEventListener('load', boot, { once: true });
+})();
+</script>
+
+<!-- PATCH FINAL: controle definitivo do ano do quadro de missões -->
+<script>
+(function installYearControl(){
+  // Garante que as funções de troca de ano nunca sejam sobrescritas
+  // e que o renderBoard sempre use window.boardYearView corretamente
+
+  function doRenderBoardForYear(year) {
+    window.boardYearView = year;
+    // Atualiza UI
+    const sel = document.getElementById('boardYearSelect');
+    const lbl = document.getElementById('boardYearLabel');
+    if (sel) sel.value = String(year);
+    if (lbl) lbl.textContent = String(year);
+    // Renderiza com os dias corretos
+    if (typeof window.__renderBoardClean === 'function') {
+      window.__renderBoardClean();
+    } else if (typeof renderBoard === 'function') {
+      renderBoard();
+    }
+    // Busca feriados online e re-renderiza
+    if (typeof ensureHolidayData === 'function') {
+      ensureHolidayData(year).then(() => {
+        if (typeof window.__renderBoardClean === 'function') {
+          window.__renderBoardClean();
+        } else if (typeof renderBoard === 'function') {
+          renderBoard();
+        }
+      }).catch(() => {});
+    }
+  }
+
+  // Instala as funções definitivas no window com Object.defineProperty
+  // para que nenhum script posterior consiga sobrescrevê-las
+  function defineFinal(name, fn) {
+    try {
+      Object.defineProperty(window, name, {
+        value: fn,
+        writable: false,
+        configurable: false
+      });
+    } catch(e) {
+      window[name] = fn;
+    }
+  }
+
+  const YEAR_MIN = typeof BOARD_YEAR_MIN !== 'undefined' ? BOARD_YEAR_MIN : 2024;
+  const YEAR_MAX = typeof BOARD_YEAR_MAX !== 'undefined' ? BOARD_YEAR_MAX : 2030;
+
+  defineFinal('changeBoardYear', function changeBoardYearFinal(value) {
+    const next = Math.min(YEAR_MAX, Math.max(YEAR_MIN, Number(value) || window.boardYearView || new Date().getFullYear()));
+    doRenderBoardForYear(next);
+  });
+
+  defineFinal('incrementBoardYear', function incrementBoardYearFinal(delta) {
+    const current = window.boardYearView || new Date().getFullYear();
+    window.changeBoardYear(current + Number(delta || 0));
+  });
+
+  // Inicializa o select com o ano correto após tudo carregar
+  function syncYearUiOnLoad() {
+    const year = window.boardYearView || new Date().getFullYear();
+    const sel = document.getElementById('boardYearSelect');
+    const lbl = document.getElementById('boardYearLabel');
+    if (sel) sel.value = String(year);
+    if (lbl) lbl.textContent = String(year);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncYearUiOnLoad);
+  } else {
+    syncYearUiOnLoad();
+  }
+  window.addEventListener('load', syncYearUiOnLoad);
+})();
+</script>
 </body>
 </html>
