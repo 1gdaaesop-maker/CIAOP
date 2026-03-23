@@ -8,1020 +8,1047 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Roboto+Condensed:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
+    /* ==========================================================================
+       1º GDAAE - DESIGN SYSTEM & VARIÁVEIS GLOBAIS
+       ========================================================================== */
     :root {
-      --bg: #171b18;
-      --bg-soft: #202522;
-      --panel: #252b28;
+      /* Cores de Fundo e Superfícies */
+      --bg-app: #0f1311;
+      --bg-page: linear-gradient(180deg, #131815 0%, #1a211d 100%);
+      --bg-card: #1c221e;
+      --bg-panel: #232a26;
+      --bg-input: #151a17;
+      
+      /* Linhas e Bordas */
+      --line: #37443d;
+      --line-soft: rgba(255, 255, 255, 0.05);
+      --line-focus: rgba(82, 138, 99, 0.4);
+      
+      /* Tipografia */
+      --text-main: #e4e9e5;
+      --text-muted: #94a39a;
+      
+      /* Cores de Marca e Estados (Status) */
+      --accent: #528a63;
+      --accent-hover: #61a174;
+      --accent-soft: rgba(82, 138, 99, 0.15);
+      --danger: #b34d4d;
+      --danger-hover: #c95757;
+      --danger-soft: rgba(179, 77, 77, 0.15);
+      --warning: #c29b44;
+      --ok: #429e57;
+      
+      /* Cores do Quadro de Escala (Board) */
+      --holiday: #6b4087;
+      --weekend: #8a3333;
+      --blackout: #0a0c0b;
+      --sticky-1: #161c18;
+      --sticky-2: #1a221d;
+      --sticky-3: #1e2621;
+
+      /* Aliases de compatibilidade com código legado */
+      --bg: #0f1311;
+      --bg-soft: #232a26;
+      --panel: #232a26;
       --panel-2: #2c3430;
-      --line: #4b5650;
-      --line-soft: rgba(255,255,255,0.08);
-      --text: #f0f0f0;
-      --muted: #b4beb7;
-      --accent: #4a7c59;
-      --accent-2: #6ea57d;
+      --text: #e4e9e5;
+      --muted: #94a39a;
+      --accent-2: #61a174;
       --accent-3: #8ab496;
-      --danger: #8d3333;
-      --danger-2: #6f2727;
-      --warning: #9e7a2e;
-      --holiday: #5f3a78;
-      --weekend: #722727;
-      --ok: #2f7d3f;
-      --blackout: #000000;
-      --sticky-1: #1a1f1c;
-      --sticky-2: #212724;
-      --sticky-3: #262d29;
-      --input: #1f2421;
-      --card: #232926;
-      --shadow: 0 12px 28px rgba(0,0,0,0.35);
-      --radius: 14px;
+      --danger-2: #c95757;
+      --input: #151a17;
+      --card: #1c221e;
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      --radius: 16px;
+      
+      /* Sombras e Raios */
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.4);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
     }
 
-    * { box-sizing: border-box; }
+    /* ==========================================================================
+       RESET & SCROLLBARS
+       ========================================================================== */
+    * { box-sizing: border-box; outline: none; }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-app); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
     html, body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       min-width: 1280px;
-      background: linear-gradient(180deg, #141816 0%, #1a201d 100%);
-      color: var(--text);
+      background: var(--bg-page);
+      color: var(--text-main);
       font-family: 'Roboto Condensed', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
-
     body { min-height: 100vh; }
 
-    .menu-shell {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      z-index: 2000;
-    }
+    /* ==========================================================================
+       MENU E NAVEGAÇÃO
+       ========================================================================== */
+    .menu-shell { position: fixed; top: 16px; left: 16px; z-index: 2000; }
 
     .menu-toggle {
-      border: 1px solid rgba(110,165,125,0.35);
-      background: linear-gradient(180deg, rgba(40,48,44,0.98), rgba(29,35,32,0.98));
-      color: var(--text);
-      border-radius: 12px;
-      padding: 10px 14px;
+      border: 1px solid var(--line-focus);
+      background: rgba(30, 38, 33, 0.85);
+      backdrop-filter: blur(8px);
+      color: var(--text-main);
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
       font-size: 14px;
-      letter-spacing: 0.4px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
       cursor: pointer;
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
     }
-
-    .menu-toggle:hover { background: linear-gradient(180deg, rgba(62,84,68,0.98), rgba(39,54,43,0.98)); }
+    .menu-toggle:hover { background: var(--accent); color: #fff; }
 
     .menu-dropdown {
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0;
-      width: 280px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 10px;
-      background: rgba(25,31,28,0.98);
+      position: absolute; top: calc(100% + 12px); left: 0;
+      width: 300px; max-height: 85vh; overflow-y: auto;
+      padding: 16px;
+      background: rgba(24, 30, 26, 0.95);
       border: 1px solid var(--line-soft);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
       display: none;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(16px);
+      animation: fadeIn 0.2s ease-out;
     }
-
     .menu-dropdown.open { display: block; }
 
-    .menu-title {
-      font-family: 'Oswald', sans-serif;
-      font-size: 20px;
-      margin: 4px 8px 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.9px;
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-    .menu-subtitle {
-      margin: 0 8px 10px;
-      color: var(--muted);
-      font-size: 12px;
-    }
+    .menu-title { font-family: 'Oswald', sans-serif; font-size: 22px; margin: 0 0 4px 4px; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+    .menu-subtitle { margin: 0 0 16px 4px; color: var(--text-muted); font-size: 13px; }
+
+    .menu-auth { margin-bottom: 16px; padding: 12px; border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: rgba(0,0,0,0.2); }
+    .menu-auth-title { margin: 0 0 10px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+    
+    .login-grid, .login-status { display: grid; gap: 8px; font-size: 13px; }
+    .login-meta { color: var(--text-muted); font-size: 12px; }
 
     .menu-list { display: grid; gap: 6px; }
-
-    .menu-auth {
-      margin: 8px 0 10px;
-      padding: 8px;
-      border: 1px solid var(--line-soft);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.03);
-    }
-
-    .menu-auth-title {
-      margin: 0 0 6px;
-      font-size: 12px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .login-grid {
-      display: grid;
-      gap: 6px;
-    }
-
-    .login-status {
-      display: grid;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--text);
-    }
-
-    .login-meta {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .locked-note {
-      margin-bottom: 8px;
-    }
-
     .menu-item {
-      width: 100%;
-      text-align: left;
-      border: 1px solid var(--line-soft);
-      background: var(--bg-soft);
-      color: var(--text);
-      border-radius: 10px;
-      padding: 9px 10px;
-      font-size: 13px;
+      width: 100%; text-align: left;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-main);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 14px;
       cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex; align-items: center; justify-content: space-between;
     }
-
-    .menu-item:hover,
+    .menu-item:hover { background: var(--bg-panel); }
     .menu-item.active {
-      background: linear-gradient(180deg, rgba(74,124,89,0.35), rgba(74,124,89,0.16));
-      border-color: rgba(110,165,125,0.45);
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 500;
     }
 
-    .page { padding: 56px 14px 16px; }
+    /* ==========================================================================
+       ESTRUTURA DA PÁGINA & CABEÇALHO
+       ========================================================================== */
+    .page { padding: 64px 24px 24px; max-width: 1800px; margin: 0 auto; }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 18px;
-      margin-bottom: 14px;
-      padding-left: 64px;
-    }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin-bottom: 14px; padding-left: 64px; }
+    .header-flex { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .header h1, .header-flex h1 { margin: 0; font-family: 'Oswald', sans-serif; font-size: 32px; letter-spacing: 1.5px; text-transform: uppercase; color: #fff; }
+    .header p, .header-flex p { margin: 6px 0 0; color: var(--text-muted); font-size: 14px; letter-spacing: 0.5px; }
 
-    .header h1 {
-      margin: 0;
-      font-family: 'Oswald', sans-serif;
-      font-size: 28px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
+    .logo-panel { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; min-width: 90px; }
+    .logo-preview { width: 64px; height: 64px; border: 1px solid var(--line-soft); border-radius: 50%; background: var(--bg-panel); display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: var(--shadow-sm); }
+    .logo-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .logo-placeholder { color: var(--text-muted); font-size: 16px; font-weight: 700; font-family: 'Oswald', sans-serif; }
+    .logo-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
 
-    .header p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
-
-    .tab-content { display: none; }
+    .tab-content { display: none; animation: fadeIn 0.3s ease-out; }
     .tab-content.active { display: block; }
 
+    /* ==========================================================================
+       CARDS E COMPONENTES
+       ========================================================================== */
     .card {
-      background: linear-gradient(180deg, rgba(36,42,39,1), rgba(30,35,32,1));
+      background: var(--bg-card);
       border: 1px solid var(--line-soft);
-      border-radius: var(--radius);
-      padding: 12px;
-      margin-bottom: 12px;
-      box-shadow: var(--shadow);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s ease;
     }
+    .card:hover { box-shadow: var(--shadow-lg); }
 
     .section-title {
-      margin: 0 0 10px;
+      margin: 0 0 16px;
       font-family: 'Oswald', sans-serif;
-      font-size: 20px;
-      letter-spacing: 0.8px;
+      font-size: 22px;
+      letter-spacing: 1px;
       text-transform: uppercase;
+      color: #fff;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .section-divider {
+      margin: 24px 0 16px; padding-top: 16px;
+      border-top: 1px solid var(--line-soft);
+      font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+      color: var(--accent); text-transform: uppercase;
     }
 
     .notice {
-      margin-bottom: 10px;
-      padding: 8px 10px;
-      border-left: 3px solid var(--accent);
-      background: rgba(74,124,89,0.08);
-      border-radius: 8px;
-      font-size: 12px;
-      color: #dce9df;
+      margin-bottom: 16px; padding: 12px 16px;
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 13px; color: #dce9df; line-height: 1.5;
     }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(180px, 1fr));
-      gap: 10px;
-    }
+    /* ==========================================================================
+       FORMULÁRIOS
+       ========================================================================== */
+    .form-grid { display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 16px; }
+    .form-grid.compact { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+    
+    .field, .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-group { background: rgba(0,0,0,0.15); border: 1px solid var(--line-soft); border-radius: var(--radius-md); padding: 12px; }
 
-    .field, .field-group { display: flex; flex-direction: column; gap: 4px; }
-
-    .field-group {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--line-soft);
-      border-radius: 10px;
-      padding: 10px;
-    }
-
-    label { font-size: 12px; color: var(--muted); letter-spacing: 0.2px; }
+    label { font-size: 12px; color: var(--text-muted); letter-spacing: 0.5px; font-weight: 500; text-transform: uppercase; }
 
     input, select, textarea, button { font-family: inherit; }
 
     input, select, textarea {
       width: 100%;
-      border-radius: 9px;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--line);
-      background: var(--input);
-      color: var(--text);
-      padding: 7px 9px;
-      font-size: 12px;
-      outline: none;
+      background: var(--bg-input);
+      color: var(--text-main);
+      padding: 10px 12px;
+      font-size: 14px;
+      transition: all 0.2s ease;
     }
-
     input:focus, select:focus, textarea:focus {
-      border-color: var(--accent-2);
-      box-shadow: 0 0 0 3px rgba(110,165,125,0.12);
+      border-color: var(--accent);
+      background: #1a201c;
+      box-shadow: 0 0 0 3px var(--line-focus);
     }
+    
+    input[type="color"] { padding: 2px; min-height: 40px; cursor: pointer; }
+    input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+    .money-readonly { background: rgba(0,0,0,0.25); color: var(--text-muted); cursor: not-allowed; border-color: transparent; }
+    
+    .toggle-line { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; font-size: 14px; }
+    .form-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
 
-    input[type="color"] { padding: 2px; min-height: 34px; }
-    input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--accent-2); cursor: pointer; }
-
-    .form-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-
+    /* ==========================================================================
+       BOTÕES
+       ========================================================================== */
     .btn {
-      border: 1px solid transparent;
-      border-radius: 10px;
-      padding: 7px 11px;
-      font-size: 12px;
-      cursor: pointer;
-      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 10px 20px;
+      font-size: 14px; font-weight: 500; letter-spacing: 0.5px;
+      cursor: pointer; color: white;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex; align-items: center; justify-content: center;
     }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .btn-primary { background: var(--accent); }
-    .btn-primary:hover { background: var(--accent-2); }
-    .btn-secondary { background: #4b5450; }
-    .btn-secondary:hover { background: #5d6762; }
-    .btn-danger { background: var(--danger); }
-    .btn-danger:hover { background: var(--danger-2); }
-    .btn-mini { padding: 4px 8px; font-size: 11px; border-radius: 8px; }
+    .btn-primary { background: var(--accent); box-shadow: 0 4px 10px rgba(82, 138, 99, 0.3); }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); box-shadow: 0 6px 14px rgba(82, 138, 99, 0.4); }
+    
+    .btn-secondary { background: var(--line); color: var(--text-main); }
+    .btn-secondary:hover:not(:disabled) { background: #4a5950; color: #fff; }
+    
+    .btn-danger { background: var(--danger); box-shadow: 0 4px 10px rgba(179, 77, 77, 0.2); }
+    .btn-danger:hover:not(:disabled) { background: var(--danger-hover); box-shadow: 0 6px 14px rgba(179, 77, 77, 0.3); }
+    
+    .btn-mini { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
 
-    .toggle-line { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; }
-
-    .table-wrap { width: 100%; overflow: auto; border: 1px solid var(--line-soft); border-radius: 12px; }
-
-    table { width: 100%; border-collapse: collapse; font-size: 11px; }
-
-    th, td {
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 4px 5px;
-      text-align: left;
-      vertical-align: middle;
-    }
-
-    th { background: var(--panel-2); font-weight: 600; }
+    /* ==========================================================================
+       TABELAS PADRÃO E BADGES
+       ========================================================================== */
+    .table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+    
+    th, td { padding: 12px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+    th { background: var(--bg-panel); font-weight: 600; color: #fff; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; white-space: nowrap; }
     td { background: rgba(255,255,255,0.01); }
+    
+    tbody tr { transition: background 0.15s ease; }
+    tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+    tbody tr:last-child td { border-bottom: none; }
 
-    .actions { display: flex; gap: 4px; flex-wrap: wrap; }
-    .tiny { font-size: 11px; }
-    .muted { color: var(--muted); }
+    .actions { display: flex; gap: 6px; flex-wrap: wrap; }
     .center { text-align: center; }
     .right { text-align: right; }
-
-    .summary-cards { display: grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap: 8px; margin-bottom: 10px; }
-
-    .summary-card {
-      border-radius: 12px;
-      border: 1px solid var(--line-soft);
-      background: linear-gradient(180deg, rgba(36,42,39,1), rgba(30,35,32,1));
-      padding: 10px;
-    }
-
-    .summary-card strong {
-      display: block;
-      margin-top: 4px;
-      font-family: 'Oswald', sans-serif;
-      font-size: 24px;
-      letter-spacing: 0.3px;
-    }
-
-    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; font-size: 11px; }
-    .legend-item { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
-    .legend-swatch { width: 14px; height: 14px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.16); }
-
-    .board-wrap { width: 100%; overflow: auto; border: 1px solid var(--line-soft); border-radius: 12px; max-height: 76vh; }
-    .board-table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; font-size: 10px; }
-    .board-table th, .board-table td { padding: 2px 3px; text-align: center; min-width: 22px; }
-    .board-table thead th { position: sticky; top: 0; z-index: 4; }
-    .board-table .month-head { font-size: 10px; letter-spacing: 0.4px; background: #314138; }
-    .board-table .day-head { font-size: 10px; }
-    .board-table .weekday-head { font-size: 9px; }
-    .board-table .weekend-head { background: var(--weekend); }
-    .board-table .holiday-head { background: var(--holiday); }
-    .board-table .mission-head { background: #32433a; }
-    .board-table .mission-subhead { background: #2e3b34; font-size: 9px; }
-    .board-table .rotate-wrap {
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      line-height: 1;
-      margin: 0 auto;
-      white-space: nowrap;
-      min-height: 70px;
-      font-size: 10px;
-      letter-spacing: 0.4px;
-    }
-    .board-table .cell-day { width: 18px; min-width: 18px; height: 20px; }
-    .board-table .mission-toggle-cell { width: 26px; min-width: 26px; background: rgba(255,255,255,0.02); }
-    .board-table .mission-toggle-cell input { width: 13px; height: 13px; }
-    .board-table .mission-toggle-cell.active-assigned { background: rgba(47,125,63,0.42); }
-    .board-table .mission-toggle-cell.active-commissioned { background: rgba(158,122,46,0.48); }
-    .board-table .vacation-cell { background: #000 !important; }
-    .board-table .sticky-col { position: sticky; z-index: 5; }
-    .board-table .sticky-main { background: var(--sticky-1); }
-    .board-table .sticky-mission { background: var(--sticky-2); }
-    .board-table .sticky-person { background: var(--sticky-3); text-align: left; font-size: 10px; }
-    .board-table tbody tr:nth-child(even) .sticky-person,
-    .board-table tbody tr:nth-child(even) .sticky-mission { filter: brightness(1.05); }
-
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; }
-    .mission-card { border: 1px solid var(--line-soft); border-radius: 12px; overflow: hidden; background: rgba(255,255,255,0.02); }
-    .mission-card-head { padding: 10px 12px; color: white; }
-    .mission-card-body { padding: 10px 12px; font-size: 12px; }
-    .mission-list { margin: 8px 0 0; padding-left: 16px; }
-    .mission-list li { margin-bottom: 4px; }
-
-    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 10px; }
-    .toolbar .field { min-width: 240px; max-width: 420px; }
-
-    .print-area, .print-cost-area {
-      background: white;
-      color: black;
-      padding: 18px;
-      border-radius: 10px;
-    }
-
-    .print-area h3, .print-cost-area h3 {
-      margin: 0 0 8px;
-      font-family: 'Oswald', sans-serif;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-      color: black;
-    }
-
-    .print-area table, .print-cost-area table { width: 100%; border-collapse: collapse; }
-    .print-area th, .print-area td, .print-cost-area th, .print-cost-area td {
-      border: 1px solid #555;
-      padding: 6px;
-      font-size: 11px;
-      color: black;
-      background: white;
-    }
-
-    .print-meta { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; font-size: 12px; color: black; }
-
-    .financial-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 10px; }
-    .financial-block { border: 1px solid var(--line-soft); border-radius: 12px; padding: 10px; background: rgba(255,255,255,0.02); }
+    .money-cell { font-variant-numeric: tabular-nums; white-space: nowrap; font-family: monospace; font-size: 14px; }
+    .empty { color: var(--text-muted); font-size: 14px; padding: 24px; text-align: center; font-style: italic; }
+    .tiny { font-size: 11px; }
+    .muted { color: var(--text-muted); }
 
     .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      white-space: nowrap;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 4px 10px; border-radius: 20px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap;
+    }
+    .badge-ok, .badge-cm, .badge-com { background: var(--accent-soft); color: #8fdbab; border: 1px solid var(--accent); }
+    .badge-gr { background: rgba(194, 155, 68, 0.15); color: #f2d07e; border: 1px solid var(--warning); }
+    .badge-no, .badge-dr { background: var(--danger-soft); color: #f29b9b; border: 1px solid var(--danger); }
+    .badge-warn { background: rgba(255, 255, 255, 0.1); color: #ccc; border: 1px solid #777; }
+
+    /* ==========================================================================
+       DASHBOARDS E CARDS DE RESUMO
+       ========================================================================== */
+    .summary-cards, .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 16px; }
+    .summary-card, .metric-box, .manning-summary-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line-soft);
+      background: var(--bg-panel);
+      padding: 16px;
+      display: flex; flex-direction: column; justify-content: center;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.02);
+    }
+    .summary-card strong, .metric-box strong, .manning-summary-card strong { font-family: 'Oswald', sans-serif; font-size: 28px; color: #fff; line-height: 1.2; }
+    .metric-box span, .manning-summary-card span { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; margin-bottom: 4px; }
+    .metric-line span, .metric-box span { font-size: 11px; color: var(--muted); }
+    .metric-line strong, .metric-box strong { font-size: 14px; }
+
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+    .mission-card { border: 1px solid var(--line-soft); border-radius: var(--radius-md); overflow: hidden; background: var(--bg-panel); display: flex; flex-direction: column; }
+    .mission-card-head { padding: 12px 16px; color: white; font-family: 'Oswald', sans-serif; font-size: 18px; letter-spacing: 0.5px; }
+    .mission-card-body { padding: 16px; font-size: 13px; display: flex; flex-direction: column; flex-grow: 1; gap: 6px; }
+    .mission-list { margin: 12px 0 0; padding-left: 20px; line-height: 1.6; }
+    .mission-list li { margin-bottom: 6px; }
+
+    .progress-track { width: 100%; height: 8px; border-radius: 4px; background: rgba(0,0,0,0.3); overflow: hidden; margin-top: 8px; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, var(--warning), var(--accent)); transition: width 0.4s ease; }
+
+    /* ==========================================================================
+       QUADRO COMPLEXO (BOARD - TAB3)
+       ========================================================================== */
+    .board-wrap { width: 100%; overflow: auto; border: 1px solid var(--line-soft); border-radius: var(--radius-md); max-height: 70vh; background: var(--bg-app); }
+    .board-table { border-collapse: separate; border-spacing: 0; min-width: 100%; font-size: 11px; }
+    
+    .board-table th, .board-table td { padding: 4px; text-align: center; border: 1px solid rgba(255,255,255,0.04); }
+    .board-table thead th { position: sticky; background: var(--bg-panel); font-weight: 600; text-transform: uppercase; }
+    
+    .board-table thead tr:nth-child(1) th { top: var(--board-top-row-1); z-index: 11; }
+    .board-table thead tr:nth-child(2) th { top: var(--board-top-row-2); z-index: 10; font-size: 10px; }
+    .board-table thead tr:nth-child(3) th { top: var(--board-top-row-3); z-index: 9; font-size: 9px; color: var(--text-muted); }
+    
+    .board-table .sticky-col { position: sticky; z-index: 12; background: var(--sticky-1); box-shadow: 2px 0 5px rgba(0,0,0,0.2); }
+    .board-table thead .sticky-col { z-index: 15; background: #1a201d; }
+    .board-table tbody tr:nth-child(even) .sticky-col { background: var(--sticky-2); }
+    .board-table .sticky-person { text-align: left; padding-left: 12px; font-size: 12px; }
+    .board-table .sticky-main { background: var(--sticky-1); }
+
+    .board-table .month-head { letter-spacing: 1px; background: #232d27 !important; color: var(--accent); }
+    .board-table .weekend-head { background: var(--weekend) !important; color: #fff; }
+    .board-table .holiday-head { background: var(--holiday) !important; color: #fff; }
+    
+    .board-table .mission-head { min-width: 80px; width: 80px; max-width: 80px; font-size: 10px; white-space: normal; word-break: break-word; vertical-align: middle; }
+    .board-table .cell-day { min-width: 20px; height: 24px; transition: filter 0.2s; }
+    .board-table .cell-day:hover { filter: brightness(1.5); cursor: crosshair; }
+    .board-table .vacation-cell { background: var(--blackout) !important; }
+    
+    .board-table .mission-select-cell { min-width: 80px; width: 80px; padding: 4px; background: rgba(255,255,255,0.02); }
+    .board-table .mission-select-cell.status-gr { background: rgba(194, 155, 68, 0.2); }
+    .board-table .mission-select-cell.status-dr { background: rgba(179, 77, 77, 0.2); }
+    .board-table .mission-select-cell.status-cm { background: rgba(82, 138, 99, 0.2); }
+    
+    .board-assignment-select {
+      width: 100%; height: 26px; border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.4); color: #fff; font-size: 11px; font-weight: 700; text-align: center;
+    }
+    .board-assignment-select:focus { border-color: var(--accent); background: rgba(0,0,0,0.8); }
+
+    .board-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 16px; }
+    .year-switcher { display: flex; align-items: center; gap: 8px; background: var(--bg-input); padding: 4px; border-radius: var(--radius-sm); border: 1px solid var(--line-soft); }
+    .year-switcher select { width: auto; min-width: 80px; padding: 6px; border: none; font-weight: 700; }
+    .year-current { font-size: 12px; color: var(--muted); font-weight: 700; min-width: 42px; text-align: center; }
+    
+    .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; font-size: 12px; padding: 12px; background: var(--bg-panel); border-radius: var(--radius-sm); border: 1px solid var(--line-soft); }
+    .legend-item { display: inline-flex; align-items: center; gap: 8px; color: var(--text-main); }
+    .legend-swatch { width: 16px; height: 16px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+
+    [data-holiday-name] { position: relative; }
+    [data-holiday-name]:hover::after {
+      content: attr(data-holiday-name); position: absolute; left: 50%; bottom: calc(100% + 8px);
+      transform: translateX(-50%); background: #fff; color: #000; padding: 6px 10px;
+      border-radius: 4px; font-size: 11px; white-space: nowrap; z-index: 100; font-weight: 700; box-shadow: var(--shadow-lg); pointer-events: none;
     }
 
-    .badge-ok { background: rgba(47,125,63,0.18); color: #d6f2dd; border: 1px solid rgba(47,125,63,0.5); }
-    .badge-no { background: rgba(141,51,51,0.18); color: #ffd7d7; border: 1px solid rgba(141,51,51,0.48); }
+    /* ==========================================================================
+       DRAG AND DROP & FUNCIONALIDADES EXTRAS
+       ========================================================================== */
+    .drag-handle { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg-input); cursor: grab; font-size: 16px; color: var(--text-muted); user-select: none; }
+    .drag-handle:active { cursor: grabbing; }
+    .drag-handle.disabled { cursor: not-allowed; opacity: 0.3; }
+    .drag-order-badge { display: block; margin-top: 4px; font-size: 10px; color: var(--text-muted); font-weight: 700; }
+    
+    .personnel-row-draggable.dragging { opacity: 0.4; background: var(--bg-panel); }
+    .personnel-row-draggable.drag-over { outline: 2px dashed var(--accent); outline-offset: -2px; background: rgba(82,138,99,0.1); }
 
-    .progress-track {
-      width: 100%;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.1);
-      overflow: hidden;
-    }
+    .editable-title { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+    .edit-pen, .menu-item-edit { border: none; background: rgba(255,255,255,0.05); color: var(--text-muted); border-radius: 4px; font-size: 12px; padding: 4px 6px; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+    .editable-title:hover .edit-pen, .menu-item:hover .menu-item-edit { opacity: 1; }
+    .title-inline-input { width: 100%; min-width: 150px; background: #000; color: #fff; border: 1px solid var(--accent); padding: 4px 8px; border-radius: 4px; font-family: inherit; font-size: inherit; }
 
-    .progress-bar { height: 100%; background: linear-gradient(90deg, var(--warning), var(--accent)); }
+    .dynamic-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .dynamic-row-wide { grid-template-columns: 2fr 100px auto; }
+    
+    .course-dual-grid, .commission-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; }
+    .financial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 16px; }
+    .financial-block { border: 1px solid var(--line-soft); border-radius: var(--radius-md); padding: 16px; background: rgba(0,0,0,0.1); }
+    
+    .pill { border: 1px solid var(--line); background: var(--bg-input); color: var(--text-muted); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .pill.active-open { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .pill.active-closed { background: var(--line-soft); border-color: var(--text-muted); color: #fff; }
+    
+    .toolbar { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 20px; background: rgba(0,0,0,0.15); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--line-soft); }
+    .toolbar .field { min-width: 240px; max-width: 420px; }
 
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .commission-layout { display: grid; grid-template-columns: minmax(360px, 1.05fr) minmax(360px, 1.2fr); gap: 12px; }
+    .process-grid { display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: 8px; margin-bottom: 10px; }
+    .metric-line { display: flex; justify-content: space-between; gap: 8px; align-items: center; border-top: 1px solid var(--line-soft); padding-top: 8px; }
+    .field-inline { display: grid; grid-template-columns: 1.3fr 80px minmax(110px, 150px); gap: 8px; align-items: center; margin-bottom: 8px; }
+    .financial-comparison { display: grid; gap: 8px; }
 
-    .empty { color: var(--muted); font-size: 12px; padding: 8px 2px; }
+    .mission-mode-inline { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .mission-card-header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+    .mission-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 10px; }
 
-    .money-cell { font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .toggle-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .subtab-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .subtab-switch { display: flex; gap: 6px; }
+    .cell-alert { background: rgba(179,77,77,0.35) !important; color: #fff !important; font-weight: 700; }
+
+    .fop-pick-wrap { display: grid; gap: 6px; }
+    .manual-inline { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; color: var(--muted); }
+
+    .locked-note { margin-bottom: 8px; }
+
+    .manning-toolbar { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.2fr); gap: 10px; margin-bottom: 12px; align-items: end; }
+    .manning-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 10px; }
+    .manning-summary-card { border-radius: var(--radius-md); border: 1px solid var(--line-soft); background: var(--bg-panel); padding: 10px; }
+    .manning-summary-card span { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+    .manning-summary-card strong { font-size: 16px; }
+    .manning-single-panel { border-radius: var(--radius-lg); border: 1px solid var(--line-soft); overflow: hidden; background: var(--bg-card); }
+    .manning-mission-head { padding: 12px 14px; color: #fff; }
+    .manning-mission-head .mission-title-main { font-size: 18px; font-weight: 700; }
+    .manning-mission-head .mission-subtitle-main { font-size: 12px; opacity: .9; margin-top: 3px; }
+    .manning-mission-body { padding: 12px 14px 14px; }
+    .manning-value-note { font-size: 11px; color: var(--muted); }
+    .manning-mode-stack { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .manning-empty-state { padding: 18px; }
+
+    .course-search-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .course-dual-grid { display: grid; grid-template-columns: minmax(320px,1fr) minmax(420px,1.4fr); gap: 14px; }
+
+    /* ==========================================================================
+       IMPRESSÃO (PRINT)
+       ========================================================================== */
+    .print-area, .print-cost-area {
+      background: #fff; color: #000; padding: 24px;
+      border-radius: var(--radius-md); border: 1px solid #ddd;
+    }
+    .print-area *, .print-cost-area * { color: #000 !important; }
+    .print-area h3, .print-cost-area h3 { margin: 0 0 12px; font-family: 'Oswald', sans-serif; text-transform: uppercase; color: #000; border-bottom: 2px solid #000; padding-bottom: 4px; }
+    .print-meta { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 16px; font-size: 13px; color: #333; }
+    .print-area table, .print-cost-area table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .print-area th, .print-area td, .print-cost-area th, .print-cost-area td { border: 1px solid #aaa; padding: 8px; font-size: 12px; color: #000; background: #fff !important; }
+    .print-area th, .print-cost-area th { background: #eee !important; font-weight: bold; }
+    .print-mission-toolbar { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+
+    body.print-mission #manningContainer .mission-card { display:none !important; }
+    body.print-mission #manningContainer .mission-card.print-target { display:block !important; }
 
     @media print {
-      html, body { background: white !important; min-width: auto; }
-      body * { visibility: hidden !important; }
-      body.printing-consulta #consultaPrintArea,
-      body.printing-consulta #consultaPrintArea *,
-      body.printing-custo #custoPrintArea,
-      body.printing-custo #custoPrintArea * { visibility: visible !important; }
-      body.printing-consulta #consultaPrintArea,
-      body.printing-custo #custoPrintArea {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        display: block !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        padding: 12mm !important;
-        background: white !important;
+      html, body { background: #fff !important; color: #000 !important; min-width: auto; padding: 0 !important; margin: 0 !important; }
+      body * { visibility: hidden !important; color: #000 !important; }
+      body.printing-consulta #consultaPrintArea, body.printing-consulta #consultaPrintArea *,
+      body.printing-custo #custoPrintArea, body.printing-custo #custoPrintArea * { visibility: visible !important; }
+      body.printing-consulta #consultaPrintArea, body.printing-custo #custoPrintArea {
+        position: absolute; top: 0; left: 0; width: 100%; display: block !important;
+        border: none !important; box-shadow: none !important; padding: 0 !important;
       }
+      body.print-mission #tab11 { display: block !important; visibility: visible !important; position: absolute; top:0; left:0; width:100%; }
+      body.print-mission #tab11 .print-target, body.print-mission #tab11 .print-target * { visibility: visible !important; background: #fff !important; color: #000 !important; border-color: #999 !important; }
+      body.print-mission .manning-mission-head { color: #000 !important; border-bottom: 2px solid #000 !important; background: #eee !important; padding: 8px 0 !important; }
+      body.print-mission .manning-summary-card { border: 1px solid #000 !important; box-shadow: none !important; }
+      body.print-mission .manning-summary-card span, body.print-mission .manning-summary-card strong { color: #000 !important; }
+      body.print-mission .btn, body.print-mission .menu-shell, body.print-mission .header, body.print-mission .manning-toolbar, body.print-mission .topbar, body.print-mission .sidebar-slim { display: none !important; }
+      body.printing-block89 #block89PrintRoot, body.printing-block89 #block89PrintRoot * { visibility: visible !important; position: static !important; }
+      body.printing-block89 #block89PrintRoot { position: absolute !important; top:0; left:0; width: 100% !important; }
+      table { border-collapse: collapse !important; width: 100% !important; }
+      th, td { border: 1px solid #000 !important; padding: 6px !important; font-size: 10pt !important; background: #fff !important; color: #000 !important; }
+      input, select { border: none !important; background: transparent !important; appearance: none; -moz-appearance: none; -webkit-appearance: none; color: #000 !important; }
     }
-    .header-flex {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-  }
+  </style>
 
-  .logo-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-    min-width: 90px;
-  }
-
-  .logo-preview {
-    width: 60px;
-    height: 60px;
-    border: 1px solid rgba(240,240,240,0.16);
-    border-radius: 10px;
-    background: rgba(255,255,255,0.04);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  .logo-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .logo-placeholder {
-    color: var(--muted);
-    font-size: 13px;
-    letter-spacing: 1px;
-    font-weight: 700;
-  }
-
-  .logo-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: flex-end;
-  }
-
-  .editable-title {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .edit-pen,
-  .menu-item-edit {
-    border: 1px solid rgba(110,165,125,0.35);
-    background: rgba(255,255,255,0.06);
-    color: var(--text);
-    border-radius: 8px;
-    font-size: 11px;
-    line-height: 1;
-    padding: 4px 6px;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.15s ease;
-  }
-
-  .editable-title:hover .edit-pen,
-  .menu-item:hover .menu-item-edit {
-    opacity: 1;
-  }
-
-  .menu-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
-  .title-inline-input {
-    width: 100%;
-    min-width: 120px;
-    background: rgba(20,20,20,0.9);
-    color: var(--text);
-    border: 1px solid rgba(110,165,125,0.45);
-    border-radius: 8px;
-    padding: 6px 8px;
-    font-size: 12px;
-  }
-
-  .menu-title-inline {
-    font-size: 11px;
-  }
-
-  .section-divider {
-    margin: 12px 0 8px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(255,255,255,0.10);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.9px;
-    color: var(--accent);
-  }
-
-  .dynamic-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 6px;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-
-  .dynamic-row-wide {
-    grid-template-columns: 1.8fr 120px auto;
-  }
-
-  .compact-actions {
-    justify-content: flex-start;
-    margin-top: 4px;
-  }
-
-  .board-topbar {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
-
-  .year-switcher {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .year-switcher select {
-    width: auto;
-    min-width: 94px;
-  }
-
-  .year-current {
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  [data-holiday-name] {
-    position: relative;
-  }
-
-  [data-holiday-name]:hover::after {
-    content: attr(data-holiday-name);
-    position: absolute;
-    left: 50%;
-    bottom: calc(100% + 6px);
-    transform: translateX(-50%);
-    background: rgba(92,64,125,0.96);
-    color: #efe5ff;
-    padding: 4px 8px;
-    border-radius: 8px;
-    font-size: 10px;
-    white-space: nowrap;
-    z-index: 30;
-    box-shadow: var(--shadow);
-    pointer-events: none;
-  }
-
-  .badge-com {
-    background: rgba(47,125,63,0.22);
-    color: #d6f2dd;
-    border: 1px solid rgba(47,125,63,0.52);
-  }
-
-  .badge-gr {
-    background: rgba(214,171,30,0.24);
-    color: #ffefad;
-    border: 1px solid rgba(214,171,30,0.55);
-  }
-
-  .badge-dr {
-    background: rgba(170,58,58,0.24);
-    color: #ffd6d6;
-    border: 1px solid rgba(170,58,58,0.55);
-  }
-
-  .badge-cm {
-    background: rgba(47,125,63,0.22);
-    color: #d6f2dd;
-    border: 1px solid rgba(47,125,63,0.52);
-  }
-
-  .mission-mode-inline {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .matrix-mission-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 28px;
-  }
-
-  .subtab-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-
-  .subtab-switch {
-    display: flex;
-    gap: 6px;
-  }
-
-  .cell-alert {
-    background: rgba(141,51,51,0.35) !important;
-    color: #fff !important;
-    font-weight: 700;
-  }
-
-  .commission-layout {
-    display: grid;
-    grid-template-columns: minmax(360px, 1.05fr) minmax(360px, 1.2fr);
-    gap: 12px;
-  }
-
-  .process-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(180px, 1fr));
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(120px, 1fr));
-    gap: 8px;
-    margin: 8px 0 10px;
-  }
-
-  .metric-box {
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.03);
-    border-radius: 12px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .metric-box span,
-  .metric-line span {
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .metric-box strong,
-  .metric-line strong {
-    font-size: 14px;
-  }
-
-  .financial-comparison {
-    display: grid;
-    gap: 8px;
-  }
-
-  .field-inline {
-    display: grid;
-    grid-template-columns: 1.3fr 80px minmax(110px, 150px);
-    gap: 8px;
-    align-items: center;
-  }
-
-  .metric-line {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    align-items: center;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding-top: 6px;
-  }
-
-  .toggle-pills {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .pill {
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.04);
-    color: var(--text);
-    border-radius: 999px;
-    padding: 6px 10px;
-    font-size: 11px;
-    cursor: pointer;
-  }
-
-  .pill.active-open {
-    background: rgba(47,125,63,0.28);
-    border-color: rgba(47,125,63,0.7);
-    color: #d6f2dd;
-  }
-
-  .pill.active-closed {
-    background: rgba(255,255,255,0.14);
-    border-color: rgba(255,255,255,0.24);
-  }
-
-  .fop-pick-wrap {
-    display: grid;
-    gap: 6px;
-  }
-
-  .manual-inline {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 10px;
-    color: var(--muted);
-  }
-
-  @media (max-width: 1400px) {
-    .commission-layout {
-      grid-template-columns: 1fr;
+  <style id="contrast-fix-tab7-20260321">
+    /* Correção pontual de contraste em superfícies escuras */
+    .menu-shell,
+    .menu-dropdown,
+    .menu-auth,
+    .menu-item,
+    .card,
+    .financial-block,
+    .table-wrap,
+    .field-group,
+    .toolbar,
+    .login-grid,
+    .login-status {
+      color: var(--text-main);
     }
 
-    .metrics-grid {
-      grid-template-columns: repeat(2, minmax(120px, 1fr));
-    }
-  }
-
-
-  /* ===== Patch final ===== */
-  .money-readonly { background: rgba(255,255,255,0.06); color: var(--text); }
-  .course-dual-grid, .commission-layout { display:grid; grid-template-columns: minmax(320px,1fr) minmax(420px,1.4fr); gap:14px; }
-  .course-search-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-  .metrics-grid { display:grid; grid-template-columns: repeat(4, minmax(110px,1fr)); gap:8px; margin:12px 0; }
-  .metric-box { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,.08); padding:10px; border-radius:10px; display:flex; flex-direction:column; gap:4px; }
-
-  .drag-handle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.04);
-    cursor: grab;
-    font-size: 14px;
-    line-height: 1;
-    user-select: none;
-  }
-  .drag-handle.disabled {
-    cursor: not-allowed;
-    opacity: 0.45;
-  }
-  .personnel-row-draggable.dragging {
-    opacity: 0.45;
-  }
-  .personnel-row-draggable.drag-over {
-    outline: 2px dashed rgba(110,165,125,0.7);
-    outline-offset: -2px;
-  }
-  .drag-order-badge {
-    display:block;
-    margin-top:4px;
-    font-size:10px;
-    color: var(--muted);
-  }
-  .print-area, .print-area *, .print-cost-area, .print-cost-area * {
-    color: #000 !important;
-  }
-  .metric-box span { font-size:11px; opacity:.8; }
-  .metric-box strong { font-size:16px; }
-  .financial-comparison .field-inline { display:grid; grid-template-columns: 150px 80px 1fr; align-items:center; gap:8px; margin-bottom:8px; }
-  .financial-comparison .metric-line { display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-top:1px solid rgba(255,255,255,.08); }
-  .mission-card-header { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
-  .mission-meta-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap:8px; margin-bottom:10px; }
-  .subtab-switch { display:flex; gap:6px; }
-  .list-card ul { margin: 0; padding-left: 18px; }
-  .list-card li { margin: 4px 0; }
-  .board-topbar { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
-  .year-switcher { display:flex; align-items:center; gap:8px; }
-  .year-current { font-weight:700; min-width:42px; text-align:center; }
-  .print-mission-toolbar { display:flex; justify-content:flex-end; margin-bottom:8px; }
-  body.print-mission #manningContainer .mission-card { display:none !important; }
-  body.print-mission #manningContainer .mission-card.print-target { display:block !important; }
-  @media print {
-    body.print-mission .menu-dropdown,
-    body.print-mission .header,
-    body.print-mission .toolbar,
-    body.print-mission .notice,
-    body.print-mission .summary-cards,
-    body.print-mission .legend,
-    body.print-mission .board-topbar,
-    body.print-mission .print-mission-toolbar { display:none !important; }
-    body.print-mission #manningContainer .mission-card { display:none !important; }
-    body.print-mission #manningContainer .mission-card.print-target { display:block !important; border:none !important; box-shadow:none !important; }
-  }
-
-
-  .manning-toolbar {
-    display: grid;
-    grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.2fr);
-    gap: 10px;
-    margin-bottom: 12px;
-    align-items: end;
-  }
-
-  .manning-summary-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-
-  .manning-summary-card {
-    border-radius: 12px;
-    border: 1px solid var(--line-soft);
-    background: linear-gradient(180deg, rgba(36,42,39,1), rgba(30,35,32,1));
-    padding: 10px;
-  }
-
-  .manning-summary-card span {
-    display: block;
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-  }
-
-  .manning-summary-card strong {
-    font-size: 16px;
-  }
-
-  .manning-single-panel {
-    border-radius: 14px;
-    border: 1px solid var(--line-soft);
-    overflow: hidden;
-    background: linear-gradient(180deg, rgba(38,44,41,1), rgba(28,33,30,1));
-  }
-
-  .manning-mission-head {
-    padding: 12px 14px;
-    color: #fff;
-  }
-
-  .manning-mission-head .mission-title-main {
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  .manning-mission-head .mission-subtitle-main {
-    font-size: 12px;
-    opacity: .9;
-    margin-top: 3px;
-  }
-
-  .manning-mission-body {
-    padding: 12px 14px 14px;
-  }
-
-  .manning-value-note {
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .manning-mode-stack {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .manning-empty-state {
-    padding: 18px;
-  }
-
-  @media (max-width: 960px) {
-    .manning-toolbar {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  body.print-mission .manning-toolbar,
-  body.print-mission .manning-print-toolbar {
-    display: none !important;
-  }
-
-  @media print {
-    body.print-mission .menu-shell,
-    body.print-mission .header,
-    body.print-mission #tab1,
-    body.print-mission #tab2,
-    body.print-mission #tab3,
-    body.print-mission #tab4,
-    body.print-mission #tab5,
-    body.print-mission #tab6,
-    body.print-mission #tab7,
-    body.print-mission #tab8,
-    body.print-mission #tab9,
-    body.print-mission #tab10,
-    body.print-mission #tab12,
-    body.print-mission #tab13,
-    body.print-mission #tab14,
-    body.print-mission #tab11 .subtab-bar,
-    body.print-mission #tab11 .manning-toolbar {
-      display: none !important;
+    .card p,
+    .card span,
+    .card strong,
+    .card small,
+    .card li,
+    .financial-block p,
+    .financial-block span,
+    .financial-block strong,
+    .financial-block small,
+    .financial-block li,
+    .table-wrap td,
+    .table-wrap label {
+      color: var(--text-main);
     }
 
-    body.print-mission #tab11 {
-      display: block !important;
+    .section-title,
+    .financial-block .section-title,
+    .menu-title,
+    .header h1,
+    .header-flex h1,
+    h3.section-title,
+    h4.section-title {
+      color: #fff;
     }
 
-    body.print-mission #tab11 .card {
-      border: none !important;
-      box-shadow: none !important;
-      background: #fff !important;
-      padding: 0 !important;
+    th {
+      color: #fff;
     }
 
-    body.print-mission #tab11 .manning-single-panel {
-      display: none !important;
+    td,
+    .money-cell,
+    .money-readonly,
+    .empty-state,
+    .login-meta,
+    label {
+      color: var(--text-main);
     }
 
-    body.print-mission #tab11 .manning-single-panel.print-target {
-      display: block !important;
-      border: none !important;
-      box-shadow: none !important;
-      background: #fff !important;
-      color: #000 !important;
+    input,
+    select,
+    textarea {
+      color: var(--text-main) !important;
+      background: var(--bg-input) !important;
     }
 
-    body.print-mission #tab11 .manning-single-panel.print-target .manning-mission-body,
-    body.print-mission #tab11 .manning-single-panel.print-target table,
-    body.print-mission #tab11 .manning-single-panel.print-target th,
-    body.print-mission #tab11 .manning-single-panel.print-target td,
-    body.print-mission #tab11 .manning-single-panel.print-target .manning-value-note,
-    body.print-mission #tab11 .manning-single-panel.print-target .manual-inline,
-    body.print-mission #tab11 .manning-single-panel.print-target .manning-summary-card span,
-    body.print-mission #tab11 .manning-single-panel.print-target .manning-summary-card strong {
-      color: #000 !important;
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--text-muted) !important;
+      opacity: 1;
     }
 
-    body.print-mission #tab11 .manning-single-panel.print-target .manning-summary-card {
-      background: #fff !important;
-      border: 1px solid #bbb !important;
+    .btn,
+    .btn-primary,
+    .btn-danger,
+    .btn-secondary:hover:not(:disabled) {
+      color: #fff;
     }
 
-    body.print-mission #tab11 .manning-single-panel.print-target .manning-mission-head {
-      color: #000 !important;
-      border-bottom: 1px solid #bbb !important;
+    .btn-secondary {
+      color: var(--text-main);
     }
 
-    body.print-mission #tab11 .manning-single-panel.print-target input,
-    body.print-mission #tab11 .manning-single-panel.print-target select {
-      border: 1px solid #999 !important;
-      color: #000 !important;
-      background: #fff !important;
+    /* Foco principal: calculadora de ajuda de custo */
+    #tab7,
+    #tab7 .card,
+    #tab7 .financial-block,
+    #tab7 .table-wrap,
+    #tab7 table,
+    #tab7 td,
+    #tab7 label,
+    #tab7 span,
+    #tab7 strong,
+    #tab7 p {
+      color: var(--text-main);
     }
-  }
 
-</style>
+    #tab7 th,
+    #tab7 .section-title {
+      color: #fff;
+    }
+
+    #tab7 input,
+    #tab7 select,
+    #tab7 textarea {
+      color: var(--text-main) !important;
+      background: var(--bg-input) !important;
+      border-color: var(--line) !important;
+    }
+
+    #tab7 input[readonly] {
+      color: var(--text-main) !important;
+    }
+
+    /* Lista nativa aberta do select mantém fundo claro do sistema */
+    option {
+      color: #000;
+    }
+  </style>
+
+
+  <style id="contrast-fix-extra">
+    /* Ajustes complementares de contraste nas áreas indicadas */
+    #tab1 .table-wrap td,
+    #tab1 .table-wrap td *,
+    #tab1 .empty,
+    #tab1 .notice,
+    #tab1 label,
+    #tab1 .toggle-line span,
+    #tab1 .field-group label,
+    #tab2 .table-wrap td,
+    #tab2 .table-wrap td *,
+    #tab2 .empty,
+    #tab2 label,
+    #tab5 #personMissionBody td:nth-child(1),
+    #tab5 #personMissionBody td:nth-child(1) *,
+    #tab5 #personMissionBody td:nth-child(2),
+    #tab5 #personMissionBody td:nth-child(2) *,
+    #tab7 .financial-block,
+    #tab7 .financial-block td,
+    #tab7 .financial-block td *,
+    #tab7 .financial-block label,
+    #tab7 .financial-block p,
+    #tab7 .financial-block span,
+    #tab7 .financial-block strong,
+    #tab7 .empty,
+    #tab12 #idprep11Container td,
+    #tab12 #idprep11Container td *,
+    #tab12 #idprep11Container label,
+    #tab12 #idprep11Container .empty,
+    #tab13 #idprep12Container td,
+    #tab13 #idprep12Container td *,
+    #tab13 #idprep12Container label,
+    #tab13 #idprep12Container .empty {
+      color: var(--text-main) !important;
+    }
+
+    #tab1 .section-title,
+    #tab1 .table-wrap th,
+    #tab2 .section-title,
+    #tab2 .table-wrap th,
+    #tab5 .section-title,
+    #tab5 #personMissionHead th,
+    #tab7 .section-title,
+    #tab7 .financial-block th,
+    #tab12 .section-title,
+    #tab12 #idprep11Container th,
+    #tab13 .section-title,
+    #tab13 #idprep12Container th {
+      color: #fff !important;
+    }
+
+    #tab1 input,
+    #tab1 select,
+    #tab1 textarea,
+    #tab2 input,
+    #tab2 select,
+    #tab2 textarea,
+    #tab7 input,
+    #tab7 select,
+    #tab7 textarea,
+    #tab12 input,
+    #tab12 select,
+    #tab12 textarea,
+    #tab13 input,
+    #tab13 select,
+    #tab13 textarea {
+      color: var(--text-main) !important;
+      background: var(--bg-input) !important;
+      border-color: var(--line) !important;
+    }
+
+    #tab1 input::placeholder,
+    #tab1 textarea::placeholder,
+    #tab2 input::placeholder,
+    #tab2 textarea::placeholder,
+    #tab7 input::placeholder,
+    #tab7 textarea::placeholder,
+    #tab12 input::placeholder,
+    #tab12 textarea::placeholder,
+    #tab13 input::placeholder,
+    #tab13 textarea::placeholder {
+      color: var(--text-muted) !important;
+      opacity: 1;
+    }
+
+    #tab1 .drag-handle,
+    #tab2 .drag-handle {
+      color: var(--text-main) !important;
+    }
+  </style>
+
+
+  <style id="design-system-inovador">
+    :root {
+      --bg-app: #07090a;
+      --bg-page: #07090a;
+      --bg-card: #09100e;
+      --bg-panel: #0b1410;
+      --bg-input: #07090a;
+      --line: #142018;
+      --line-soft: rgba(255,255,255,0.035);
+      --line-focus: rgba(62,207,130,0.25);
+      --text-main: #b8ccc4;
+      --text-muted: #2e5040;
+      --accent: #3ecf82;
+      --accent-hover: #52e096;
+      --accent-soft: rgba(62,207,130,0.1);
+      --danger: #9a3030;
+      --danger-hover: #b03a3a;
+      --danger-soft: rgba(154,48,48,0.1);
+      --warning: #9a7020;
+      --ok: #3ecf82;
+      --bg: #07090a;
+      --bg-soft: #0b1410;
+      --panel: #0b1410;
+      --panel-2: #0f1a14;
+      --text: #b8ccc4;
+      --muted: #2e5040;
+      --accent-2: #52e096;
+      --accent-3: #7aeab0;
+      --danger-2: #b03a3a;
+      --input: #07090a;
+      --card: #09100e;
+      --holiday: #1a0d28;
+      --weekend: #0a0a12;
+      --blackout: #050707;
+      --sticky-1: #07090a;
+      --sticky-2: #090d0c;
+      --sticky-3: #0b1010;
+      --shadow: 0 4px 20px rgba(0,0,0,0.5);
+      --radius: 10px;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    html, body { background: var(--bg-app) !important; }
+    * { scrollbar-width: thin; scrollbar-color: #142018 #07090a; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #07090a; }
+    ::-webkit-scrollbar-thumb { background: #142018; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3ecf82; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position: fixed; top: 0; left: 52px; right: 0; z-index: 1900;
+      height: 48px; background: #07090a; border-bottom: 1px solid #0f1a14;
+      display: flex; align-items: center; padding: 0 20px; gap: 14px;
+    }
+    .topbar-brand { display: flex; align-items: center; gap: 10px; }
+    .topbar-logo { width: 26px; height: 26px; border-radius: 6px; border: 1px solid #1a3020; display: flex; align-items: center; justify-content: center; }
+    .topbar-title { font-family:'Oswald',sans-serif; font-size: 14px; letter-spacing: .6px; text-transform: uppercase; color: #9ab8b0; white-space: nowrap; }
+    .topbar-year { font-size: 10px; color: #1e4030; letter-spacing: .5px; margin-top: 1px; }
+    .topbar-shortcuts { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
+    .shortcut-pill {
+      background: transparent; border: 1px solid #0f1a14; color: #2e5040;
+      font-size: 11px; font-weight: 500; padding: 5px 14px; border-radius: 20px;
+      cursor: pointer; transition: all .15s ease; white-space: nowrap;
+      font-family:'Roboto Condensed',Arial,sans-serif;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .shortcut-pill::before { content:''; width: 4px; height: 4px; border-radius: 50%; background: #1a4030; transition: background .15s; }
+    .shortcut-pill:hover { background: #0b1410; border-color: #1a2e1e; color: #6a9888; }
+    .shortcut-pill:hover::before { background: #3a8060; }
+    .shortcut-pill.active { background: #0a1e14; border-color: #1a4030; color: #3ecf82; }
+    .shortcut-pill.active::before { background: #3ecf82; }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .firebase-status { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #1e4030; letter-spacing: .4px; }
+    .firebase-dot { width: 6px; height: 6px; border-radius: 50%; background: #1a5030; position: relative; }
+    .firebase-dot.online { background: #3ecf82; }
+    .firebase-dot.online::after {
+      content:''; position: absolute; inset: -3px; border-radius: 50%;
+      border: 1px solid rgba(62,207,130,.3);
+      animation: fbpulse 2.5s ease-in-out infinite;
+    }
+    @keyframes fbpulse { 0%,100%{opacity:.2;transform:scale(1)} 50%{opacity:.8;transform:scale(1.3)} }
+
+    /* ── SIDEBAR SLIM ── */
+    .sidebar-slim {
+      position: fixed; top: 0; left: 0; bottom: 0; width: 52px; z-index: 2000;
+      background: #07090a; border-right: 1px solid #0f1a14;
+      display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 4px;
+    }
+    .sl-brand { width: 32px; height: 32px; border-radius: 7px; border: 1px solid #1a3020; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+    .sl-sep { width: 24px; height: 1px; background: #0f1a14; margin: 4px 0; flex-shrink: 0; }
+    .sl-item {
+      width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; transition: all .15s; position: relative;
+      border: 1px solid transparent; flex-shrink: 0;
+    }
+    .sl-item:hover { background: #0b1410; border-color: #142018; }
+    .sl-item.active { background: #0a1e14; border-color: #1a3828; }
+    .sl-item.active::before {
+      content:''; position: absolute; left: -1px; top: 50%; transform: translateY(-50%);
+      width: 2px; height: 16px; background: #3ecf82; border-radius: 0 2px 2px 0;
+    }
+    .sl-item svg { width: 15px; height: 15px; stroke: #1e4030; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: stroke .15s; }
+    .sl-item:hover svg { stroke: #4a7860; }
+    .sl-item.active svg { stroke: #3ecf82; }
+    .sl-tooltip {
+      position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%);
+      background: #0f1a14; border: 1px solid #1a2e1e; color: #8ab8a8;
+      font-size: 11px; padding: 4px 10px; border-radius: 5px; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity .15s;
+      font-family:'Roboto Condensed',Arial,sans-serif; z-index: 3000;
+    }
+    .sl-item:hover .sl-tooltip { opacity: 1; }
+    .sl-spacer { flex: 1; }
+
+    /* ── MENU SHELL ── */
+    .menu-shell { position: relative; top: auto; left: auto; z-index: 2001; }
+    .menu-toggle {
+      border: 1px solid #0f1a14; background: #0b1410; color: #2e5040;
+      border-radius: 7px; padding: 5px 13px; font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: all .15s; white-space: nowrap;
+      font-family:'Roboto Condensed',Arial,sans-serif; letter-spacing: .3px;
+    }
+    .menu-toggle:hover { background: #0f1a14; border-color: #1a2e1e; color: #6a9888; }
+    .menu-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0; left: auto;
+      width: 290px; max-height: 82vh; overflow-y: auto; padding: 14px;
+      background: #09100e; border: 1px solid #142018; border-radius: 11px;
+      box-shadow: 0 16px 48px rgba(0,0,0,.6); display: none;
+      animation: fadeIn .15s ease-out;
+    }
+    .menu-dropdown.open { display: block; }
+    .menu-title { font-family:'Oswald',sans-serif; font-size: 18px; margin: 0 0 2px 2px; text-transform: uppercase; letter-spacing: .8px; color: #8ab8a8; }
+    .menu-subtitle { margin: 0 0 12px 2px; color: #1e4030; font-size: 12px; }
+    .menu-auth { margin-bottom: 12px; padding: 10px; border: 1px solid #0f1a14; border-radius: 8px; background: rgba(0,0,0,.2); }
+    .menu-item {
+      width: 100%; text-align: left; border: 1px solid transparent;
+      background: transparent; color: #3a6050; border-radius: 6px;
+      padding: 8px 10px; font-size: 13px; cursor: pointer; transition: all .12s;
+      display: flex; align-items: center; justify-content: space-between;
+      font-family:'Roboto Condensed',Arial,sans-serif;
+    }
+    .menu-item:hover { background: #0b1410; color: #7a9888; }
+    .menu-item.active { background: #0a1e14; border-color: #1a3828; color: #3ecf82; }
+
+    /* ── PAGE ── */
+    .page { padding: 64px 24px 24px 72px !important; max-width: 1800px; margin: 0 auto; }
+
+    /* ── CARDS ── */
+    .card { background: #09100e; border: 1px solid #0f1a14; border-radius: 11px; padding: 18px 20px; margin-bottom: 12px; box-shadow: none; transition: border-color .2s; }
+    .card:hover { border-color: #162218; }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-family:'Oswald',sans-serif; font-size: 17px; letter-spacing: .6px;
+      text-transform: uppercase; color: #8ab8a8; margin: 0 0 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title::before { content:''; display: block; width: 2px; height: 16px; background: #3ecf82; border-radius: 1px; flex-shrink: 0; }
+
+    /* ── SECTION DIVIDER ── */
+    .section-divider {
+      margin: 18px 0 12px; padding-top: 12px; border-top: 1px solid #0f1a14;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.4px; color: #1e4030;
+      text-transform: uppercase; display: flex; align-items: center; gap: 8px;
+    }
+    .section-divider::after { content:''; flex: 1; height: 1px; background: #0f1a14; }
+
+    /* ── INPUTS ── */
+    input, select, textarea {
+      border-radius: 6px !important; border: 1px solid #142018 !important;
+      background: #07090a !important; color: #9ab8b0 !important;
+      padding: 8px 11px; font-size: 13px; transition: border-color .15s, box-shadow .15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #2a6040 !important; box-shadow: 0 0 0 3px rgba(62,207,130,.1) !important;
+      background: #080e0c !important; outline: none !important;
+    }
+    input::placeholder, textarea::placeholder { color: #1a3828 !important; }
+    label { font-size: 10px !important; color: #1e4030 !important; letter-spacing: .7px; text-transform: uppercase; font-weight: 600; }
+    option { background: #09100e; color: #9ab8b0; }
+
+    /* ── BOTÕES ── */
+    .btn { border-radius: 6px !important; font-size: 12px !important; font-weight: 600 !important; padding: 8px 16px !important; letter-spacing: .3px !important; transition: all .15s !important; }
+    .btn:active { transform: scale(.97) !important; }
+    .btn-primary { background: #0f3a22 !important; border: 1px solid #1a5030 !important; color: #6ae8a8 !important; box-shadow: none !important; }
+    .btn-primary:hover:not(:disabled) { background: #144228 !important; border-color: #2a6040 !important; color: #8af0c0 !important; }
+    .btn-secondary { background: transparent !important; border: 1px solid #0f1a14 !important; color: #2e5040 !important; }
+    .btn-secondary:hover:not(:disabled) { background: #0b1410 !important; border-color: #162218 !important; color: #6a9888 !important; }
+    .btn-danger { background: #1e0a0a !important; border: 1px solid #3a1414 !important; color: #c07070 !important; box-shadow: none !important; }
+    .btn-danger:hover:not(:disabled) { background: #280e0e !important; border-color: #4a1a1a !important; }
+
+    /* ── CORREÇÃO 1, 2, 3: ROLAGEM HORIZONTAL NAS TABELAS ──
+       Aplica overflow-x: auto em TODOS os table-wrap do sistema          */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid #0f1a14 !important;
+      border-radius: 9px !important;
+      background: rgba(0,0,0,.1) !important;
+    }
+    /* Tab 5 — Dashboard por Militar: container do card também precisa rolar */
+    #tab5 .card { overflow-x: auto !important; }
+    #tab5 .table-wrap { overflow-x: auto !important; }
+    /* Tab 7 — Calculadora: blocos financeiros rolam individualmente */
+    #tab7 .financial-block { overflow-x: auto !important; }
+    #tab7 .table-wrap { overflow-x: auto !important; }
+    /* Tab 1 — tabela de efetivo */
+    #tab1 .table-wrap { overflow-x: auto !important; }
+    table { min-width: max-content; }
+
+    th { background: #07090a !important; color: #1a3828 !important; font-size: 9px !important; letter-spacing: .9px !important; padding: 9px 13px !important; border-bottom: 1px solid #0f1a14 !important; text-transform: uppercase; white-space: nowrap; }
+    td { padding: 9px 13px !important; border-bottom: 1px solid #080e0c !important; color: #7a9888 !important; font-size: 12px !important; vertical-align: middle; white-space: nowrap; }
+    tbody tr:last-child td { border-bottom: none !important; }
+    tbody tr:hover { background: rgba(62,207,130,.025) !important; }
+    .money-cell { color: #8ab8a8 !important; font-variant-numeric: tabular-nums; font-size: 12px !important; }
+
+    /* ── BADGES ── */
+    .badge { border-radius: 4px !important; font-size: 9px !important; padding: 2px 8px !important; letter-spacing: .5px !important; font-weight: 700; }
+    .badge-ok, .badge-cm, .badge-com { background: #0a1e14 !important; color: #3ecf82 !important; border: 1px solid #1a3828 !important; }
+    .badge-gr { background: #1a1800 !important; color: #c8a840 !important; border: 1px solid #2a2800 !important; }
+    .badge-no, .badge-dr { background: #180808 !important; color: #c06060 !important; border: 1px solid #2a1010 !important; }
+    .badge-warn { background: rgba(255,255,255,.04) !important; color: #4a6858 !important; border: 1px solid #142018 !important; }
+
+    /* ── SUMMARY CARDS ── */
+    .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 10px; margin-bottom: 14px; }
+    .summary-card { background: #07090a !important; border: 1px solid #0f1a14 !important; border-radius: 9px !important; padding: 13px 15px !important; }
+    .summary-card strong { font-family:'Oswald',sans-serif; font-size: 24px !important; color: #8ab8a8 !important; line-height: 1.2; display: block; }
+    .summary-card div.muted { font-size: 10px !important; color: #1e3828 !important; text-transform: uppercase; letter-spacing: .7px; margin-bottom: 4px; }
+
+    /* ── NOTICE ── */
+    .notice { border-left: 2px solid #3ecf82 !important; background: rgba(62,207,130,.06) !important; border-radius: 0 6px 6px 0 !important; font-size: 12px !important; color: #4a8870 !important; padding: 10px 14px !important; }
+
+    /* ── FINANCIAL BLOCK ── */
+    .financial-block { border: 1px solid #0f1a14 !important; border-radius: 9px !important; padding: 14px !important; background: rgba(0,0,0,.1) !important; overflow-x: auto !important; }
+
+    /* ── BOARD ── */
+    .board-wrap { border: 1px solid #0f1a14 !important; border-radius: 9px !important; background: var(--bg-app) !important; }
+    .board-table .month-head { background: #080e0c !important; color: #3ecf82 !important; letter-spacing: .8px; font-size: 10px !important; }
+    .board-table thead th { background: #07090a !important; }
+    .board-table .weekend-head { background: #0a0a12 !important; }
+    .board-table .holiday-head { background: #1a0d28 !important; }
+    .board-table .mission-select-cell.status-gr { background: rgba(200,168,64,.18) !important; }
+    .board-table .mission-select-cell.status-dr { background: rgba(192,96,96,.16) !important; }
+    .board-table .mission-select-cell.status-cm { background: rgba(160,108,216,.18) !important; }
+    .board-assignment-select { background: rgba(0,0,0,.5) !important; border: 1px solid #142018 !important; border-radius: 4px !important; color: #6a9888 !important; font-size: 10px !important; }
+
+    /* ── LEGEND ── */
+    .legend { background: #07090a !important; border: 1px solid #0f1a14 !important; border-radius: 8px !important; padding: 10px 14px !important; }
+    .legend-item { font-size: 11px !important; color: #2e5040 !important; }
+    .legend-swatch { border-radius: 3px !important; width: 12px !important; height: 12px !important; }
+
+    /* ── TOOLBAR ── */
+    .toolbar { background: rgba(0,0,0,.15) !important; border: 1px solid #0f1a14 !important; border-radius: 8px !important; padding: 12px 14px !important; }
+
+    /* ── YEAR SWITCHER ── */
+    .year-switcher { background: #07090a !important; border: 1px solid #0f1a14 !important; border-radius: 6px !important; }
+    .year-current { color: #1e4030 !important; }
+
+    /* ── STEPPER DO FORMULÁRIO ── */
+    .form-stepper { display:flex; align-items:flex-start; gap:0; margin-bottom:20px; overflow-x:auto; padding-bottom:4px; }
+    .fstep { display:flex; flex-direction:column; align-items:center; gap:4px; position:relative; min-width:90px; }
+    .fstep-dot { width:22px; height:22px; border-radius:50%; border:1px solid #142018; display:flex; align-items:center; justify-content:center; font-size:9px; color:#1e4030; flex-shrink:0; font-weight:700; background:#07090a; }
+    .fstep.done .fstep-dot { background:#0a1e14; border-color:#2a6040; color:#3ecf82; }
+    .fstep.cur .fstep-dot { background:#0f2e1e; border-color:#3ecf82; color:#3ecf82; box-shadow:0 0 0 3px rgba(62,207,130,.15); }
+    .fstep-lbl { font-size:9px; color:#1e4030; white-space:nowrap; letter-spacing:.4px; text-transform:uppercase; }
+    .fstep.cur .fstep-lbl { color:#3ecf82; }
+    .fstep.done .fstep-lbl { color:#2a6040; }
+    .fstep-line { position:absolute; top:11px; left:100%; width:68px; height:1px; background:#0f1a14; }
+    .fstep-line.done { background:#1a4030; }
+    .stepper-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:20px; }
+    /* Seções do stepper: ocultas por padrão, JS controla visibilidade */
+    .form-step-section { display: none; }
+    .form-step-section.active { display: block !important; }
+
+    /* ── PRINT ── */
+    @media print {
+      .topbar, .sidebar-slim { display: none !important; }
+      .page { padding: 12px !important; }
+      .table-wrap { overflow-x: visible !important; }
+    }
+  </style>
+
 </head>
 <body>
-  <div class="menu-shell">
-    <button class="menu-toggle" id="menuToggle">☰ MENU ▾</button>
-    <div class="menu-dropdown" id="menuDropdown">
-      <div class="menu-title">QMF 2026</div>
-      <div class="menu-subtitle">Acesso e navegação</div>
-      <div class="menu-auth" id="loginPanel"></div>
-      <div class="menu-list" id="menuList"></div>
+  <nav class="sidebar-slim" id="sidebarSlim">
+    <div class="sl-brand">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#3ecf82" stroke-width="1.2"/><path d="M4.5 7l2 2 3-3" stroke="#3ecf82" stroke-width="1.2" stroke-linecap="round"/></svg>
     </div>
-  </div>
+    <div class="sl-item active" data-tab="tab3"><svg viewBox="0 0 15 15"><rect x="2" y="2" width="4.5" height="4.5" rx="1"/><rect x="8.5" y="2" width="4.5" height="4.5" rx="1"/><rect x="2" y="8.5" width="4.5" height="4.5" rx="1"/><rect x="8.5" y="8.5" width="4.5" height="4.5" rx="1"/></svg><span class="sl-tooltip">Quadro</span></div>
+    <div class="sl-item" data-tab="tab1"><svg viewBox="0 0 15 15"><circle cx="7.5" cy="5" r="2.5"/><path d="M2.5 13c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg><span class="sl-tooltip">Efetivo</span></div>
+    <div class="sl-item" data-tab="tab2"><svg viewBox="0 0 15 15"><circle cx="7.5" cy="7.5" r="5"/><path d="M7.5 4v3.5l2 2"/></svg><span class="sl-tooltip">Missões</span></div>
+    <div class="sl-item" data-tab="tab4"><svg viewBox="0 0 15 15"><path d="M2 11l3-3 2 2 3-4 3 3"/><rect x="2" y="2" width="11" height="11" rx="1"/></svg><span class="sl-tooltip">Dashboard Missão</span></div>
+    <div class="sl-item" data-tab="tab5"><svg viewBox="0 0 15 15"><rect x="2" y="2" width="11" height="11" rx="1"/><path d="M2 6h11M6 2v11"/></svg><span class="sl-tooltip">Dashboard Militar</span></div>
+    <div class="sl-sep"></div>
+    <div class="sl-item" data-tab="tab7"><svg viewBox="0 0 15 15"><circle cx="7.5" cy="7.5" r="5"/><path d="M7.5 5v2.5l1.5 1.5"/></svg><span class="sl-tooltip">Custos</span></div>
+    <div class="sl-item" data-tab="tab8"><svg viewBox="0 0 15 15"><rect x="2" y="4" width="11" height="8" rx="1"/><path d="M5 4V3a2 2 0 014 0v1"/><circle cx="7.5" cy="8.5" r="1"/></svg><span class="sl-tooltip">Custo da Missão</span></div>
+    <div class="sl-item" data-tab="tab9"><svg viewBox="0 0 15 15"><path d="M7.5 2v11M4 5.5l3.5-3.5 3.5 3.5M4 9.5l3.5 3.5 3.5-3.5"/></svg><span class="sl-tooltip">Comissionamento</span></div>
+    <div class="sl-sep"></div>
+    <div class="sl-item" data-tab="tab12"><svg viewBox="0 0 15 15"><path d="M2 13l4-4 3 3 4-6"/><circle cx="13" cy="6" r="1"/></svg><span class="sl-tooltip">IDPREP 1.1</span></div>
+    <div class="sl-item" data-tab="tab13"><svg viewBox="0 0 15 15"><path d="M2 11l3-4 2 2 2-3 3 3"/><rect x="2" y="2" width="11" height="11" rx="1"/></svg><span class="sl-tooltip">IDPREP 1.2</span></div>
+    <div class="sl-item" data-tab="tab14"><svg viewBox="0 0 15 15"><path d="M3 2h9v11H3z"/><path d="M5 5h5M5 7.5h5M5 10h3"/></svg><span class="sl-tooltip">Cursos</span></div>
+    <div class="sl-spacer"></div>
+    <div class="sl-item" data-tab="tab6"><svg viewBox="0 0 15 15"><path d="M4 2h7l2 2v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M9 2v3h3M5 7h5M5 9.5h5M5 12h3"/></svg><span class="sl-tooltip">Consulta / PDF</span></div>
+    <div class="sl-item" data-tab="tab11"><svg viewBox="0 0 15 15"><circle cx="5" cy="7.5" r="2"/><circle cx="10" cy="7.5" r="2"/><path d="M7 7.5h0"/></svg><span class="sl-tooltip">Manning</span></div>
+    <div class="sl-item" data-tab="tab10"><svg viewBox="0 0 15 15"><circle cx="7.5" cy="7.5" r="5"/><path d="M7.5 5v3h2"/></svg><span class="sl-tooltip">Acessos</span></div>
+  </nav>
+
+  <header class="topbar" id="topbarMain">
+    <div class="topbar-brand">
+      <div class="topbar-logo"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#3ecf82" stroke-width="1.2"/><path d="M4 6.5l2 2 3-3" stroke="#3ecf82" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+      <div><div class="topbar-title">SGM · 1º GDAAE</div><div class="topbar-year">QMF · 2026</div></div>
+    </div>
+    <div class="topbar-shortcuts" id="topbarShortcuts">
+      <button class="shortcut-pill" data-tab="tab1">Efetivo</button>
+      <button class="shortcut-pill" data-tab="tab2">Missões</button>
+      <button class="shortcut-pill active" data-tab="tab3">Quadro</button>
+      <button class="shortcut-pill" data-tab="tab9">Comissionamento</button>
+    </div>
+    <div class="topbar-right">
+      <div class="firebase-status" id="firebaseStatusBar"><div class="firebase-dot" id="firebaseDotBar"></div><span id="firebaseStatusText">Conectando...</span></div>
+      <div class="menu-shell">
+        <button class="menu-toggle" id="menuToggle">☰ Mais</button>
+        <div class="menu-dropdown" id="menuDropdown">
+          <div class="menu-title">QMF 2026</div>
+          <div class="menu-subtitle">Acesso e navegação</div>
+          <div class="menu-auth" id="loginPanel"></div>
+          <div class="menu-list" id="menuList"></div>
+        </div>
+      </div>
+    </div>
+  </header>
 
   <div class="page">
-    <div class="header">
-      <div>
-        <h1>Sistema de Gestão Militar</h1>
-        <p id="headerSubtitle">Missões, férias, custos e comissionamento.</p>
-      </div>
+    <div class="header" style="display:none;">
+      <div><h1>Sistema de Gestão Militar</h1><p id="headerSubtitle">Missões, férias, custos e comissionamento.</p></div>
     </div>
 
     <section class="tab-content" id="tab1">
@@ -1264,10 +1291,10 @@
 
     <section class="tab-content" id="tab7">
       <div class="card">
-        <h3 class="section-title">Cadastro Financeiro</h3>
+        <h3 class="section-title">Calculadora de Ajuda de Custo</h3>
         <div class="financial-grid">
           <div class="financial-block">
-            <h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Soldo Bruto por PT/GRAD</h4>
+            <h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Soldo e Adicionais</h4>
             <div class="table-wrap">
               <table>
                 <thead>
@@ -1400,7 +1427,7 @@
       {id:'tab4', label:'4. Dashboard por Missão', subtitle:'Resumo operacional e efetivo escalado por missão.'},
       {id:'tab5', label:'5. Dashboard por Militar', subtitle:'Visão matricial de militares versus missões.'},
       {id:'tab6', label:'6. Consulta de Missão + PDF', subtitle:'Consulta de escalados com impressão formatada.'},
-      {id:'tab7', label:'7. Cadastro Financeiro', subtitle:'Soldos e diárias por grupo e categoria de localidade.'},
+      {id:'tab7', label:'7. Calculadora de Ajuda de Custo', subtitle:'Soldo, adicionais e diárias por PT/GRAD e categoria.'},
       {id:'tab8', label:'8. Custo da Missão', subtitle:'Cálculo financeiro completo por missão.'},
       {id:'tab9', label:'9. Comissionamento', subtitle:'Economicidade por militar e por missão comissionada.'},
       {id:'tab10', label:'10. Registro de Acessos', subtitle:'Auditoria de data, hora e responsável por cada login.'}
@@ -2778,7 +2805,7 @@
     { id: 'tab4', label: '4. Dashboard por Missão', subtitle: 'Resumo operacional e efetivo escalado por missão.' },
     { id: 'tab5', label: '5. Dashboard por Militar', subtitle: 'Visão matricial de militares versus missões.' },
     { id: 'tab6', label: '6. Consulta de Missão + PDF', subtitle: 'Consulta de escalados com impressão formatada.' },
-    { id: 'tab7', label: '7. Cadastro Financeiro', subtitle: 'Soldos, diárias e percentuais de habilitação.' },
+    { id: 'tab7', label: '7. Calculadora de Ajuda de Custo', subtitle: 'Soldo, adicionais e diárias por PT/GRAD e categoria.' },
     { id: 'tab8', label: '8. Custo da Missão', subtitle: 'Cálculo financeiro por missão com 2% sempre sobre o soldo bruto e diárias por localidade.' },
     { id: 'tab9', label: '9. Comissionamento', subtitle: 'Painel acumulado de economicidade por militar comissionado.' },
     { id: 'tab12', label: '11. IDPREP 1.1', subtitle: 'Panorama e quantitativo das FOPs cadastradas no efetivo.' },
@@ -2795,7 +2822,7 @@
     tab4: 'Dashboard por Missão',
     tab5: 'Dashboard por Militar',
     tab6: 'Consulta de Missão + Impressão PDF',
-    tab7: 'Cadastro Financeiro',
+    tab7: 'Calculadora de Ajuda de Custo',
     tab8: 'Custo da Missão',
     tab9: 'Comissionamento',
     tab10: 'Registro de Acessos',
@@ -2825,28 +2852,44 @@
     return base;
   }
 
+  function normalizeOneCommissionProcess(entry) {
+    const e = entry && typeof entry === 'object' ? entry : {};
+    return {
+      processId: String(e.processId || uid('proc')),
+      proposta: String(e.proposta || '').trim(),
+      solicitacaoAbertura: String(e.solicitacaoAbertura || '').trim(),
+      autorizacaoComissionamento: String(e.autorizacaoComissionamento || '').trim(),
+      portaria: String(e.portaria || '').trim(),
+      publicacaoPortaria: String(e.publicacaoPortaria || '').trim(),
+      pag: String(e.pag || '').trim(),
+      apostila: String(e.apostila || '').trim(),
+      publicacaoApostila: String(e.publicacaoApostila || '').trim(),
+      situacao: e.situacao === 'FECHADO' ? 'FECHADO' : 'ABERTO',
+      siloms: String(e.siloms || '').trim(),
+      dataAbertura: e.dataAbertura || '',
+      idaManualEnabled: !!e.idaManualEnabled,
+      idaManualValue: currencyToNumber(e.idaManualValue),
+      voltaManualEnabled: !!e.voltaManualEnabled,
+      voltaManualValue: currencyToNumber(e.voltaManualValue),
+      missionIds: Array.isArray(e.missionIds) ? e.missionIds.map(id => String(id)) : []
+    };
+  }
+
   function normalizeCommissionData(rawCommissionData) {
     const source = rawCommissionData && typeof rawCommissionData === 'object' ? rawCommissionData : {};
     const normalized = {};
     Object.entries(source).forEach(([personId, item]) => {
-      const entry = item && typeof item === 'object' ? item : {};
-      normalized[personId] = {
-        proposta: String(entry.proposta || '').trim(),
-        solicitacaoAbertura: String(entry.solicitacaoAbertura || '').trim(),
-        autorizacaoComissionamento: String(entry.autorizacaoComissionamento || '').trim(),
-        portaria: String(entry.portaria || '').trim(),
-        publicacaoPortaria: String(entry.publicacaoPortaria || '').trim(),
-        pag: String(entry.pag || '').trim(),
-        apostila: String(entry.apostila || '').trim(),
-        publicacaoApostila: String(entry.publicacaoApostila || '').trim(),
-        situacao: entry.situacao === 'FECHADO' ? 'FECHADO' : 'ABERTO',
-        siloms: String(entry.siloms || '').trim(),
-        dataAbertura: entry.dataAbertura || '',
-        idaManualEnabled: !!entry.idaManualEnabled,
-        idaManualValue: currencyToNumber(entry.idaManualValue),
-        voltaManualEnabled: !!entry.voltaManualEnabled,
-        voltaManualValue: currencyToNumber(entry.voltaManualValue)
-      };
+      if (!item || typeof item !== 'object') return;
+      if (Array.isArray(item.processos)) {
+        normalized[personId] = {
+          processos: item.processos.map(normalizeOneCommissionProcess),
+          activeProcessIndex: Number(item.activeProcessIndex) || 0
+        };
+      } else {
+        // Migração do formato legado para novo
+        const proc = normalizeOneCommissionProcess(item);
+        normalized[personId] = { processos: [proc], activeProcessIndex: 0 };
+      }
     });
     return normalized;
   }
@@ -2858,6 +2901,8 @@
     return {
       soldos,
       diarias,
+      adicionaisMilitar: Object.fromEntries(PTGRAD_OPTIONS.map(item => [item, 0])),
+      adicionaisDisponibilidade: Object.fromEntries(PTGRAD_OPTIONS.map(item => [item, 0])),
       adicionaisHabilitacao: Object.fromEntries(HABILITACAO_OPTIONS.map(option => [option, 0]))
     };
   };
@@ -2888,6 +2933,7 @@
         adicionalMilitar: currencyToNumber(item.adicionalMilitar),
         adicionalDisponibilidade: currencyToNumber(item.adicionalDisponibilidade),
         cotaAeronavegante: currencyToNumber(item.cotaAeronavegante),
+        cotaIncorporadaPtgrad: String(item.cotaIncorporadaPtgrad || '').trim(),
         cotaIncorporada: currencyToNumber(item.cotaIncorporada),
         outrosAdicionais: currencyToNumber(item.outrosAdicionais),
         fop1: String(item.fop1 || '').trim(),
@@ -2934,7 +2980,11 @@
   normalizeFinancial = function normalizeFinancialEnhanced(rawFinancial) {
     const base = buildDefaultFinancial();
     const incoming = rawFinancial && typeof rawFinancial === 'object' ? rawFinancial : {};
-    PTGRAD_OPTIONS.forEach(pt => base.soldos[pt] = currencyToNumber(incoming.soldos?.[pt]));
+    PTGRAD_OPTIONS.forEach(pt => {
+      base.soldos[pt] = currencyToNumber(incoming.soldos?.[pt]);
+      base.adicionaisMilitar[pt] = currencyToNumber(incoming.adicionaisMilitar?.[pt]);
+      base.adicionaisDisponibilidade[pt] = currencyToNumber(incoming.adicionaisDisponibilidade?.[pt]);
+    });
     Object.keys(DIARY_GROUPS).forEach(group => {
       base.diarias[group].priority = currencyToNumber(incoming.diarias?.[group]?.priority);
       base.diarias[group].capital = currencyToNumber(incoming.diarias?.[group]?.capital);
@@ -2955,9 +3005,25 @@
     return base;
   };
 
+  function getFinancialGradePercent(mapKey, ptgrad, fallback = 0) {
+    const grade = normalizeText(ptgrad);
+    return currencyToNumber(state.financial?.[mapKey]?.[grade] ?? fallback);
+  }
+
+  function syncPersonnelGradeFinancialReferences() {
+    if (!state || !Array.isArray(state.personnel)) return;
+    state.personnel.forEach(person => {
+      const grade = normalizeText(person?.ptgrad);
+      const soldoReferencia = currencyToNumber(state.financial?.soldos?.[grade]);
+      if (soldoReferencia > 0) person.soldoBruto = soldoReferencia;
+      person.adicionalMilitar = getFinancialGradePercent('adicionaisMilitar', grade, person?.adicionalMilitar);
+      person.adicionalDisponibilidade = getFinancialGradePercent('adicionaisDisponibilidade', grade, person?.adicionalDisponibilidade);
+    });
+  }
+
   normalizeStateData = function normalizeStateDataEnhanced(rawState = {}) {
     const merged = rawState && typeof rawState === 'object' ? rawState : {};
-    return {
+    const normalized = {
       personnel: normalizePersonnel(merged.personnel),
       missions: normalizeMissions(merged.missions),
       assignments: normalizeAssignments(merged.assignments),
@@ -2966,6 +3032,12 @@
       config: normalizeConfig(merged.config),
       commissionData: normalizeCommissionData(merged.commissionData)
     };
+    const previousStateRef = typeof state !== 'undefined' ? state : undefined;
+    state = normalized;
+    syncPersonnelGradeFinancialReferences();
+    normalized.personnel = state.personnel;
+    if (typeof previousStateRef !== 'undefined') state = previousStateRef;
+    return normalized;
   };
 
   function getMergedState(rawState) {
@@ -3201,12 +3273,16 @@
     return currencyToNumber(person?.[key]) / 100;
   }
 
+  function getPersonnelAdditionalPercent(person, mapKey, fallbackKey) {
+    return getFinancialGradePercent(mapKey, person?.ptgrad, person?.[fallbackKey]) / 100;
+  }
+
   function getPersonnelTotalRemuneration(person) {
     const soldo = getPersonnelSoldo(person);
     return soldo
       + (soldo * getHabilitacaoPercent(person))
-      + (soldo * getManualPercentValue(person, 'adicionalMilitar'))
-      + (soldo * getManualPercentValue(person, 'adicionalDisponibilidade'))
+      + (soldo * getPersonnelAdditionalPercent(person, 'adicionaisMilitar', 'adicionalMilitar'))
+      + (soldo * getPersonnelAdditionalPercent(person, 'adicionaisDisponibilidade', 'adicionalDisponibilidade'))
       + (soldo * getManualPercentValue(person, 'cotaAeronavegante'))
       + (soldo * getManualPercentValue(person, 'cotaIncorporada'))
       + (soldo * getManualPercentValue(person, 'outrosAdicionais'));
@@ -3234,23 +3310,109 @@
 
   function getCommissionDataEntry(personId) {
     if (!state.commissionData) state.commissionData = {};
-    if (!state.commissionData[personId]) {
-      state.commissionData[personId] = normalizeCommissionData({ [personId]: {} })[personId];
+    if (!state.commissionData[personId] || !Array.isArray(state.commissionData[personId].processos)) {
+      state.commissionData[personId] = { processos: [normalizeOneCommissionProcess({})], activeProcessIndex: 0 };
     }
     return state.commissionData[personId];
   }
 
-  window.updateCommissionDataField = function updateCommissionDataField(personId, key, value) {
+  function getActiveProcess(personId) {
+    const entry = getCommissionDataEntry(personId);
+    const idx = Math.min(entry.activeProcessIndex || 0, entry.processos.length - 1);
+    return entry.processos[idx] || entry.processos[0];
+  }
+
+  function getMissionIdsLinkedToOtherProcesses(personId, activeIdx) {
+    const entry = getCommissionDataEntry(personId);
+    return new Set(
+      entry.processos
+        .filter((_, idx) => idx !== activeIdx)
+        .flatMap(proc => Array.isArray(proc.missionIds) ? proc.missionIds.map(id => String(id)) : [])
+    );
+  }
+
+  function hasAnyExplicitCommissionMissionLinks(entry) {
+    return !!(entry && Array.isArray(entry.processos) && entry.processos.some(proc => Array.isArray(proc.missionIds) && proc.missionIds.length > 0));
+  }
+
+  function getEffectiveMissionIdsForProcess(personId, activeIdx, allMissions) {
+    const entry = getCommissionDataEntry(personId);
+    const proc = entry.processos[activeIdx] || {};
+    const explicitMissionIds = Array.isArray(proc.missionIds) ? proc.missionIds.map(id => String(id)) : [];
+    if (explicitMissionIds.length) return explicitMissionIds;
+
+    // Compatibilidade com o formato legado: quando existir apenas um processo
+    // e ainda não houver nenhum vínculo explícito salvo, assume todas as missões
+    // comissionadas desse militar apenas para esse processo único.
+    if (!hasAnyExplicitCommissionMissionLinks(entry) && entry.processos.length === 1) {
+      return (Array.isArray(allMissions) ? allMissions : []).map(mission => String(mission.id));
+    }
+
+    return [];
+  }
+
+  function ensureExplicitMissionIdsForActiveProcess(personId, allMissions) {
+    const entry = getCommissionDataEntry(personId);
+    const activeIdx = Math.min(entry.activeProcessIndex || 0, entry.processos.length - 1);
+    const proc = entry.processos[activeIdx];
+    if (!proc) return [];
+    if (!Array.isArray(proc.missionIds)) proc.missionIds = [];
+
+    if (!proc.missionIds.length && !hasAnyExplicitCommissionMissionLinks(entry) && entry.processos.length === 1) {
+      proc.missionIds = (Array.isArray(allMissions) ? allMissions : []).map(mission => String(mission.id));
+    }
+
+    return proc.missionIds;
+  }
+
+  function addNewCommissionProcess(personId) {
     if (!requireAuth()) return;
     const entry = getCommissionDataEntry(personId);
+    const newProc = normalizeOneCommissionProcess({});
+    entry.processos.push(newProc);
+    entry.activeProcessIndex = entry.processos.length - 1;
+    saveState();
+    renderCommissionPanel();
+  }
+
+  function deleteCommissionProcess(personId, idx) {
+    if (!requireAuth()) return;
+    const entry = getCommissionDataEntry(personId);
+    if (!entry || !Array.isArray(entry.processos) || entry.processos.length <= 1) {
+      alert('Não é possível excluir o único processo existente.');
+      return;
+    }
+    const processNumber = Number(idx) + 1;
+    if (!window.confirm(`Deseja excluir o Processo ${processNumber}?`)) return;
+    entry.processos.splice(idx, 1);
+    entry.activeProcessIndex = Math.max(0, Math.min(Number(entry.activeProcessIndex) || 0, entry.processos.length - 1));
+    saveState();
+    renderCommissionPanel();
+  }
+
+  function setActiveCommissionProcess(personId, idx) {
+    const entry = getCommissionDataEntry(personId);
+    entry.activeProcessIndex = Math.max(0, Math.min(idx, entry.processos.length - 1));
+    saveState();
+    renderCommissionPanel();
+  }
+
+  window.addNewCommissionProcess = addNewCommissionProcess;
+  window.deleteCommissionProcess = deleteCommissionProcess;
+  window.setActiveCommissionProcess = setActiveCommissionProcess;
+
+  window.updateCommissionDataField = function updateCommissionDataField(personId, key, value) {
+    if (!requireAuth()) return;
+    const proc = getActiveProcess(personId);
+    if (!proc) return;
     if (['idaManualEnabled', 'voltaManualEnabled'].includes(key)) {
-      entry[key] = !!value;
+      proc[key] = !!value;
     } else if (['idaManualValue', 'voltaManualValue'].includes(key)) {
-      entry[key] = currencyToNumber(value);
+      proc[key] = currencyToNumber(value);
     } else if (key === 'situacao') {
-      entry[key] = value === 'FECHADO' ? 'FECHADO' : 'ABERTO';
+      proc[key] = value === 'FECHADO' ? 'FECHADO' : 'ABERTO';
     } else {
-      entry[key] = value;
+      proc[key] = value;
     }
     saveState();
     renderCommissionPanel();
@@ -3419,9 +3581,10 @@
             <div class="form-grid compact">
               <div class="field"><label for="soldoBruto">Soldo Bruto (R$)</label><input id="soldoBruto" type="number" step="0.01" min="0" readonly class="money-readonly" /></div>
               <div class="field"><label for="adicionalHabilitacao">Adicional de Habilitação</label><select id="adicionalHabilitacao" onchange="refreshPersonnelFinancialReadonly()">${HABILITACAO_OPTIONS.map(option => `<option value="${option}">${option}</option>`).join('')}</select></div>
-              <div class="field"><label for="adicionalMilitar">Adicional Militar (%)</label><input id="adicionalMilitar" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
-              <div class="field"><label for="adicionalDisponibilidade">Adicional Disponibilidade (%)</label><input id="adicionalDisponibilidade" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="adicionalMilitar">Adicional Militar (%)</label><input id="adicionalMilitar" type="number" step="0.01" min="0" value="0" readonly class="money-readonly" /></div>
+              <div class="field"><label for="adicionalDisponibilidade">Adicional Disponibilidade (%)</label><input id="adicionalDisponibilidade" type="number" step="0.01" min="0" value="0" readonly class="money-readonly" /></div>
               <div class="field"><label for="cotaAeronavegante">Cota Aeronavegante (%)</label><input id="cotaAeronavegante" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
+              <div class="field"><label for="cotaIncorporadaPtgrad">PT/GRAD da Cota Incorporada</label><select id="cotaIncorporadaPtgrad"><option value="">Selecione</option><option value="CL">CL</option><option value="TC">TC</option><option value="MJ">MJ</option><option value="CP">CP</option><option value="1T">1T</option><option value="2T">2T</option><option value="ASP">ASP</option><option value="SO">SO</option><option value="1S">1S</option><option value="2S">2S</option><option value="3S">3S</option><option value="CB">CB</option><option value="S1">S1</option><option value="S2">S2</option></select></div>
               <div class="field"><label for="cotaIncorporada">Cota Incorporada (%)</label><input id="cotaIncorporada" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
               <div class="field"><label for="outrosAdicionais">Outros Adicionais (%)</label><input id="outrosAdicionais" type="number" step="0.01" min="0" value="0" oninput="refreshPersonnelFinancialReadonly()" /></div>
               <div class="field"><label for="remuneracaoTotalPreview">Soldo Total (R$)</label><input id="remuneracaoTotalPreview" type="text" readonly class="money-readonly" /></div>
@@ -3510,10 +3673,10 @@
     if (tab7) {
       tab7.innerHTML = `
         <div class="card">
-          <h3 class="section-title" data-title-key="tab7" data-title-default="Cadastro Financeiro"></h3>
-          <div class="notice">Os 2% permanecem calculados sempre sobre o soldo bruto. Os adicionais manuais do cadastro de efetivo são percentuais aplicados sobre o soldo bruto.</div>
+          <h3 class="section-title" data-title-key="tab7" data-title-default="Calculadora de Ajuda de Custo"></h3>
+          <div class="notice">Soldo, adicional militar e adicional disponibilidade ficam centralizados por PT/GRAD. Alterou aqui, refletiu automaticamente nos militares já cadastrados e nos novos cadastros.</div>
           <div class="financial-grid">
-            <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Soldo Bruto por PT/GRAD</h4><div class="table-wrap"><table><thead><tr><th>PT/GRAD</th><th>Soldo Bruto (R$)</th><th>2% do Soldo (R$)</th></tr></thead><tbody id="financialSoldoBody"></tbody></table></div></div>
+            <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Soldo e Adicionais</h4><div class="table-wrap"><table><thead><tr><th>PT/GRAD</th><th>Soldo Bruto (R$)</th><th>Adicional Militar (%)</th><th>Adicional Disponibilidade (%)</th><th>2% do Soldo (R$)</th></tr></thead><tbody id="financialSoldoBody"></tbody></table></div></div>
             <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Valores de Diária por Categoria</h4><div class="table-wrap"><table><thead><tr><th>Grupo</th><th>Postos</th><th>Capitais Prioritárias</th><th>Demais Capitais</th><th>Demais Localidades</th></tr></thead><tbody id="financialDiaryBody"></tbody></table></div></div>
             <div class="financial-block"><h4 class="section-title" style="font-size:16px; margin-bottom:8px;">Percentuais de Adicional de Habilitação</h4><div class="table-wrap"><table><thead><tr><th>Adicional</th><th>Percentual (%)</th></tr></thead><tbody id="financialHabilitacaoBody"></tbody></table></div></div>
           </div>
@@ -3696,15 +3859,22 @@
   function refreshPersonnelFinancialReadonly() {
     const ptgrad = normalizeText(document.getElementById('ptgrad')?.value || '');
     const soldo = currencyToNumber(state.financial?.soldos?.[ptgrad]);
+    const adicionalMilitar = getFinancialGradePercent('adicionaisMilitar', ptgrad, 0);
+    const adicionalDisponibilidade = getFinancialGradePercent('adicionaisDisponibilidade', ptgrad, 0);
     const soldoInput = document.getElementById('soldoBruto');
+    const adicionalMilitarInput = document.getElementById('adicionalMilitar');
+    const adicionalDisponibilidadeInput = document.getElementById('adicionalDisponibilidade');
     if (soldoInput) soldoInput.value = soldo || '';
+    if (adicionalMilitarInput) adicionalMilitarInput.value = adicionalMilitar || 0;
+    if (adicionalDisponibilidadeInput) adicionalDisponibilidadeInput.value = adicionalDisponibilidade || 0;
     const pseudoPerson = {
       ptgrad,
       soldoBruto: soldo,
       adicionalHabilitacao: document.getElementById('adicionalHabilitacao')?.value || 'NIL',
-      adicionalMilitar: currencyToNumber(document.getElementById('adicionalMilitar')?.value),
-      adicionalDisponibilidade: currencyToNumber(document.getElementById('adicionalDisponibilidade')?.value),
+      adicionalMilitar,
+      adicionalDisponibilidade,
       cotaAeronavegante: currencyToNumber(document.getElementById('cotaAeronavegante')?.value),
+      cotaIncorporadaPtgrad: document.getElementById('cotaIncorporadaPtgrad')?.value || '',
       cotaIncorporada: currencyToNumber(document.getElementById('cotaIncorporada')?.value),
       outrosAdicionais: currencyToNumber(document.getElementById('outrosAdicionais')?.value)
     };
@@ -3772,9 +3942,10 @@
         soldoBruto: getPersonnelSoldo({ ptgrad }),
         dependente: document.getElementById('dependente').checked,
         adicionalHabilitacao: document.getElementById('adicionalHabilitacao').value || 'NIL',
-        adicionalMilitar: currencyToNumber(document.getElementById('adicionalMilitar').value),
-        adicionalDisponibilidade: currencyToNumber(document.getElementById('adicionalDisponibilidade').value),
+        adicionalMilitar: getFinancialGradePercent('adicionaisMilitar', ptgrad, 0),
+        adicionalDisponibilidade: getFinancialGradePercent('adicionaisDisponibilidade', ptgrad, 0),
         cotaAeronavegante: currencyToNumber(document.getElementById('cotaAeronavegante').value),
+        cotaIncorporadaPtgrad: document.getElementById('cotaIncorporadaPtgrad').value || '',
         cotaIncorporada: currencyToNumber(document.getElementById('cotaIncorporada').value),
         outrosAdicionais: currencyToNumber(document.getElementById('outrosAdicionais').value),
         fop1: validateOfficialListValue(document.getElementById('fop1').value, FOP_OPTIONS, 'FOP 1'),
@@ -3821,9 +3992,10 @@
     document.getElementById('email').value = person.email || '';
     document.getElementById('dependente').checked = !!person.dependente;
     document.getElementById('adicionalHabilitacao').value = person.adicionalHabilitacao || 'NIL';
-    document.getElementById('adicionalMilitar').value = currencyToNumber(person.adicionalMilitar) || 0;
-    document.getElementById('adicionalDisponibilidade').value = currencyToNumber(person.adicionalDisponibilidade) || 0;
+    document.getElementById('adicionalMilitar').value = getFinancialGradePercent('adicionaisMilitar', person.ptgrad, person.adicionalMilitar) || 0;
+    document.getElementById('adicionalDisponibilidade').value = getFinancialGradePercent('adicionaisDisponibilidade', person.ptgrad, person.adicionalDisponibilidade) || 0;
     document.getElementById('cotaAeronavegante').value = currencyToNumber(person.cotaAeronavegante) || 0;
+    document.getElementById('cotaIncorporadaPtgrad').value = person.cotaIncorporadaPtgrad || '';
     document.getElementById('cotaIncorporada').value = currencyToNumber(person.cotaIncorporada) || 0;
     document.getElementById('outrosAdicionais').value = currencyToNumber(person.outrosAdicionais) || 0;
     document.getElementById('fop1').value = person.fop1 || '';
@@ -3964,6 +4136,8 @@
         <tr>
           <td>${pt}</td>
           <td><input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.soldos[pt])}" onchange="updateFinancialSoldo('${pt}', this.value)" /></td>
+          <td><input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.adicionaisMilitar?.[pt])}" onchange="updateFinancialGradePercent('adicionaisMilitar','${pt}', this.value)" /></td>
+          <td><input type="number" step="0.01" min="0" value="${currencyToNumber(state.financial.adicionaisDisponibilidade?.[pt])}" onchange="updateFinancialGradePercent('adicionaisDisponibilidade','${pt}', this.value)" /></td>
           <td class="money-cell">${formatMoney(currencyToNumber(state.financial.soldos[pt]) * 0.02)}</td>
         </tr>
       `).join('');
@@ -3998,9 +4172,19 @@
     renderAll();
   };
 
+  window.updateFinancialGradePercent = function updateFinancialGradePercent(mapKey, ptgrad, value) {
+    if (!requireAuth()) return;
+    if (!state.financial[mapKey]) state.financial[mapKey] = {};
+    state.financial[mapKey][ptgrad] = currencyToNumber(value);
+    syncPersonnelGradeFinancialReferences();
+    saveState();
+    renderAll();
+  };
+
   updateFinancialSoldo = function updateFinancialSoldoEnhanced(pt, value) {
     if (!requireAuth()) return;
     state.financial.soldos[pt] = currencyToNumber(value);
+    syncPersonnelGradeFinancialReferences();
     saveState();
     renderAll();
   };
@@ -4093,7 +4277,13 @@
         <div class="field"><label>Publicação de Apostila</label><input type="text" value="${escapeHtml(data.publicacaoApostila)}" onchange="updateCommissionDataField('${person.id}','publicacaoApostila', this.value)" /></div>
         <div class="field"><label>SILOMS</label><input type="text" value="${escapeHtml(data.siloms)}" onchange="updateCommissionDataField('${person.id}','siloms', this.value)" /></div>
         <div class="field"><label>Data de Abertura</label><input type="date" value="${escapeHtml(data.dataAbertura)}" onchange="updateCommissionDataField('${person.id}','dataAbertura', this.value)" /></div>
-        <div class="field"><label>Situação</label><div class="toggle-pills"><button type="button" class="pill ${data.situacao === 'ABERTO' ? 'active-open' : ''}" onclick="updateCommissionDataField('${person.id}','situacao','ABERTO')">ABERTO</button><button type="button" class="pill ${data.situacao === 'FECHADO' ? 'active-closed' : ''}" onclick="updateCommissionDataField('${person.id}','situacao','FECHADO')">FECHADO</button></div></div>
+        <div class="field"><label>Situação</label>
+          <div class="toggle-pills">
+            <button type="button" class="pill ${data.situacao === 'ABERTO' ? 'active-open' : ''}" onclick="updateCommissionDataField('${person.id}','situacao','ABERTO')">ABERTO</button>
+            <button type="button" class="pill ${data.situacao === 'FECHADO' ? 'active-closed' : ''}" onclick="updateCommissionDataField('${person.id}','situacao','FECHADO')">FECHADO</button>
+          </div>
+          ${data.situacao === 'FECHADO' && isAuthenticated() ? '<div style="font-size:11px; color:var(--text-muted); margin-top:4px;">✓ Processo fechado. Clique em "+ Novo Comissionamento" acima para planejar o próximo.</div>' : ''}
+        </div>
       </div>
     `;
   }
@@ -4116,30 +4306,91 @@
       container.innerHTML = '<div class="empty">Selecione um militar comissionado.</div>';
       return;
     }
-    const missions = getCommissionedMissionsForPerson(person.id);
-    if (!missions.length) {
+    const allMissions = getCommissionedMissionsForPerson(person.id);
+    if (!allMissions.length) {
       container.innerHTML = '<div class="empty">Este militar não possui missão comissionada marcada.</div>';
       return;
     }
-    const data = getCommissionDataEntry(person.id);
+
+    const entry = getCommissionDataEntry(person.id);
+    const activeIdx = Math.min(entry.activeProcessIndex || 0, entry.processos.length - 1);
+    const data = entry.processos[activeIdx];
     const soldoTotalRemuneracao = getPersonnelTotalRemuneration(person);
+    const effectiveMissionIds = getEffectiveMissionIdsForProcess(person.id, activeIdx, allMissions);
+
+    // Cada processo trabalha apenas com as missões explicitamente vinculadas a ele.
+    // Compatibilidade legada: somente se existir um processo único sem vínculos salvos.
+    const missions = allMissions.filter(m => effectiveMissionIds.includes(String(m.id)));
+
+    // Missões vinculadas a outros processos deste mesmo militar:
+    // cada missão deve aparecer para vínculo em apenas um processo por vez.
+    const linkedElsewhereMissionIds = getMissionIdsLinkedToOtherProcesses(person.id, activeIdx);
+
+    // Mantém visíveis as missões já vinculadas ao processo ativo e oculta as que pertencem a outros processos.
+    const availableToLink = allMissions.filter(m => {
+      const missionId = String(m.id);
+      return effectiveMissionIds.includes(missionId) || !linkedElsewhereMissionIds.has(missionId);
+    });
+
     const totalDiasProposta = missions.reduce((acc, mission) => acc + getMissionDays(mission), 0);
     const totalDiasExecutado = missions.filter(isMissionExecuted).reduce((acc, mission) => acc + getMissionDays(mission), 0);
     const totalDiasPlanejado = missions.filter(mission => !isMissionExecuted(mission)).reduce((acc, mission) => acc + getMissionDays(mission), 0);
-    const restam = totalDiasProposta - totalDiasExecutado - totalDiasPlanejado;
-    const adicionaisMissoes = missions.reduce((acc, mission) => acc + currencyToNumber(getAssignment(mission.id, person.id).additional), 0);
-    const diariaBruta = missions.reduce((acc, mission) => acc + missionMoneyTotalForPerson(person, mission), 0);
+
+    // RESTAM = ceil( (Soldo Total - Valor em Diárias) / Diária Demais Localidades do PT/GRAD )
+    const groupKey = getDiaryGroupKey(person.ptgrad);
+    const diariaDemaisLocalidades = currencyToNumber(state.financial?.diarias?.[groupKey]?.other) || 1;
+    const hasLinkedMissions = missions.length > 0;
+    const adicionaisMissoes = hasLinkedMissions ? missions.reduce((acc, mission) => acc + currencyToNumber(getAssignment(mission.id, person.id).additional), 0) : 0;
+    const diariaBruta = hasLinkedMissions ? missions.reduce((acc, mission) => acc + missionMoneyTotalForPerson(person, mission), 0) : 0;
     const valorEmDiarias = diariaBruta;
-    const idaBase = person.dependente ? soldoTotalRemuneracao : soldoTotalRemuneracao / 2;
-    const voltaBase = (person.dependente ? soldoTotalRemuneracao : soldoTotalRemuneracao / 2) + adicionaisMissoes;
+    const idaBase = hasLinkedMissions ? (person.dependente ? soldoTotalRemuneracao : soldoTotalRemuneracao / 2) : 0;
+    const voltaBase = hasLinkedMissions ? ((person.dependente ? soldoTotalRemuneracao : soldoTotalRemuneracao / 2) + adicionaisMissoes) : 0;
     const ida = data.idaManualEnabled ? currencyToNumber(data.idaManualValue) : idaBase;
     const volta = data.voltaManualEnabled ? currencyToNumber(data.voltaManualValue) : voltaBase;
-    const soldoTotal = ida + volta;
-    const bateEconomicidade = diariaBruta >= soldoTotal;
+    const soldoTotal = currencyToNumber(ida) + currencyToNumber(volta);
+    const bateEconomicidade = hasLinkedMissions ? diariaBruta >= soldoTotal : false;
+    const restam = hasLinkedMissions ? Math.ceil((soldoTotal - valorEmDiarias) / diariaDemaisLocalidades) : 0;
+
+    // Barra de progresso: dias executados / total da proposta
+    const pctExec = totalDiasProposta > 0 ? Math.min(100, (totalDiasExecutado / totalDiasProposta) * 100) : 0;
+
+    // Tabs dos processos
+    const tabsHtml = entry.processos.map((proc, idx) => `
+      <button type="button"
+        onclick="setActiveCommissionProcess('${person.id}', ${idx})"
+        style="padding:6px 14px; border-radius:8px; border:1px solid ${idx === activeIdx ? 'var(--accent)' : 'var(--line)'};
+               background:${idx === activeIdx ? 'var(--accent-soft)' : 'transparent'};
+               color:${idx === activeIdx ? '#fff' : 'var(--text-muted)'}; cursor:pointer; font-size:12px; font-weight:${idx === activeIdx ? '700' : '400'};">
+        ${idx === activeIdx ? '▶ ' : ''}Processo ${idx + 1}
+        ${proc.situacao === 'FECHADO' ? ' <span style="font-size:10px;opacity:0.7;">[FECHADO]</span>' : ''}
+      </button>
+    `).join('');
+
+    // Botão novo processo — aparece quando o processo ativo está FECHADO
+    const showNewBtn = data.situacao === 'FECHADO' && isAuthenticated();
+    const newBtnHtml = showNewBtn ? `
+      <button type="button" class="btn btn-primary btn-mini"
+        onclick="addNewCommissionProcess('${person.id}')"
+        style="margin-left:8px;">
+        + Novo Comissionamento
+      </button>` : '';
+    const canDeleteProcess = isAuthenticated() && entry.processos.length > 1;
+    const deleteBtnHtml = canDeleteProcess ? `
+      <button type="button" class="btn btn-danger btn-mini"
+        onclick="deleteCommissionProcess('${person.id}', ${activeIdx})"
+        style="margin-left:8px;">
+        Excluir Processo
+      </button>` : '';
+
     container.innerHTML = `
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+        ${tabsHtml}
+        ${newBtnHtml}
+        ${deleteBtnHtml}
+      </div>
       <div class="commission-layout">
         <div class="card commission-left">
-          <h4 class="section-title" style="font-size:15px;">Dados do Processo</h4>
+          <h4 class="section-title" style="font-size:15px;">Dados do Processo ${activeIdx + 1}</h4>
           ${renderCommissionProcessForm(person, data)}
           <div class="metrics-grid">
             <div class="metric-box"><span>PROPOSTA</span><strong>${totalDiasProposta}</strong></div>
@@ -4155,16 +4406,29 @@
             <div class="metric-line"><span>AJUDA DE CUSTO + ETAPA</span><strong>${formatMoney(volta)}</strong></div>
             <div class="metric-line"><span>Valor em Diárias</span><strong>${formatMoney(valorEmDiarias)}</strong></div>
             <div class="metric-line"><span>ECONOMICIDADE</span><span class="badge ${bateEconomicidade ? 'badge-ok' : 'badge-no'}">${bateEconomicidade ? 'BATE' : 'NÃO BATE'}</span></div>
-            <div class="notice">A economicidade compara o valor em diárias acumulado com o soldo total desta aba, calculado como AJUDA DE CUSTO + AJUDA DE CUSTO + ETAPA.</div>
+            <div style="margin-top:10px;">
+              <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-bottom:4px;">
+                <span>Progresso dos dias comissionados</span>
+                <span>${totalDiasExecutado} / ${totalDiasProposta} dias executados</span>
+              </div>
+              <div style="width:100%; height:12px; border-radius:6px; background:rgba(0,0,0,0.35); overflow:hidden; border:1px solid rgba(255,255,255,0.06);">
+                <div style="height:100%; width:${pctExec}%; border-radius:6px;
+                  background:linear-gradient(90deg, #1a6b35 0%, #2d9e55 40%, #4ecb7a 80%, #7fffa8 100%);
+                  transition:width 0.5s ease; box-shadow:0 0 8px rgba(78,203,122,0.4);">
+                </div>
+              </div>
+              <div style="font-size:10px; color:var(--text-muted); margin-top:4px; text-align:right;">${pctExec.toFixed(1)}% concluído</div>
+            </div>
+            <div class="notice" style="margin-top:10px;">RESTAM = ceil((Soldo Total − Valor em Diárias) ÷ Diária Demais Localidades do PT/GRAD)</div>
           </div>
         </div>
         <div class="card commission-right">
-          <h4 class="section-title" style="font-size:15px;">Missões do Militar</h4>
+          <h4 class="section-title" style="font-size:15px;">Missões do Processo ${activeIdx + 1}</h4>
           <div class="table-wrap">
             <table>
               <thead><tr><th>Missão</th><th>Local</th><th>Período</th><th>Dias</th><th>Valor da Diária</th><th>Total Diárias</th><th>Adicionais</th><th>Status</th></tr></thead>
               <tbody>
-                ${missions.map(mission => {
+                ${missions.length ? missions.map(mission => {
                   const rate = getDiaryRate(person.ptgrad, mission);
                   const totalDiaria = rate * getMissionMultiplier(mission);
                   const status = isMissionExecuted(mission) ? 'EXECUTADO' : 'PLANEJADO';
@@ -4181,13 +4445,49 @@
                       <td><span class="badge ${status === 'EXECUTADO' ? 'badge-ok' : 'badge-warn'}">${status}</span></td>
                     </tr>
                   `;
-                }).join('')}
+                }).join('') : '<tr><td colspan="8" class="empty">Nenhuma missão vinculada a este processo.</td></tr>'}
               </tbody>
             </table>
           </div>
+          ${isAuthenticated() && allMissions.length > 0 ? `
+          <div style="margin-top:14px; padding:12px; border:1px solid var(--line-soft); border-radius:var(--radius-md); background:rgba(0,0,0,0.1);">
+            <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Vincular missões a este processo</div>
+            ${availableToLink.length ? availableToLink.map(m => {
+              const linked = effectiveMissionIds.includes(String(m.id));
+              return `<label style="display:flex; align-items:center; gap:8px; padding:4px 0; font-size:13px; cursor:pointer;">
+                <input type="checkbox" ${linked ? 'checked' : ''}
+                  onchange="toggleCommissionMission('${person.id}', '${m.id}', this.checked)"
+                  style="width:16px; height:16px; accent-color:var(--accent);" />
+                ${escapeHtml(m.name)} — ${formatDate(m.start)} a ${formatDate(m.end)}
+                ${isMissionExecuted(m) ? '<span class="badge badge-ok" style="font-size:9px;">EXEC</span>' : '<span class="badge badge-warn" style="font-size:9px;">PLAN</span>'}
+              </label>`;
+            }).join('') : '<div class="empty" style="margin:0;">Nenhuma missão disponível para vínculo neste processo.</div>'}
+          </div>` : ''}
         </div>
       </div>
     `;
+  };
+
+  window.toggleCommissionMission = function(personId, missionId, checked) {
+    if (!requireAuth()) return;
+    const entry = getCommissionDataEntry(personId);
+    const proc = getActiveProcess(personId);
+    if (!proc) return;
+    const allMissions = getCommissionedMissionsForPerson(personId);
+    ensureExplicitMissionIdsForActiveProcess(personId, allMissions);
+    if (!Array.isArray(proc.missionIds)) proc.missionIds = [];
+    const missionIdStr = String(missionId);
+    if (checked) {
+      entry.processos.forEach(item => {
+        if (!Array.isArray(item.missionIds)) item.missionIds = [];
+        if (item !== proc) item.missionIds = item.missionIds.filter(id => String(id) !== missionIdStr);
+      });
+      if (!proc.missionIds.includes(missionIdStr)) proc.missionIds.push(missionIdStr);
+    } else {
+      proc.missionIds = proc.missionIds.filter(id => String(id) !== missionIdStr);
+    }
+    saveState();
+    renderCommissionPanel();
   };
 
   renderCommissionedSelect = function renderCommissionedSelectEnhanced() {
@@ -4456,6 +4756,7 @@
 
   renderAll = function renderAllEnhanced() {
     ensureEnhancedDom();
+    syncPersonnelGradeFinancialReferences();
     renderMenu();
     renderPersonnelTable();
     renderMissionTable();
@@ -7590,5 +7891,200 @@
   window.addEventListener('load', syncYearUiOnLoad);
 })();
 </script>
+
+<script id="nav-and-stepper">
+(function(){
+
+  /* ── 1. NAVEGAÇÃO: sidebar + shortcut pills ── */
+  function syncNav(activeId) {
+    document.querySelectorAll('.sl-item[data-tab]').forEach(function(el) {
+      el.classList.toggle('active', el.dataset.tab === activeId);
+    });
+    document.querySelectorAll('.shortcut-pill[data-tab]').forEach(function(el) {
+      el.classList.toggle('active', el.dataset.tab === activeId);
+    });
+    var meta = (typeof TAB_META !== 'undefined' ? TAB_META : []).find(function(t){ return t.id === activeId; });
+    var sub = document.getElementById('headerSubtitle');
+    if (sub && meta) sub.textContent = meta.subtitle || '';
+  }
+
+  var _origSet = window.setActiveTab;
+  window.setActiveTab = function(tabId) {
+    if (typeof _origSet === 'function') _origSet.apply(this, arguments);
+    syncNav(tabId);
+    if (tabId === 'tab1') setTimeout(initStepper, 100);
+  };
+
+  document.getElementById('sidebarSlim')?.addEventListener('click', function(e) {
+    var item = e.target.closest('[data-tab]');
+    if (item && typeof setActiveTab === 'function') setActiveTab(item.dataset.tab);
+  });
+
+  document.getElementById('topbarShortcuts')?.addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-tab]');
+    if (btn && typeof setActiveTab === 'function') setActiveTab(btn.dataset.tab);
+  });
+
+  /* ── Status Firebase ── */
+  var _fbCheck = setInterval(function() {
+    if (typeof window.firebaseLogin === 'function') {
+      var dot = document.getElementById('firebaseDotBar');
+      var txt = document.getElementById('firebaseStatusText');
+      if (dot) dot.classList.add('online');
+      if (txt) txt.textContent = 'Firebase pronto';
+      clearInterval(_fbCheck);
+    }
+  }, 600);
+
+  setTimeout(function() {
+    var active = document.querySelector('.tab-content.active');
+    if (active) syncNav(active.id);
+  }, 400);
+
+  /* ── 2. STEPPER DO FORMULÁRIO DE EFETIVO ── */
+  var STEP_LABELS = ['Dados Pessoais', 'Financeiro', 'FOPs e Capacitações', 'Férias'];
+  var STEP_KEYS   = ['pessoal', 'financeiro', 'fop', 'ferias'];
+  var currentStep = 0;
+  var stepperInited = false;
+
+  /* Palavras-chave para identificar cada seção pelo texto do section-divider */
+  var STEP_MATCHERS = [
+    ['dados pessoais', 'pessoal'],
+    ['financeiro', 'financ'],
+    ['fun', 'fop', 'capacit', 'curso'],
+    ['férias', 'ferias']
+  ];
+
+  function buildStepperHtml(cur) {
+    var html = '<div class="form-stepper">';
+    STEP_LABELS.forEach(function(lbl, i) {
+      var cls = i < cur ? 'done' : (i === cur ? 'cur' : '');
+      var dot = i < cur ? '✓' : (i + 1);
+      html += '<div class="fstep ' + cls + '">' +
+        '<div class="fstep-dot">' + dot + '</div>' +
+        '<div class="fstep-lbl">' + lbl + '</div>' +
+        (i < STEP_LABELS.length - 1 ? '<div class="fstep-line ' + (i < cur ? 'done' : '') + '"></div>' : '') +
+        '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function showStep(step) {
+    currentStep = step;
+    /* mostra/esconde seções */
+    document.querySelectorAll('.form-step-section').forEach(function(el, i) {
+      el.classList.toggle('active', i === step);
+    });
+    /* atualiza nav */
+    var nav = document.getElementById('stepperNavBlock');
+    if (!nav) return;
+    nav.innerHTML = buildStepperHtml(step) +
+      '<div class="stepper-actions">' +
+      (step > 0 ? '<button type="button" class="btn btn-secondary" id="stepPrevBtn">← Anterior</button>' : '') +
+      (step < STEP_LABELS.length - 1
+        ? '<button type="button" class="btn btn-primary" id="stepNextBtn">Próximo →</button>'
+        : '<button type="submit" class="btn btn-primary">Salvar Militar</button>') +
+      '<button type="button" class="btn btn-secondary" id="stepCancelBtn">Cancelar</button>' +
+      '</div>';
+    document.getElementById('stepNextBtn')?.addEventListener('click', function(){ showStep(Math.min(currentStep+1, STEP_LABELS.length-1)); });
+    document.getElementById('stepPrevBtn')?.addEventListener('click', function(){ showStep(Math.max(currentStep-1, 0)); });
+    document.getElementById('stepCancelBtn')?.addEventListener('click', function(){
+      currentStep = 0;
+      if (typeof clearPersonnelForm === 'function') clearPersonnelForm();
+      showStep(0);
+    });
+  }
+
+  function initStepper() {
+    var form = document.getElementById('personnelForm');
+    if (!form) return;
+    if (form.dataset.stepperDone === '1') { showStep(currentStep); return; }
+    form.dataset.stepperDone = '1';
+
+    /* Injeta bloco de navegação no topo */
+    var navBlock = document.createElement('div');
+    navBlock.id = 'stepperNavBlock';
+    form.insertBefore(navBlock, form.firstChild);
+
+    /* Identifica section-dividers e agrupa o conteúdo seguinte em .form-step-section */
+    var dividers = Array.from(form.querySelectorAll('.section-divider'));
+    var stepSections = []; /* um array de 4 wrappers */
+
+    /* Cria 4 wrappers vazios */
+    STEP_KEYS.forEach(function(key, i) {
+      var wrapper = document.createElement('div');
+      wrapper.className = 'form-step-section';
+      wrapper.dataset.stepIndex = i;
+      stepSections.push(wrapper);
+    });
+
+    /* Descobre qual divider pertence a qual step */
+    function matchStep(divider) {
+      var txt = (divider.textContent || '').toLowerCase();
+      for (var i = 0; i < STEP_MATCHERS.length; i++) {
+        for (var j = 0; j < STEP_MATCHERS[i].length; j++) {
+          if (txt.indexOf(STEP_MATCHERS[i][j]) !== -1) return i;
+        }
+      }
+      return -1;
+    }
+
+    /* Coleta nós entre dividers e os move para os wrappers */
+    var assignedDividers = dividers.map(function(d){ return { el: d, step: matchStep(d) }; })
+                                   .filter(function(d){ return d.step !== -1; });
+
+    assignedDividers.forEach(function(info, idx) {
+      var wrapper = stepSections[info.step];
+      var startEl = info.el;
+      var endEl   = assignedDividers[idx + 1] ? assignedDividers[idx + 1].el : null;
+
+      /* Move startEl até (não incluindo) endEl para dentro do wrapper */
+      var parent = startEl.parentNode;
+      /* Insere o wrapper na posição do startEl */
+      parent.insertBefore(wrapper, startEl);
+      var el = startEl;
+      while (el && el !== endEl) {
+        var next = el.nextSibling;
+        wrapper.appendChild(el);
+        el = next;
+      }
+    });
+
+    /* Último step: o que restar (form-actions, etc.) vai para o wrapper do step 3 (férias) */
+    /* form-actions já está dentro do step de férias se o divider "férias" foi o último */
+
+    /* Esconde botões originais de submit que ficaram fora */
+    form.querySelectorAll(':scope > .form-actions').forEach(function(el){ el.style.display='none'; });
+
+    showStep(0);
+  }
+
+  /* Reseta stepper quando clearPersonnelForm é chamado */
+  var _origClear = window.clearPersonnelForm;
+  window.clearPersonnelForm = function() {
+    currentStep = 0;
+    if (typeof _origClear === 'function') _origClear.apply(this, arguments);
+    /* Recria o stepper após limpar, pois o JS do sistema pode recriar o DOM */
+    setTimeout(function(){
+      var form = document.getElementById('personnelForm');
+      if (form) { form.dataset.stepperDone = ''; }
+      initStepper();
+    }, 150);
+  };
+
+  /* Inicializa quando tab1 já estiver ativa */
+  setTimeout(function() {
+    var active = document.querySelector('.tab-content.active');
+    if (active && active.id === 'tab1') initStepper();
+  }, 600);
+  setTimeout(function() {
+    var active = document.querySelector('.tab-content.active');
+    if (active && active.id === 'tab1') initStepper();
+  }, 1500);
+
+})();
+</script>
+
 </body>
 </html>
