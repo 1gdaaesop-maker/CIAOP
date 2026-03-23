@@ -7981,6 +7981,9 @@
     if (form.dataset.stepperDone === '1') { showStep(currentStep); return; }
     form.dataset.stepperDone = '1';
 
+    /* Remove qualquer navBlock duplicado que possa existir antes de criar novo */
+    document.querySelectorAll('#stepperNavBlock').forEach(function(el){ el.parentNode && el.parentNode.removeChild(el); });
+
     /* Injeta bloco de navegação no topo */
     var navBlock = document.createElement('div');
     navBlock.id = 'stepperNavBlock';
@@ -8044,11 +8047,9 @@
   window.clearPersonnelForm = function() {
     currentStep = 0;
     if (typeof _origClear === 'function') _origClear.apply(this, arguments);
-    /* Recria o stepper após limpar, pois o JS do sistema pode recriar o DOM */
+    /* Apenas volta para o step 0 sem recriar o DOM para evitar duplicação */
     setTimeout(function(){
-      var form = document.getElementById('personnelForm');
-      if (form) { form.dataset.stepperDone = ''; }
-      initStepper();
+      if (typeof showStep === 'function') showStep(0);
     }, 150);
   };
 
@@ -8057,10 +8058,6 @@
     var active = document.querySelector('.tab-content.active');
     if (active && active.id === 'tab1') initStepper();
   }, 600);
-  setTimeout(function() {
-    var active = document.querySelector('.tab-content.active');
-    if (active && active.id === 'tab1') initStepper();
-  }, 1500);
 
 })();
 </script>
@@ -8081,14 +8078,20 @@
     var editId = document.getElementById('personnelEditId');
     if (editId) editId.value = '';
 
-    var nav = document.getElementById('stepperNavBlock');
-    if (nav && typeof showStep === 'function') {
-      showStep(0);
-    } else if (typeof initStepper === 'function') {
+    /* Verifica quantos navBlocks existem */
+    var navBlocks = document.querySelectorAll('#stepperNavBlock');
+    if (navBlocks.length > 1) {
+      /* Duplicados — remove todos e reconstrói limpo */
+      navBlocks.forEach(function(el){ el.parentNode && el.parentNode.removeChild(el); });
       form.dataset.stepperDone = '';
-      initStepper();
-      if (typeof showStep === 'function') showStep(0);
+      if (typeof initStepper === 'function') initStepper();
+    } else if (navBlocks.length === 0) {
+      /* Stepper ainda não criado — inicializa */
+      form.dataset.stepperDone = '';
+      if (typeof initStepper === 'function') initStepper();
     }
+    /* Se já existe exatamente 1 navBlock, o DOM está intacto — só volta ao step 0 */
+    if (typeof showStep === 'function') showStep(0);
 
     var firstField = document.getElementById('ptgrad');
     if (firstField && typeof firstField.blur === 'function') firstField.blur();
