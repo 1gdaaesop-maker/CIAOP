@@ -709,49 +709,28 @@
 
 
   <style id="design-system-inovador">
-    :root {
-      --bg-app: #07090a;
-      --bg-page: #07090a;
-      --bg-card: #09100e;
-      --bg-panel: #0b1410;
-      --bg-input: #07090a;
-      --line: #142018;
-      --line-soft: rgba(255,255,255,0.035);
-      --line-focus: rgba(62,207,130,0.25);
-      --text-main: #b8ccc4;
-      --text-muted: #2e5040;
-      --accent: #3ecf82;
-      --accent-hover: #52e096;
-      --accent-soft: rgba(62,207,130,0.1);
-      --danger: #9a3030;
-      --danger-hover: #b03a3a;
-      --danger-soft: rgba(154,48,48,0.1);
-      --warning: #9a7020;
-      --ok: #3ecf82;
-      --bg: #07090a;
-      --bg-soft: #0b1410;
-      --panel: #0b1410;
-      --panel-2: #0f1a14;
-      --text: #b8ccc4;
-      --muted: #2e5040;
-      --accent-2: #52e096;
-      --accent-3: #7aeab0;
-      --danger-2: #b03a3a;
-      --input: #07090a;
-      --card: #09100e;
-      --holiday: #1a0d28;
-      --weekend: #0a0a12;
-      --blackout: #050707;
-      --sticky-1: #07090a;
-      --sticky-2: #090d0c;
-      --sticky-3: #0b1010;
-      --shadow: 0 4px 20px rgba(0,0,0,0.5);
-      --radius: 10px;
-      --radius-sm: 6px;
-      --radius-md: 8px;
-      --radius-lg: 12px;
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-      --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+     :root {
+      --bg-app: #161a18;
+      --bg-page: linear-gradient(180deg, #1a1f1c 0%, #222925 100%);
+      --bg-card: #262d29;
+      --bg-panel: #2c3430;
+      --bg-input: #202622;
+      --line: #4e5b54;
+      --line-soft: rgba(255,255,255,0.05);
+      --line-focus: rgba(95,140,111,0.28);
+      --text-main: #dde4df;
+      --text-muted: #a0ada5;
+      --accent: #5f8c6f;
+      --accent-hover: #76a287;
+      --accent-soft: rgba(95,140,111,0.12);
+      --danger: #944646;
+      --danger-hover: #a95555;
+      --danger-soft: rgba(148,70,70,0.12);
+      --warning: #a48a48;
+      --holiday: #6e5684;
+      --weekend: #6f4747;
+      --ok: #4f8a61;
+      --shadow: 0 8px 18px rgba(0,0,0,0.22);
     }
 
     html, body { background: var(--bg-app) !important; }
@@ -8083,6 +8062,115 @@
     if (active && active.id === 'tab1') initStepper();
   }, 1500);
 
+})();
+</script>
+
+
+<script id="final-personnel-fix">
+(function(){
+  function safeCall(fn){ try { return typeof fn === 'function' ? fn() : undefined; } catch(e) { console.error(e); } }
+
+  function restorePersonnelDefaultView(){
+    try {
+      if (typeof currentStep !== 'undefined') currentStep = 0;
+    } catch(e) {}
+
+    var form = document.getElementById('personnelForm');
+    if (!form) return;
+
+    var editId = document.getElementById('personnelEditId');
+    if (editId) editId.value = '';
+
+    var nav = document.getElementById('stepperNavBlock');
+    if (nav && typeof showStep === 'function') {
+      showStep(0);
+    } else if (typeof initStepper === 'function') {
+      form.dataset.stepperDone = '';
+      initStepper();
+      if (typeof showStep === 'function') showStep(0);
+    }
+
+    var firstField = document.getElementById('ptgrad');
+    if (firstField && typeof firstField.blur === 'function') firstField.blur();
+
+    if (typeof setActiveTab === 'function') setActiveTab('tab1');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  var originalClearPersonnelForm = window.clearPersonnelForm;
+  window.clearPersonnelForm = function(){
+    if (typeof originalClearPersonnelForm === 'function') {
+      originalClearPersonnelForm.apply(this, arguments);
+    } else {
+      var form = document.getElementById('personnelForm');
+      if (form) form.reset();
+      var editId = document.getElementById('personnelEditId');
+      if (editId) editId.value = '';
+    }
+
+    var soldoManualFlag = document.getElementById('soldoManualFlag');
+    if (soldoManualFlag) soldoManualFlag.value = '0';
+
+    safeCall(function(){ return renderCapacitacoesForm([]); });
+    safeCall(function(){ return renderCursosForm([]); });
+    safeCall(function(){ return renderCursosPretendidosForm([]); });
+    safeCall(function(){ return refreshPersonnelFinancialReadonly(); });
+
+    setTimeout(restorePersonnelDefaultView, 0);
+  };
+
+  var originalEditPersonnel = window.editPersonnel;
+  window.editPersonnel = function(id){
+    if (typeof originalEditPersonnel === 'function') originalEditPersonnel.apply(this, arguments);
+    setTimeout(function(){
+      try { if (typeof currentStep !== 'undefined') currentStep = 0; } catch(e) {}
+      if (typeof initStepper === 'function') {
+        var form = document.getElementById('personnelForm');
+        if (form && !document.getElementById('stepperNavBlock')) {
+          form.dataset.stepperDone = '';
+          initStepper();
+        }
+      }
+      if (typeof showStep === 'function') showStep(0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 50);
+  };
+
+  var originalHandlePersonnelSubmit = window.handlePersonnelSubmit;
+  window.handlePersonnelSubmit = function(event){
+    if (typeof originalHandlePersonnelSubmit === 'function') {
+      var result = originalHandlePersonnelSubmit.apply(this, arguments);
+      setTimeout(function(){
+        var editId = document.getElementById('personnelEditId');
+        if (editId && !editId.value) restorePersonnelDefaultView();
+      }, 120);
+      return result;
+    }
+  };
+
+  function bindCancelButton(){
+    var btn = document.getElementById('cancelPersonnelEdit');
+    if (!btn || btn.dataset.finalFixBound === '1') return;
+    btn.dataset.finalFixBound = '1';
+    btn.addEventListener('click', function(){
+      setTimeout(restorePersonnelDefaultView, 0);
+    });
+  }
+
+  function boot(){
+    bindCancelButton();
+    setTimeout(function(){
+      var active = document.querySelector('.tab-content.active');
+      if (active && active.id === 'tab1') restorePersonnelDefaultView();
+    }, 80);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
+  }
+  window.addEventListener('load', bindCancelButton);
 })();
 </script>
 
