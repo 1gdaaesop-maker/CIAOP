@@ -4590,15 +4590,27 @@
     renderIdprep12();
   };
 
+  window.updateIdprep11Fop = function updateIdprep11Fop(personId, fopKey, value) {
+    const person = state.personnel.find(p => p.id === personId);
+    if (!person) return;
+    person[fopKey] = value.trim();
+    saveState();
+    renderIdprep11();
+  };
+
   function renderIdprep11() {
     const container = document.getElementById('idprep11Container');
     if (!container) return;
     document.getElementById('idprep11EfetivoBtn')?.classList.toggle('btn-primary', idprep11Mode === 'efetivo');
     document.getElementById('idprep11QuantBtn')?.classList.toggle('btn-primary', idprep11Mode === 'quantitativo');
     if (idprep11Mode === 'efetivo') {
+      const makeFopSelect = (person, key) => {
+        const val = escapeHtml(person[key] || '');
+        return `<select onchange="updateIdprep11Fop('${escapeHtml(person.id)}','${key}',this.value)">${FOP_OPTIONS.map(f => `<option value="${escapeHtml(f)}" ${person[key] === f ? 'selected' : ''}>${escapeHtml(f)}</option>`).join('')}<option value="" ${!person[key] ? 'selected' : ''}>—</option></select>`;
+      };
       container.innerHTML = `
         <div class="table-wrap"><table><thead><tr><th>PT/GRAD</th><th>Nome de Guerra</th><th>FOP 1</th><th>FOP 2</th><th>FOP 3</th><th>FOP 4</th></tr></thead><tbody>
-        ${state.personnel.length ? state.personnel.map(person => `<tr><td>${escapeHtml(person.ptgrad)}</td><td>${escapeHtml(person.nomeGuerra)}</td><td>${escapeHtml(person.fop1 || '—')}</td><td>${escapeHtml(person.fop2 || '—')}</td><td>${escapeHtml(person.fop3 || '—')}</td><td>${escapeHtml(person.fop4 || '—')}</td></tr>`).join('') : '<tr><td colspan="6">Nenhum militar cadastrado.</td></tr>'}
+        ${state.personnel.length ? state.personnel.map(person => `<tr><td>${escapeHtml(person.ptgrad)}</td><td>${escapeHtml(person.nomeGuerra)}</td><td>${makeFopSelect(person,'fop1')}</td><td>${makeFopSelect(person,'fop2')}</td><td>${makeFopSelect(person,'fop3')}</td><td>${makeFopSelect(person,'fop4')}</td></tr>`).join('') : '<tr><td colspan="6">Nenhum militar cadastrado.</td></tr>'}
         </tbody></table></div>`;
       return;
     }
@@ -4618,16 +4630,35 @@
       </tbody></table></div>`;
   }
 
+  window.updateIdprep12Cap = function updateIdprep12Cap(personId, idx, value) {
+    const person = state.personnel.find(p => p.id === personId);
+    if (!person) return;
+    if (!Array.isArray(person.capacitacoes)) person.capacitacoes = [];
+    // Garante que o array tenha ao menos idx+1 posições
+    while (person.capacitacoes.length <= idx) person.capacitacoes.push('');
+    person.capacitacoes[idx] = value.trim();
+    // Remove entradas vazias do final, mas mantém as posições intermediárias preenchidas
+    while (person.capacitacoes.length > 0 && !person.capacitacoes[person.capacitacoes.length - 1]) {
+      person.capacitacoes.pop();
+    }
+    saveState();
+    renderIdprep12();
+  };
+
   function renderIdprep12() {
     const container = document.getElementById('idprep12Container');
     if (!container) return;
     document.getElementById('idprep12EfetivoBtn')?.classList.toggle('btn-primary', idprep12Mode === 'efetivo');
     document.getElementById('idprep12QuantBtn')?.classList.toggle('btn-primary', idprep12Mode === 'quantitativo');
     if (idprep12Mode === 'efetivo') {
-      const maxCols = Math.max(1, ...state.personnel.map(person => (person.capacitacoes || []).length || 0));
+      const NUM_CAPS = 5;
+      const makeCapSelect = (person, idx) => {
+        const val = person.capacitacoes?.[idx] || '';
+        return `<select onchange="updateIdprep12Cap('${escapeHtml(person.id)}',${idx},this.value)"><option value="" ${!val ? 'selected' : ''}>—</option>${CAPACITATION_OPTIONS.map(c => `<option value="${escapeHtml(c)}" ${val === c ? 'selected' : ''}>${escapeHtml(c)}</option>`).join('')}</select>`;
+      };
       container.innerHTML = `
-        <div class="table-wrap"><table><thead><tr><th>PT/GRAD</th><th>Nome de Guerra</th>${Array.from({ length: maxCols }, (_, idx) => `<th>Capacitação ${idx + 1}</th>`).join('')}</tr></thead><tbody>
-        ${state.personnel.length ? state.personnel.map(person => `<tr><td>${escapeHtml(person.ptgrad)}</td><td>${escapeHtml(person.nomeGuerra)}</td>${Array.from({ length: maxCols }, (_, idx) => `<td>${escapeHtml(person.capacitacoes?.[idx] || '—')}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${2 + maxCols}">Nenhum militar cadastrado.</td></tr>`}
+        <div class="table-wrap"><table><thead><tr><th>PT/GRAD</th><th>Nome de Guerra</th>${Array.from({ length: NUM_CAPS }, (_, i) => `<th>Capacitação ${i + 1}</th>`).join('')}</tr></thead><tbody>
+        ${state.personnel.length ? state.personnel.map(person => `<tr><td>${escapeHtml(person.ptgrad)}</td><td>${escapeHtml(person.nomeGuerra)}</td>${Array.from({ length: NUM_CAPS }, (_, idx) => `<td>${makeCapSelect(person, idx)}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${2 + NUM_CAPS}">Nenhum militar cadastrado.</td></tr>`}
         </tbody></table></div>`;
       return;
     }
