@@ -8657,9 +8657,11 @@
     return temData || temNota;
   }
 
+  var NOTA_MIN = 7;
+
   function isAvalAprovada(r) {
     if (!r) return false;
-    var nota = parseFloat(r.nota);
+    var nota = parseFloat(String(r.nota || '').trim());
     return !isNaN(nota) && nota >= NOTA_MIN;
   }
 
@@ -8908,7 +8910,11 @@
   // ================================================================
   // FICHA INDIVIDUAL
   // ================================================================
+  // Rastreia qual ficha está aberta
+  var _faoOpenId = '';
+
   window.faoOpenFicha = function(personId) {
+    _faoOpenId = personId;
     var person = state.personnel.find(function(p){ return p.id === personId; });
     if (!person) return;
     var semKey = getActiveSemesterKey();
@@ -8961,7 +8967,7 @@
           '<td class="center"><span class="badge '+(av.tipo==='FAO'?'badge-gr':av.tipo==='FAO+TEO'?'badge-com':'badge-warn')+'">'+escapeHtml(av.tipo)+'</span></td>' +
           '<td>'+dataInput+'</td>' +
           '<td>'+notaInput+'</td>' +
-          '<td class="center"><span class="badge '+statusCls+'" style="font-size:10px;">'+statusLbl+'</span></td>' +
+          '<td class="center"><span class="badge '+statusCls+'" data-fao-key="'+av.key+'" style="font-size:10px;">'+statusLbl+'</span></td>' +
           '</tr>';
       });
       html += '</tbody></table></div>';
@@ -8973,6 +8979,7 @@
   };
 
   window.faoCloseFicha = function() {
+    _faoOpenId = '';
     var el = document.getElementById('faoFichaContainer');
     if (el) el.style.display = 'none';
   };
@@ -8984,8 +8991,27 @@
     if (!rec[avalKey]) rec[avalKey] = {};
     rec[avalKey][field] = String(value || '').trim();
     saveFaoState();
+    // Atualiza badge de status inline sem recriar a ficha
+    var r = rec[avalKey];
+    var sCls = '', sLbl = '⚪ Pendente';
+    if (isAvalRealizada(r)) {
+      if (isAvalAprovada(r))                                          { sCls = 'badge-ok'; sLbl = '🟢 Aprovado'; }
+      else if (typeof r.nota === 'string' && r.nota.trim() !== '')   { sCls = 'badge-no'; sLbl = '🔴 Reprovado'; }
+      else                                                             { sCls = 'badge-gr'; sLbl = '🟡 Realizado'; }
+    }
+    var fc = document.getElementById('faoFichaContent');
+    if (fc) {
+      fc.querySelectorAll('[data-fao-key="'+avalKey+'"]').forEach(function(el) {
+        el.className = 'badge ' + sCls;
+        el.style.fontSize = '10px';
+        el.textContent = sLbl;
+      });
+    }
+    // Atualiza grade sem fechar ficha
     renderFaoGrade();
-    renderFaoDashboard();
+    // Dashboard só se visível
+    var t16 = document.getElementById('tab16');
+    if (t16 && t16.classList.contains('active')) renderFaoDashboard();
   };
 
   // ================================================================
@@ -9332,10 +9358,16 @@
       state.faoData = { activeSemester: '', semesters: {} };
     }
     var fd = getFaoData();
-    // Garante semestre atual existe
     getSemesterData(fd.activeSemester);
     renderSemesterSelects();
     renderFaoGrade();
+    // Reabre ficha se havia uma aberta e foi fechada pelo re-render
+    if (_faoOpenId) {
+      var fichaEl = document.getElementById('faoFichaContainer');
+      if (fichaEl && fichaEl.style.display === 'none') {
+        window.faoOpenFicha(_faoOpenId);
+      }
+    }
   }
 
   // ================================================================
@@ -10495,6 +10527,79 @@
     renderKonusYearSelects();
   }, 900);
 
+})();
+</script>
+
+<script id="state-preservation-fix">
+// Corrige perda de faoData e konusData durante normalizeStateData e writeLocalCache
+(function(){
+  if (window.__statePreservationFixed) return;
+  window.__statePreservationFixed = true;
+
+  // Aguarda os módulos carregarem antes de aplicar o fix
+  function applyFix() {
+    // ── 1. Patch em normalizeStateData ──────────────────────────────
+    var _origNormalize = normalizeStateData;
+    normalizeStateData = function(rawState) {
+      // Captura faoData e konusData ANTES da normalização apagar
+      var faoBackup   = (rawState && rawState.faoData)   || (typeof state !== 'undefined' && state && state.faoData)   || null;
+      var konusBackup = (rawState && rawState.konusData) || (typeof state !== 'undefined' && state && state.konusData) || null;
+      var result = _origNormalize.apply(this, arguments);
+      // Reinjeta após normalização
+      if (faoBackup)   result.faoData   = faoBackup;
+      if (konusBackup) result.konusData = konusBackup;
+      return result;
+    };
+
+    // ── 2. Patch em writeLocalCache ─────────────────────────────────
+    var _origWrite = writeLocalCache;
+    writeLocalCache = function(snapshot) {
+      // Se snapshot não tem faoData/konusData, injeta do state atual
+      var snap = snapshot || (typeof getState === 'function' ? getState() : state);
+      if (snap && typeof state !== 'undefined' && state) {
+        if (!snap.faoData   && state.faoData)   snap = Object.assign({}, snap, { faoData:   state.faoData });
+        if (!snap.konusData && state.konusData) snap = Object.assign({}, snap, { konusData: state.konusData });
+      }
+      return _origWrite.call(this, snap);
+    };
+
+    // ── 3. Patch em loadState — restaura faoData/konusData do cache ─
+    var _origLoad = loadState;
+    loadState = function() {
+      var result = _origLoad.apply(this, arguments);
+      try {
+        var raw = JSON.parse(localStorage.getItem('qmf2026_state_v2') || '{}');
+        if (raw.faoData   && typeof state !== 'undefined' && state) state.faoData   = raw.faoData;
+        if (raw.konusData && typeof state !== 'undefined' && state) state.konusData = raw.konusData;
+      } catch(e) {}
+      return result;
+    };
+
+    // ── 4. Patch em setState — garante que faoData/konusData não somem ─
+    var _origSetState = setState;
+    setState = function(nextOrUpdater, options) {
+      var faoBackup   = typeof state !== 'undefined' && state ? state.faoData   : null;
+      var konusBackup = typeof state !== 'undefined' && state ? state.konusData : null;
+      var result = _origSetState.apply(this, arguments);
+      if (typeof state !== 'undefined' && state) {
+        if (faoBackup   && !state.faoData)   state.faoData   = faoBackup;
+        if (konusBackup && !state.konusData) state.konusData = konusBackup;
+      }
+      return result;
+    };
+
+    // ── 5. Restaura imediatamente do localStorage se necessário ─────
+    try {
+      var cached = JSON.parse(localStorage.getItem('qmf2026_state_v2') || '{}');
+      if (typeof state !== 'undefined' && state) {
+        if (cached.faoData   && !state.faoData)   state.faoData   = cached.faoData;
+        if (cached.konusData && !state.konusData) state.konusData = cached.konusData;
+      }
+    } catch(e) {}
+  }
+
+  // Roda após boot dos módulos FAO(800ms) e KONUS(900ms)
+  setTimeout(applyFix, 1200);
 })();
 </script>
 
