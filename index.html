@@ -1263,7 +1263,6 @@
                 <th>Trigrama</th>
                 <th>Nome Completo</th>
                 <th>SARAM</th>
-                <th>CPF</th>
                 <th>ID Militar</th>
                 <th>E-mail</th>
               </tr>
@@ -2748,11 +2747,10 @@
           <td>${escapeHtml(person.trigrama)}</td>
           <td>${escapeHtml(person.nomeCompleto)}</td>
           <td>${escapeHtml(person.saram)}</td>
-          <td>${escapeHtml(person.cpf || '-')}</td>
           <td>${escapeHtml(person.idMilitar)}</td>
           <td>${escapeHtml(person.email)}</td>
         </tr>
-      `).join('') : '<tr><td colspan="9">Nenhum militar escalado.</td></tr>';
+      `).join('') : '<tr><td colspan="8">Nenhum militar escalado.</td></tr>';
     }
 
     // ==============================
@@ -5952,7 +5950,6 @@
         <th>Trigrama</th>
         <th>Nome Completo</th>
         <th>SARAM</th>
-        <th>CPF</th>
         <th>ID Militar</th>
         <th>E-mail</th>
       `;
@@ -6112,11 +6109,10 @@
           <td>${escapeHtml(person.trigrama)}</td>
           <td>${escapeHtml(person.nomeCompleto)}</td>
           <td>${escapeHtml(person.saram)}</td>
-          <td>${escapeHtml(person.cpf || '')}</td>
           <td>${escapeHtml(person.idMilitar)}</td>
           <td>${escapeHtml(person.email)}</td>
         </tr>
-      `).join('') : '<tr><td colspan="9">Nenhum militar escalado.</td></tr>';
+      `).join('') : '<tr><td colspan="8">Nenhum militar escalado.</td></tr>';
     };
 
     renderBoard = function renderBoardBloco5() {
