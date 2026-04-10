@@ -983,6 +983,7 @@
     </div>
     <div class="sl-item active" data-tab="tab3"><svg viewBox="0 0 15 15"><rect x="2" y="2" width="4.5" height="4.5" rx="1"/><rect x="8.5" y="2" width="4.5" height="4.5" rx="1"/><rect x="2" y="8.5" width="4.5" height="4.5" rx="1"/><rect x="8.5" y="8.5" width="4.5" height="4.5" rx="1"/></svg><span class="sl-tooltip">Quadro</span></div>
     <div class="sl-item" data-tab="tab1"><svg viewBox="0 0 15 15"><circle cx="7.5" cy="5" r="2.5"/><path d="M2.5 13c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg><span class="sl-tooltip">Efetivo</span></div>
+    <div class="sl-item" data-tab="tabFerias"><svg viewBox="0 0 15 15"><rect x="2" y="3" width="11" height="10" rx="1"/><path d="M5 2v2M10 2v2M2 7h11"/><path d="M5 10h1M7.5 10h1M10 10h1"/></svg><span class="sl-tooltip">Férias</span></div>
     <div class="sl-item" data-tab="tab2"><svg viewBox="0 0 15 15"><circle cx="7.5" cy="7.5" r="5"/><path d="M7.5 4v3.5l2 2"/></svg><span class="sl-tooltip">Missões</span></div>
     <div class="sl-item" data-tab="tab4"><svg viewBox="0 0 15 15"><path d="M2 11l3-3 2 2 3-4 3 3"/><rect x="2" y="2" width="11" height="11" rx="1"/></svg><span class="sl-tooltip">Dashboard Missão</span></div>
     <div class="sl-item" data-tab="tab5"><svg viewBox="0 0 15 15"><rect x="2" y="2" width="11" height="11" rx="1"/><path d="M2 6h11M6 2v11"/></svg><span class="sl-tooltip">Dashboard Militar</span></div>
@@ -1090,24 +1091,6 @@
                 <input id="dependente" type="checkbox" />
                 <span>Possui Dependente?</span>
               </div>
-            </div>
-          </div>
-          <div style="height:10px"></div>
-          <div class="form-grid" style="grid-template-columns: repeat(3, minmax(220px, 1fr));">
-            <div class="field-group">
-              <label>Período 1 de Férias</label>
-              <div class="field"><input id="ferias1Inicio" type="date" /></div>
-              <div class="field"><input id="ferias1Fim" type="date" /></div>
-            </div>
-            <div class="field-group">
-              <label>Período 2 de Férias</label>
-              <div class="field"><input id="ferias2Inicio" type="date" /></div>
-              <div class="field"><input id="ferias2Fim" type="date" /></div>
-            </div>
-            <div class="field-group">
-              <label>Período 3 de Férias</label>
-              <div class="field"><input id="ferias3Inicio" type="date" /></div>
-              <div class="field"><input id="ferias3Fim" type="date" /></div>
             </div>
           </div>
           <div class="form-actions">
@@ -1590,6 +1573,14 @@
             <div id="konusChart5" style="overflow-x:auto;"></div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="tab-content" id="tabFerias">
+      <div class="card">
+        <h3 class="section-title">Gestão de Férias</h3>
+        <div class="notice">Edite os períodos de férias de cada militar. O quadro reflete automaticamente. Alertas aparecem quando há conflito com missões escaladas.</div>
+        <div id="feriasListContainer"></div>
       </div>
     </section>
 
@@ -2353,11 +2344,7 @@
         soldoBruto: currencyToNumber(document.getElementById('soldoBruto').value),
         soldoManual: document.getElementById('soldoManualFlag').value === '1',
         dependente: document.getElementById('dependente').checked,
-        ferias: [
-          { inicio: document.getElementById('ferias1Inicio').value, fim: document.getElementById('ferias1Fim').value },
-          { inicio: document.getElementById('ferias2Inicio').value, fim: document.getElementById('ferias2Fim').value },
-          { inicio: document.getElementById('ferias3Inicio').value, fim: document.getElementById('ferias3Fim').value }
-        ]
+        ferias: (()=>{ const eid=document.getElementById('personnelEditId').value; if(eid){const p=state.personnel.find(x=>x.id===eid);return p?p.ferias||[]:[]} return []; })()
       };
       if (!payload.quadro || !payload.nomeGuerra || !payload.trigrama || !payload.nomeCompleto) {
         alert('Preencha os campos obrigatórios do cadastro de efetivo.');
@@ -2392,12 +2379,6 @@
       document.getElementById('soldoBruto').value = currencyToNumber(person.soldoManual ? person.soldoBruto : getPersonnelSoldo(person)) || '';
       document.getElementById('soldoManualFlag').value = person.soldoManual ? '1' : '0';
       document.getElementById('dependente').checked = !!person.dependente;
-      document.getElementById('ferias1Inicio').value = person.ferias?.[0]?.inicio || '';
-      document.getElementById('ferias1Fim').value = person.ferias?.[0]?.fim || '';
-      document.getElementById('ferias2Inicio').value = person.ferias?.[1]?.inicio || '';
-      document.getElementById('ferias2Fim').value = person.ferias?.[1]?.fim || '';
-      document.getElementById('ferias3Inicio').value = person.ferias?.[2]?.inicio || '';
-      document.getElementById('ferias3Fim').value = person.ferias?.[2]?.fim || '';
       setActiveTab('tab1');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -3059,6 +3040,7 @@
 
   const TAB_OVERRIDES = [
     { id: 'tab1', label: '1. Cadastro de Efetivo', subtitle: 'Cadastro de dados pessoais, remuneração, FOP, capacitações e cursos.' },
+    { id: 'tabFerias', label: '1b. Férias', subtitle: 'Gestão dos períodos de férias por militar com alertas de conflito.' },
     { id: 'tab2', label: '2. Cadastro de Missões', subtitle: 'Missões, períodos, cores e localidade da missão.' },
     { id: 'tab3', label: '3. Quadro de Missões e Férias', subtitle: 'Escala anual por ano selecionado, com férias, escalas, feriados e comissionamento.' },
     { id: 'tab4', label: '4. Dashboard por Missão', subtitle: 'Resumo operacional e efetivo escalado por missão.' },
@@ -3080,6 +3062,7 @@
   const TITLE_DEFAULTS = {
     mainTitle: 'Sistema de Gestão Militar',
     tab1: 'Cadastro de Efetivo',
+    tabFerias: 'Férias',
     tab2: 'Cadastro de Missões',
     tab3: 'Quadro de Missões e Férias',
     tab4: 'Dashboard por Missão',
@@ -3893,13 +3876,6 @@
             <div id="cursosPretendidosContainer"></div>
             <div class="form-actions compact-actions"><button type="button" class="btn btn-secondary" onclick="appendCursoPretendidoItem()">+ Adicionar Curso Pretendido</button></div>
 
-            <div class="section-divider">── FÉRIAS ──</div>
-            <div class="form-grid" style="grid-template-columns: repeat(3, minmax(220px, 1fr));">
-              <div class="field-group"><label>Período 1 de Férias</label><div class="field"><input id="ferias1Inicio" type="date" /></div><div class="field"><input id="ferias1Fim" type="date" /></div></div>
-              <div class="field-group"><label>Período 2 de Férias</label><div class="field"><input id="ferias2Inicio" type="date" /></div><div class="field"><input id="ferias2Fim" type="date" /></div></div>
-              <div class="field-group"><label>Período 3 de Férias</label><div class="field"><input id="ferias3Inicio" type="date" /></div><div class="field"><input id="ferias3Fim" type="date" /></div></div>
-            </div>
-
             <div class="form-actions">
               <button class="btn btn-primary" type="submit">Salvar Militar</button>
               <button class="btn btn-secondary" type="button" onclick="clearPersonnelForm()">Cancelar Edição</button>
@@ -4238,11 +4214,7 @@
         capacitacoes: readCapacitacoesFromForm(),
         cursos: readCursosFromForm(),
         cursosPretendidos: readCursosPretendidosFromForm(),
-        ferias: [
-          { inicio: document.getElementById('ferias1Inicio').value, fim: document.getElementById('ferias1Fim').value },
-          { inicio: document.getElementById('ferias2Inicio').value, fim: document.getElementById('ferias2Fim').value },
-          { inicio: document.getElementById('ferias3Inicio').value, fim: document.getElementById('ferias3Fim').value }
-        ]
+        ferias: (()=>{ const eid=document.getElementById('personnelEditId').value; if(eid){const p=state.personnel.find(x=>x.id===eid);return p?p.ferias||[]:[]} return []; })()
       };
       const editId = document.getElementById('personnelEditId').value;
       patchState(prev => {
@@ -4289,12 +4261,6 @@
     document.getElementById('fop2').value = person.fop2 || '';
     document.getElementById('fop3').value = person.fop3 || '';
     document.getElementById('fop4').value = person.fop4 || '';
-    document.getElementById('ferias1Inicio').value = person.ferias?.[0]?.inicio || '';
-    document.getElementById('ferias1Fim').value = person.ferias?.[0]?.fim || '';
-    document.getElementById('ferias2Inicio').value = person.ferias?.[1]?.inicio || '';
-    document.getElementById('ferias2Fim').value = person.ferias?.[1]?.fim || '';
-    document.getElementById('ferias3Inicio').value = person.ferias?.[2]?.inicio || '';
-    document.getElementById('ferias3Fim').value = person.ferias?.[2]?.fim || '';
     renderCapacitacoesForm(person.capacitacoes || []);
     renderCursosForm(person.cursos || []);
     renderCursosPretendidosForm(person.cursosPretendidos || []);
@@ -8024,6 +7990,30 @@
   window.updateAssignmentStatus = function(missionId, personId, value){
     if (typeof requireAuth === 'function' && !requireAuth()) return;
     const next = STATUS_OPTIONS.includes(String(value || '').toUpperCase()) ? String(value || '').toUpperCase() : '';
+    if (next !== '') {
+      const _person = (state.personnel||[]).find(p => p.id === personId);
+      const _mission = (state.missions||[]).find(m => m.id === missionId);
+      if (_person && _mission) {
+        const _conflicts = [];
+        (_person.ferias||[]).forEach(function(f, fi) {
+          if (!f.inicio || !f.fim) return;
+          if (f.inicio <= _mission.end && f.fim >= _mission.start) {
+            _conflicts.push('⛔ FÉRIAS: Período ' + (fi+1) + ' (' + f.inicio.split('-').reverse().join('/') + ' a ' + f.fim.split('-').reverse().join('/') + ') conflita com a missão.');
+          }
+        });
+        (state.missions||[]).forEach(function(m2) {
+          if (m2.id === missionId) return;
+          const st2 = String((((state.assignments||{})[m2.id])||{})[personId]?.status||'').toUpperCase();
+          if (!st2) return;
+          if (m2.start <= _mission.end && m2.end >= _mission.start) {
+            _conflicts.push('⚠ MISSÃO DUPLA: Já escalado em "' + m2.name + '" (' + m2.start.split('-').reverse().join('/') + ' a ' + m2.end.split('-').reverse().join('/') + ').');
+          }
+        });
+        if (_conflicts.length > 0) {
+          if (!window.confirm('CONFLITO — ' + _person.ptgrad + ' ' + _person.nomeGuerra + ':\n\n' + _conflicts.join('\n') + '\n\nDeseja escalar mesmo assim?')) return;
+        }
+      }
+    }
     patchState(prev => ({
       ...prev,
       assignments: {
@@ -8330,8 +8320,8 @@
   }, 400);
 
   /* ── 2. STEPPER DO FORMULÁRIO DE EFETIVO ── */
-  var STEP_LABELS = ['Dados Pessoais', 'Financeiro', 'FOPs e Capacitações', 'Férias'];
-  var STEP_KEYS   = ['pessoal', 'financeiro', 'fop', 'ferias'];
+  var STEP_LABELS = ['Dados Pessoais', 'Financeiro', 'FOPs e Capacitações'];
+  var STEP_KEYS   = ['pessoal', 'financeiro', 'fop'];
   var currentStep = 0;
   var stepperInited = false;
 
@@ -8340,7 +8330,6 @@
     ['dados pessoais', 'pessoal'],
     ['financeiro', 'financ'],
     ['fun', 'fop', 'capacit', 'curso'],
-    ['férias', 'ferias']
   ];
 
   function buildStepperHtml(cur) {
@@ -10599,5 +10588,190 @@
 })();
 </script>
 
+
+<script id="ferias-module">
+(function(){
+  if (window.__feriasModuleLoaded) return;
+  window.__feriasModuleLoaded = true;
+
+  function escH(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function detectConflicts(person, ferias) {
+    var conflicts = [];
+    var missions = Array.isArray(state&&state.missions) ? state.missions : [];
+    var asgn = (state&&state.assignments)||{};
+    ferias.forEach(function(f,fi){
+      if (!f.inicio||!f.fim) return;
+      missions.forEach(function(m){
+        var st = String(((asgn[m.id]||{})[person.id]||{}).status||'').toUpperCase();
+        if (!st) return;
+        if (f.inicio<=m.end && f.fim>=m.start)
+          conflicts.push('⚠ Período '+(fi+1)+' conflita com missão "'+m.name+'" ('+m.start.split('-').reverse().join('/')+'→'+m.end.split('-').reverse().join('/') +')');
+      });
+    });
+    return conflicts;
+  }
+
+  window.feriasUpdatePeriodo = function(personId, idx, field, value) {
+    if (typeof requireAuth==='function' && !requireAuth()) return;
+    var person = (state.personnel||[]).find(function(p){return p.id===personId;});
+    if (!person) return;
+    if (!Array.isArray(person.ferias)) person.ferias = [];
+    while (person.ferias.length<=idx) person.ferias.push({inicio:'',fim:''});
+    person.ferias[idx][field] = String(value||'').trim();
+    if (typeof saveState==='function') saveState();
+    if (typeof renderBoard==='function') renderBoard();
+    renderFeriasList();
+    var c = detectConflicts(person, person.ferias);
+    if (c.length) alert('CONFLITO — '+person.ptgrad+' '+person.nomeGuerra+':\n\n'+c.join('\n'));
+  };
+
+  window.feriasAddPeriodo = function(personId) {
+    if (typeof requireAuth==='function' && !requireAuth()) return;
+    var person = (state.personnel||[]).find(function(p){return p.id===personId;});
+    if (!person) return;
+    if (!Array.isArray(person.ferias)) person.ferias = [];
+    person.ferias.push({inicio:'',fim:''});
+    if (typeof saveState==='function') saveState();
+    renderFeriasList();
+  };
+
+  window.feriasRemovePeriodo = function(personId, idx) {
+    if (typeof requireAuth==='function' && !requireAuth()) return;
+    var person = (state.personnel||[]).find(function(p){return p.id===personId;});
+    if (!person||!Array.isArray(person.ferias)) return;
+    person.ferias.splice(idx,1);
+    if (typeof saveState==='function') saveState();
+    if (typeof renderBoard==='function') renderBoard();
+    renderFeriasList();
+  };
+
+  function conflictBadge(person, idx) {
+    var f = (person.ferias||[])[idx];
+    if (!f||!f.inicio||!f.fim) return '<span style="color:#4a6858;font-size:11px;">—</span>';
+    var missions = Array.isArray(state&&state.missions)?state.missions:[];
+    var asgn = (state&&state.assignments)||{};
+    var hit = missions.some(function(m){
+      var st=String(((asgn[m.id]||{})[person.id]||{}).status||'').toUpperCase();
+      return st && f.inicio<=m.end && f.fim>=m.start;
+    });
+    return hit
+      ? '<span style="color:#c8a840;font-weight:700;font-size:11px;" title="Conflito com missão escalada">⚠ Conflito</span>'
+      : '<span style="color:#3ecf82;font-size:11px;">✓ OK</span>';
+  }
+
+  function renderFeriasList() {
+    var container = document.getElementById('feriasListContainer');
+    if (!container) return;
+    var people = Array.isArray(state&&state.personnel)?state.personnel:[];
+    var canEdit = typeof isAuthenticated==='function'?isAuthenticated():false;
+
+    if (!people.length) {
+      container.innerHTML = '<div class="empty" style="padding:24px;text-align:center;">Nenhum militar cadastrado.</div>';
+      return;
+    }
+
+    var cols = canEdit ? 8 : 7;
+    var html = '<div class="table-wrap"><table><thead><tr>'
+      +'<th>PT/GRAD</th><th>Nome de Guerra</th><th>Trigrama</th>'
+      +'<th style="text-align:center;">Período</th><th>Início</th><th>Fim</th><th>Status</th>'
+      +(canEdit?'<th></th>':'')
+      +'</tr></thead><tbody>';
+
+    people.forEach(function(person){
+      var ferias = Array.isArray(person.ferias)?person.ferias.slice():[];
+      while (ferias.length<3) ferias.push({inicio:'',fim:''});
+      var nRows = ferias.length;
+
+      ferias.forEach(function(f,idx){
+        var isExtra = idx>=3;
+        var startCell = canEdit
+          ? '<input type="date" value="'+escH(f.inicio||'')+'" style="font-size:12px;padding:4px 6px;width:140px;" onchange="feriasUpdatePeriodo(\''+person.id+'\','+idx+',\'inicio\',this.value)" />'
+          : (f.inicio?f.inicio.split('-').reverse().join('/'):'—');
+        var endCell = canEdit
+          ? '<input type="date" value="'+escH(f.fim||'')+'" style="font-size:12px;padding:4px 6px;width:140px;" onchange="feriasUpdatePeriodo(\''+person.id+'\','+idx+',\'fim\',this.value)" />'
+          : (f.fim?f.fim.split('-').reverse().join('/'):'—');
+
+        html += '<tr'+(isExtra?' style="background:rgba(82,138,99,0.05);"':'')+' >';
+        if (idx===0) {
+          html += '<td rowspan="'+nRows+'" style="font-weight:700;vertical-align:middle;">'+escH(person.ptgrad)+'</td>';
+          html += '<td rowspan="'+nRows+'" style="vertical-align:middle;">'+escH(person.nomeGuerra)+'</td>';
+          html += '<td rowspan="'+nRows+'" style="text-align:center;vertical-align:middle;">'+escH(person.trigrama)+'</td>';
+        }
+        html += '<td style="text-align:center;color:var(--text-muted);font-size:12px;">'+(idx+1)+'º</td>';
+        html += '<td>'+startCell+'</td>';
+        html += '<td>'+endCell+'</td>';
+        html += '<td>'+conflictBadge(person,idx)+'</td>';
+        if (canEdit) {
+          html += '<td>'+(isExtra?'<button class="btn btn-danger btn-mini" onclick="feriasRemovePeriodo(\''+person.id+'\','+idx+')">×</button>':'')+'</td>';
+        }
+        html += '</tr>';
+      });
+
+      if (canEdit) {
+        html += '<tr><td colspan="'+cols+'" style="padding:6px 12px;">'
+          +'<button class="btn btn-secondary btn-mini" onclick="feriasAddPeriodo(\''+person.id+'\')">+ Período</button>'
+          +'</td></tr>';
+      }
+      html += '<tr><td colspan="'+cols+'" style="height:4px;background:rgba(0,0,0,0.2);padding:0;"></td></tr>';
+    });
+
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+  }
+
+  window.renderFeriasList = renderFeriasList;
+
+  // ── Integração robusta: sobrescreve setActiveTab e renderAll DEPOIS
+  //    de todos os outros scripts usando polling para garantir que
+  //    pega a versão final de cada função ─────────────────────────
+  function hookIntoSystem() {
+    // Patch setActiveTab
+    var _origSet = window.setActiveTab;
+    window.setActiveTab = function(tabId) {
+      if (typeof _origSet==='function') _origSet.apply(this,arguments);
+      if (tabId==='tabFerias') setTimeout(renderFeriasList, 0);
+    };
+    try { setActiveTab = window.setActiveTab; } catch(e){}
+
+    // Patch renderAll
+    var _origAll = window.renderAll;
+    window.renderAll = function() {
+      if (typeof _origAll==='function') _origAll.apply(this,arguments);
+      var t = document.getElementById('tabFerias');
+      if (t && t.classList.contains('active')) setTimeout(renderFeriasList, 0);
+    };
+    try { renderAll = window.renderAll; } catch(e){}
+
+    // Renderiza imediatamente se tabFerias já está ativa
+    var t = document.getElementById('tabFerias');
+    if (t && t.classList.contains('active')) renderFeriasList();
+  }
+
+  // Aguarda DOM + outros scripts (usa setTimeout escalonado)
+  setTimeout(hookIntoSystem, 200);
+  setTimeout(hookIntoSystem, 800);  // segunda passada para pegar patches tardios
+  setTimeout(renderFeriasList, 300); // tenta renderizar diretamente também
+
+  // MutationObserver: renderiza sempre que tabFerias se tornar visível
+  var obs = new MutationObserver(function(mutations) {
+    mutations.forEach(function(m) {
+      if (m.target && m.target.id==='tabFerias' && m.target.classList.contains('active')) {
+        renderFeriasList();
+      }
+    });
+  });
+  var tabF = document.getElementById('tabFerias');
+  if (tabF) obs.observe(tabF, {attributes:true, attributeFilter:['class']});
+  else {
+    // tabFerias ainda não existe no DOM, aguarda
+    var bodyObs = new MutationObserver(function(){
+      var t2 = document.getElementById('tabFerias');
+      if (t2) { obs.observe(t2,{attributes:true,attributeFilter:['class']}); bodyObs.disconnect(); }
+    });
+    bodyObs.observe(document.body, {childList:true, subtree:true});
+  }
+})();
+</script>
 </body>
 </html>
