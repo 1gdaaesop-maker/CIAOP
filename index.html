@@ -10758,8 +10758,9 @@
 
     people.forEach(function(person){
       var ferias = Array.isArray(person.ferias)?person.ferias.slice():[];
+      // nRows calculado ANTES do padding, refletindo o real cadastrado
+      var nRows = Math.max(3, ferias.length);
       while (ferias.length<3) ferias.push({inicio:'',fim:''});
-      var nRows = ferias.length;
 
       ferias.forEach(function(f,idx){
         var isExtra = idx>=3;
