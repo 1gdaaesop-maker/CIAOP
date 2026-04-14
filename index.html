@@ -1985,10 +1985,12 @@
           soldoBruto: currencyToNumber(item.soldoBruto),
           soldoManual: !!item.soldoManual,
           dependente: !!item.dependente,
-          ferias: [0,1,2].map(index => ({
-            inicio: ferias[index]?.inicio || '',
-            fim: ferias[index]?.fim || ''
-          }))
+          ferias: ferias.length > 0
+            ? ferias.map(f => ({
+                inicio: f?.inicio || '',
+                fim: f?.fim || ''
+              }))
+            : [{inicio:'',fim:''},{inicio:'',fim:''},{inicio:'',fim:''}]
         };
       });
     }
@@ -3270,10 +3272,12 @@
           ano: String(cur?.ano || '').trim()
         })).filter(cur => cur.nome || cur.ano) : [],
         cursosPretendidos: Array.isArray(item.cursosPretendidos) ? item.cursosPretendidos.map(v => String(v || '').trim()).filter(Boolean) : [],
-        ferias: [0, 1, 2].map(index => ({
-          inicio: ferias[index]?.inicio || '',
-          fim: ferias[index]?.fim || ''
-        }))
+        ferias: ferias.length > 0
+          ? ferias.map(f => ({
+              inicio: f?.inicio || '',
+              fim: f?.fim || ''
+            }))
+          : [{inicio:'',fim:''},{inicio:'',fim:''},{inicio:'',fim:''}]
       };
     });
   };
