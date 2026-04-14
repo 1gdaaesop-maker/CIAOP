@@ -984,6 +984,7 @@
     <div class="sl-item active" data-tab="tab3"><svg viewBox="0 0 15 15"><rect x="2" y="2" width="4.5" height="4.5" rx="1"/><rect x="8.5" y="2" width="4.5" height="4.5" rx="1"/><rect x="2" y="8.5" width="4.5" height="4.5" rx="1"/><rect x="8.5" y="8.5" width="4.5" height="4.5" rx="1"/></svg><span class="sl-tooltip">Quadro</span></div>
     <div class="sl-item" data-tab="tab1"><svg viewBox="0 0 15 15"><circle cx="7.5" cy="5" r="2.5"/><path d="M2.5 13c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg><span class="sl-tooltip">Efetivo</span></div>
     <div class="sl-item" data-tab="tabFerias"><svg viewBox="0 0 15 15"><rect x="2" y="3" width="11" height="10" rx="1"/><path d="M5 2v2M10 2v2M2 7h11"/><path d="M5 10h1M7.5 10h1M10 10h1"/></svg><span class="sl-tooltip">Férias</span></div>
+    <div class="sl-item" data-tab="tabDisponibilidade"><svg viewBox="0 0 15 15"><path d="M2 11l2-4 2 2 3-5 3 4"/><rect x="2" y="2" width="11" height="11" rx="1"/></svg><span class="sl-tooltip">Disponibilidade Geral</span></div>
     <div class="sl-item" data-tab="tab2"><svg viewBox="0 0 15 15"><circle cx="7.5" cy="7.5" r="5"/><path d="M7.5 4v3.5l2 2"/></svg><span class="sl-tooltip">Missões</span></div>
     <div class="sl-item" data-tab="tab4"><svg viewBox="0 0 15 15"><path d="M2 11l3-3 2 2 3-4 3 3"/><rect x="2" y="2" width="11" height="11" rx="1"/></svg><span class="sl-tooltip">Dashboard Missão</span></div>
     <div class="sl-item" data-tab="tab5"><svg viewBox="0 0 15 15"><rect x="2" y="2" width="11" height="11" rx="1"/><path d="M2 6h11M6 2v11"/></svg><span class="sl-tooltip">Dashboard Militar</span></div>
@@ -1584,6 +1585,82 @@
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         ABA: DISPONIBILIDADE GERAL
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="tab-content" id="tabDisponibilidade">
+
+      <!-- ── Barra de navegação fixa no topo da aba ── -->
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding:12px 18px;background:#07090a;border:1px solid #0f1a14;border-radius:9px;position:sticky;top:48px;z-index:100;">
+        <span style="font-family:'Oswald',sans-serif;font-size:13px;color:#2a5040;text-transform:uppercase;letter-spacing:.8px;margin-right:4px;">Disponibilidade Geral</span>
+        <div style="width:1px;height:22px;background:#142018;"></div>
+        <!-- Ano -->
+        <button class="btn btn-secondary btn-mini" id="dispYearPrev">◀</button>
+        <span id="dispYearLabel" style="font-family:'Oswald',sans-serif;font-size:17px;color:#3ecf82;min-width:48px;text-align:center;"></span>
+        <button class="btn btn-secondary btn-mini" id="dispYearNext">▶</button>
+        <div style="width:1px;height:22px;background:#142018;"></div>
+        <!-- Trimestre -->
+        <button class="btn btn-secondary btn-mini" id="dispQPrev">◀ Trim.</button>
+        <span id="dispQLabel" style="font-family:'Oswald',sans-serif;font-size:13px;color:#8ab8a8;min-width:130px;text-align:center;font-weight:700;letter-spacing:.4px;"></span>
+        <button class="btn btn-secondary btn-mini" id="dispQNext">Trim. ▶</button>
+        <div style="flex:1;"></div>
+        <!-- Legenda rápida -->
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#2a5040;"><span style="width:18px;height:3px;background:#9b7fe8;border-radius:2px;display:inline-block;"></span>Geral</span>
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#2a5040;"><span style="width:18px;height:3px;background:#3ecf82;border-radius:2px;display:inline-block;"></span>Oficiais</span>
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#2a5040;"><span style="width:18px;height:3px;background:#c8a840;border-radius:2px;display:inline-block;"></span>Sub./Sarg.</span>
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#2a5040;"><span style="width:18px;height:3px;background:#6ab4e8;border-radius:2px;display:inline-block;"></span>Cabos/Sold.</span>
+      </div>
+
+      <!-- ── Gráfico 1: Geral ── -->
+      <div class="card" style="margin-bottom:12px;padding:18px 20px;">
+        <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:10px;">
+          <h4 style="margin:0;font-family:'Oswald',sans-serif;font-size:15px;text-transform:uppercase;color:#fff;letter-spacing:.7px;">Geral — Todo o Efetivo</h4>
+          <span style="font-size:11px;color:#2a5040;">Todos os PT/GRAD cadastrados</span>
+        </div>
+        <div style="width:100%;overflow-x:auto;">
+          <canvas id="dispChartGeral" style="display:block;" height="200"></canvas>
+        </div>
+        <div id="dispSummaryGeral" style="margin-top:8px;font-size:12px;color:#3a7060;padding:6px 0;border-top:1px solid #0f1a14;"></div>
+      </div>
+
+      <!-- ── Gráfico 2: Oficiais ── -->
+      <div class="card" style="margin-bottom:12px;padding:18px 20px;">
+        <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:10px;">
+          <h4 style="margin:0;font-family:'Oswald',sans-serif;font-size:15px;text-transform:uppercase;color:#fff;letter-spacing:.7px;">Oficiais</h4>
+          <span style="font-size:11px;color:#2a5040;">2T · 1T · CP · MJ · TC · CL</span>
+        </div>
+        <div style="width:100%;overflow-x:auto;">
+          <canvas id="dispChartOficiais" style="display:block;" height="200"></canvas>
+        </div>
+        <div id="dispSummaryOficiais" style="margin-top:8px;font-size:12px;color:#3a7060;padding:6px 0;border-top:1px solid #0f1a14;"></div>
+      </div>
+
+      <!-- ── Gráfico 3: Suboficiais e Sargentos ── -->
+      <div class="card" style="margin-bottom:12px;padding:18px 20px;">
+        <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:10px;">
+          <h4 style="margin:0;font-family:'Oswald',sans-serif;font-size:15px;text-transform:uppercase;color:#fff;letter-spacing:.7px;">Suboficiais e Sargentos</h4>
+          <span style="font-size:11px;color:#2a5040;">3S · 2S · 1S · SO</span>
+        </div>
+        <div style="width:100%;overflow-x:auto;">
+          <canvas id="dispChartSargentos" style="display:block;" height="200"></canvas>
+        </div>
+        <div id="dispSummarySargentos" style="margin-top:8px;font-size:12px;color:#3a7060;padding:6px 0;border-top:1px solid #0f1a14;"></div>
+      </div>
+
+      <!-- ── Gráfico 4: Cabos e Soldados ── -->
+      <div class="card" style="margin-bottom:24px;padding:18px 20px;">
+        <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:10px;">
+          <h4 style="margin:0;font-family:'Oswald',sans-serif;font-size:15px;text-transform:uppercase;color:#fff;letter-spacing:.7px;">Cabos e Soldados</h4>
+          <span style="font-size:11px;color:#2a5040;">S2 · S1 · CB</span>
+        </div>
+        <div style="width:100%;overflow-x:auto;">
+          <canvas id="dispChartCabosSoldados" style="display:block;" height="200"></canvas>
+        </div>
+        <div id="dispSummaryCabosSoldados" style="margin-top:8px;font-size:12px;color:#3a7060;padding:6px 0;border-top:1px solid #0f1a14;"></div>
+      </div>
+
+    </section>
+
   </div>
 
   <datalist id="ptgradList"></datalist>
@@ -1619,7 +1696,8 @@
       {id:'tab7', label:'7. Calculadora de Ajuda de Custo', subtitle:'Soldo, adicionais e diárias por PT/GRAD e categoria.'},
       {id:'tab8', label:'8. Custo da Missão', subtitle:'Cálculo financeiro completo por missão.'},
       {id:'tab9', label:'9. Comissionamento', subtitle:'Economicidade por militar e por missão comissionada.'},
-      {id:'tab10', label:'10. Registro de Acessos', subtitle:'Auditoria de data, hora e responsável por cada login.'}
+      {id:'tab10', label:'10. Registro de Acessos', subtitle:'Auditoria de data, hora e responsável por cada login.'},
+      {id:'tabDisponibilidade', label:'Disponibilidade Geral', subtitle:'Efetivo disponível por período — impacto de missões e férias.'}
     ];
 
     const DIARY_GROUPS = {
@@ -10773,5 +10851,344 @@
   }
 })();
 </script>
+
+<script id="disponibilidade-module">
+(function(){
+  'use strict';
+
+  // ── Grupos de PT/GRAD ────────────────────────────────────────────────────────
+  var GRUPOS = {
+    oficiais:      { ids: ['2T','1T','CP','MJ','TC','CL'], color: '#3ecf82', label: 'Oficiais' },
+    sargentos:     { ids: ['3S','2S','1S','SO'],           color: '#c8a840', label: 'Sub./Sarg.' },
+    cabosSoldados: { ids: ['S2','S1','CB'],                color: '#6ab4e8', label: 'Cabos/Sold.' },
+    geral:         { ids: null,                            color: '#9b7fe8', label: 'Geral' }
+  };
+
+  // ── Estado do módulo ─────────────────────────────────────────────────────────
+  var dispYear = new Date().getFullYear();
+  var dispQ    = Math.floor(new Date().getMonth() / 3); // 0–3
+
+  // ── Helpers de data ──────────────────────────────────────────────────────────
+  function pad(n){ return n < 10 ? '0'+n : String(n); }
+
+  function isoFromDate(d){
+    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  }
+
+  function getDaysInQuarter(year, q){
+    var months = [[0,1,2],[3,4,5],[6,7,8],[9,10,11]][q];
+    var days = [];
+    months.forEach(function(m){
+      var d = new Date(year, m, 1);
+      while (d.getMonth() === m){ days.push(isoFromDate(d)); d.setDate(d.getDate()+1); }
+    });
+    return days; // ~91–92 dias
+  }
+
+  // ── Lógica de indisponibilidade ──────────────────────────────────────────────
+  function isPersonUnavailableOnDay(person, iso){
+    var st = window.getState ? window.getState() : (window.state || {});
+
+    // Férias
+    var ferias = Array.isArray(person.ferias) ? person.ferias : [];
+    for (var fi = 0; fi < ferias.length; fi++){
+      var f = ferias[fi];
+      if (f.inicio && f.fim && iso >= f.inicio && iso <= f.fim) return true;
+    }
+
+    // Missões escaladas
+    var missions = Array.isArray(st.missions) ? st.missions : [];
+    var asgn     = st.assignments || {};
+    for (var mi = 0; mi < missions.length; mi++){
+      var m = missions[mi];
+      if (!m.start || !m.end || iso < m.start || iso > m.end) continue;
+      var pa = (asgn[m.id] || {})[person.id];
+      if (!pa) continue;
+      var status = typeof pa === 'object' ? String(pa.status || '').toUpperCase() : '';
+      if (status === 'GR' || status === 'DR' || status === 'CM') return true;
+      if (pa === true || (typeof pa === 'object' && pa.selected)) return true;
+    }
+    return false;
+  }
+
+  function calcSeries(days, people){
+    return days.map(function(iso){
+      var indispCount = 0;
+      for (var pi = 0; pi < people.length; pi++){
+        if (isPersonUnavailableOnDay(people[pi], iso)) indispCount++;
+      }
+      return Math.max(0, people.length - indispCount);
+    });
+  }
+
+  // ── Labels dos botões ────────────────────────────────────────────────────────
+  function qLabel(q){
+    return ['T1  (Jan – Mar)','T2  (Abr – Jun)','T3  (Jul – Set)','T4  (Out – Dez)'][q] || '';
+  }
+
+  function updateNavLabels(){
+    var elY = document.getElementById('dispYearLabel');
+    var elQ = document.getElementById('dispQLabel');
+    if (elY) elY.textContent = dispYear;
+    if (elQ) elQ.textContent = qLabel(dispQ);
+  }
+
+  // ── Desenho do gráfico — cada dia = 1 pixel de passo ────────────────────────
+  // O canvas tem largura mínima de (nDias × MIN_PX_PER_DAY) px para mostrar
+  // todos os dias. O contêiner tem overflow-x:auto, então role se necessário.
+  var MIN_PX_PER_DAY = 9; // largura mínima por dia (px) — ajuste se quiser
+  var CHART_H        = 220;
+  var PAD = { l: 44, r: 16, t: 18, b: 40 };
+
+  function drawLineChart(canvasId, days, series, color, total){
+    var canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    var nDays   = days.length;
+    var minW    = nDays * MIN_PX_PER_DAY + PAD.l + PAD.r;
+    var W       = Math.max(minW, canvas.parentElement ? canvas.parentElement.offsetWidth : minW);
+    var H       = CHART_H;
+    canvas.width  = W;
+    canvas.height = H;
+    canvas.style.minWidth = minW + 'px';
+
+    var chartW = W - PAD.l - PAD.r;
+    var chartH = H - PAD.t - PAD.b;
+    var step   = nDays > 1 ? chartW / (nDays - 1) : chartW;
+
+    ctx.clearRect(0, 0, W, H);
+
+    if (!nDays){
+      ctx.fillStyle = '#2a5040';
+      ctx.font = '13px Roboto Condensed,Arial,sans-serif';
+      ctx.fillText('Sem dados de efetivo.', 20, H / 2);
+      return;
+    }
+
+    var maxY = total > 0 ? total : (Math.max.apply(null, series) || 1);
+
+    // ── Separadores de mês (linhas verticais suaves) ─────────────────────────
+    var prevMonth = '';
+    days.forEach(function(iso, i){
+      var mon = iso.slice(0, 7); // 'YYYY-MM'
+      if (mon !== prevMonth && i > 0){
+        var x = PAD.l + i * step;
+        ctx.strokeStyle = 'rgba(62,207,130,.10)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(x, PAD.t);
+        ctx.lineTo(x, PAD.t + chartH);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      prevMonth = mon;
+    });
+
+    // ── Grid horizontal ───────────────────────────────────────────────────────
+    var gridLevels = 5;
+    for (var g = 0; g <= gridLevels; g++){
+      var gy = PAD.t + chartH - (g / gridLevels) * chartH;
+      ctx.strokeStyle = 'rgba(255,255,255,.04)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(PAD.l, gy);
+      ctx.lineTo(W - PAD.r, gy);
+      ctx.stroke();
+      // Rótulo Y
+      ctx.fillStyle = '#2a5040';
+      ctx.font = '10px Roboto Condensed,Arial,sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(Math.round((g / gridLevels) * maxY), PAD.l - 5, gy + 3);
+    }
+
+    // ── Rótulos do eixo X — todo dia com número, mês destacado ───────────────
+    // Para ~91 dias, mostramos o número do dia a cada dia (fonte pequena).
+    // Marca o início de cada mês com fundo destacado.
+    ctx.font = '8px Roboto Condensed,Arial,sans-serif';
+    ctx.textAlign = 'center';
+    var prevM2 = '';
+    days.forEach(function(iso, i){
+      var parts = iso.split('-');
+      var dd = parts[2];
+      var mm = parts[1];
+      var mon = iso.slice(0, 7);
+      var x = PAD.l + i * step;
+      var yBase = PAD.t + chartH;
+
+      // Linha-guia sutil para cada dia
+      ctx.strokeStyle = 'rgba(255,255,255,.025)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, yBase);
+      ctx.lineTo(x, yBase + 4);
+      ctx.stroke();
+
+      // Número do dia
+      ctx.fillStyle = dd === '01' ? '#3ecf82' : '#1e4030';
+      ctx.fillText(dd, x, yBase + 13);
+
+      // Nome abreviado do mês — só na primeira ocorrência do mês
+      if (mon !== prevM2){
+        var mesNomes = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+        ctx.fillStyle = '#3ecf82';
+        ctx.font = '9px Roboto Condensed,Arial,sans-serif';
+        ctx.fillText(mesNomes[parseInt(mm,10)-1], x, yBase + 26);
+        ctx.font = '8px Roboto Condensed,Arial,sans-serif';
+        prevM2 = mon;
+      }
+    });
+
+    // ── Área sob a linha ─────────────────────────────────────────────────────
+    ctx.beginPath();
+    series.forEach(function(v, i){
+      var x = PAD.l + i * step;
+      var y = PAD.t + chartH - (v / maxY) * chartH;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.lineTo(PAD.l + (series.length - 1) * step, PAD.t + chartH);
+    ctx.lineTo(PAD.l, PAD.t + chartH);
+    ctx.closePath();
+    var grad = ctx.createLinearGradient(0, PAD.t, 0, PAD.t + chartH);
+    grad.addColorStop(0, color + '28');
+    grad.addColorStop(1, color + '04');
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // ── Linha principal ───────────────────────────────────────────────────────
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.lineJoin = 'round';
+    series.forEach(function(v, i){
+      var x = PAD.l + i * step;
+      var y = PAD.t + chartH - (v / maxY) * chartH;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // ── Pontos nos dias em que o valor muda + primeiro + último ──────────────
+    series.forEach(function(v, i){
+      var prev = series[i - 1], next = series[i + 1];
+      var isChange = (i === 0) || (i === series.length - 1) || (v !== prev) || (v !== next);
+      if (!isChange) return;
+      var x = PAD.l + i * step;
+      var y = PAD.t + chartH - (v / maxY) * chartH;
+      // Ponto branco interno
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#0f1311';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      // Rótulo de valor acima do ponto
+      ctx.fillStyle = color;
+      ctx.font = 'bold 9px Roboto Condensed,Arial,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(v, x, y - 7);
+    });
+  }
+
+  // ── Texto de resumo ───────────────────────────────────────────────────────────
+  function summaryText(series, total){
+    if (!series.length) return '';
+    var min = Math.min.apply(null, series);
+    var max = Math.max.apply(null, series);
+    var avg = (series.reduce(function(a, b){ return a + b; }, 0) / series.length).toFixed(1);
+    var pct = total > 0 ? ((min / total) * 100).toFixed(0) : '—';
+    return 'Efetivo total: <b style="color:#8ab8a8">'+total+'</b>'
+      +' &nbsp;·&nbsp; Mínimo: <b style="color:#c06060">'+min+'</b>'
+      +' &nbsp;·&nbsp; Máximo: <b style="color:#3ecf82">'+max+'</b>'
+      +' &nbsp;·&nbsp; Média: <b style="color:#8ab8a8">'+avg+'</b>'
+      +' &nbsp;·&nbsp; Mín.(%): <b style="color:#c8a840">'+pct+'%</b>';
+  }
+
+  // ── Render principal ─────────────────────────────────────────────────────────
+  function renderDisponibilidade(){
+    var st       = window.getState ? window.getState() : (window.state || {});
+    var allPeople = Array.isArray(st.personnel) ? st.personnel : [];
+    var days      = getDaysInQuarter(dispYear, dispQ);
+
+    updateNavLabels();
+
+    var configs = [
+      { canvasId:'dispChartGeral',         summaryId:'dispSummaryGeral',         filter: null,                    color:'#9b7fe8' },
+      { canvasId:'dispChartOficiais',      summaryId:'dispSummaryOficiais',      filter: GRUPOS.oficiais.ids,     color: GRUPOS.oficiais.color },
+      { canvasId:'dispChartSargentos',     summaryId:'dispSummarySargentos',     filter: GRUPOS.sargentos.ids,    color: GRUPOS.sargentos.color },
+      { canvasId:'dispChartCabosSoldados', summaryId:'dispSummaryCabosSoldados', filter: GRUPOS.cabosSoldados.ids,color: GRUPOS.cabosSoldados.color }
+    ];
+
+    configs.forEach(function(cfg){
+      var people = cfg.filter
+        ? allPeople.filter(function(p){ return cfg.filter.indexOf(String(p.ptgrad||'').trim().toUpperCase()) !== -1; })
+        : allPeople;
+      var series = calcSeries(days, people);
+      drawLineChart(cfg.canvasId, days, series, cfg.color, people.length);
+      var sumEl = document.getElementById(cfg.summaryId);
+      if (sumEl) sumEl.innerHTML = summaryText(series, people.length);
+    });
+  }
+
+  // ── Eventos de navegação ─────────────────────────────────────────────────────
+  function attachDispNav(){
+    var prevY = document.getElementById('dispYearPrev');
+    var nextY = document.getElementById('dispYearNext');
+    var prevQ = document.getElementById('dispQPrev');
+    var nextQ = document.getElementById('dispQNext');
+    if (!prevY) return;
+
+    prevY.onclick = function(){ dispYear--; renderDisponibilidade(); };
+    nextY.onclick = function(){ dispYear++; renderDisponibilidade(); };
+    prevQ.onclick = function(){
+      dispQ--; if (dispQ < 0){ dispQ = 3; dispYear--; }
+      renderDisponibilidade();
+    };
+    nextQ.onclick = function(){
+      dispQ++; if (dispQ > 3){ dispQ = 0; dispYear++; }
+      renderDisponibilidade();
+    };
+  }
+
+  // ── Hook no sistema de abas ───────────────────────────────────────────────────
+  function hookDispTab(){
+    var _origSet = window.setActiveTab;
+    window.setActiveTab = function(tabId){
+      if (typeof _origSet === 'function') _origSet.apply(this, arguments);
+      if (tabId === 'tabDisponibilidade') setTimeout(renderDisponibilidade, 60);
+    };
+    try { setActiveTab = window.setActiveTab; } catch(e){}
+
+    var obs = new MutationObserver(function(mutations){
+      mutations.forEach(function(m){
+        if (m.target && m.target.id === 'tabDisponibilidade' && m.target.classList.contains('active'))
+          renderDisponibilidade();
+      });
+    });
+    var tabEl = document.getElementById('tabDisponibilidade');
+    if (tabEl){ obs.observe(tabEl, {attributes:true, attributeFilter:['class']}); attachDispNav(); }
+  }
+
+  // ── Clique na sidebar ─────────────────────────────────────────────────────────
+  document.querySelectorAll('.sl-item[data-tab]').forEach(function(el){
+    el.addEventListener('click', function(){
+      var tabId = el.dataset.tab;
+      if (typeof window.setActiveTab === 'function'){
+        document.querySelectorAll('.sl-item').forEach(function(i){ i.classList.remove('active'); });
+        el.classList.add('active');
+        window.setActiveTab(tabId);
+      }
+    });
+  });
+
+  setTimeout(hookDispTab, 300);
+  setTimeout(hookDispTab, 900);
+  setTimeout(updateNavLabels, 400);
+
+})();
+</script>
+
 </body>
 </html>
