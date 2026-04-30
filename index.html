@@ -1380,6 +1380,7 @@
           <button class="btn btn-primary" type="button" onclick="faoNewSemester()">+ Novo Semestre</button>
           <button class="btn btn-secondary" type="button" onclick="faoDeleteSemester()" id="faoDeleteSemBtn" style="display:none;">Excluir Semestre</button>
           <button class="btn btn-secondary" type="button" onclick="faoPrintRelatorio()">⬇ Relatório PDF</button>
+          <button class="btn btn-primary" type="button" onclick="faoAbrirRelatorioInstrucao()">📋 Relatório por Instrução</button>
           <div id="faoSemesterBadge" style="font-size:12px; color:var(--text-muted);"></div>
         </div>
 
@@ -5248,6 +5249,8 @@
     let unsubscribeLogs = null;
     let saveTimer = null;
     let seedingMainDoc = false;
+    let isSaving = false;
+    let saveProtectTimer = null;
 
     setPersistence(auth, browserSessionPersistence).catch((error) => {
       console.error('Não foi possível aplicar persistência de sessão:', error);
@@ -5285,12 +5288,17 @@
 
     window.queueCloudSave = function queueCloudSave() {
       clearTimeout(saveTimer);
+      clearTimeout(saveProtectTimer);
+      isSaving = true;
       saveTimer = setTimeout(async () => {
-        if (!auth.currentUser) return;
+        if (!auth.currentUser) { isSaving = false; return; }
         try {
           await persistCloudState();
         } catch (error) {
           console.error('Erro ao salvar na nuvem:', error);
+        } finally {
+          // Protege por 2s apos o save para ignorar o echo do onSnapshot
+          saveProtectTimer = setTimeout(() => { isSaving = false; }, 2000);
         }
       }, 250);
     };
@@ -5331,6 +5339,8 @@
           }
           return;
         }
+        // Se um save local ainda esta em andamento, ignorar o echo do Firebase
+        if (isSaving) return;
         window.CIAOP.applyPrivateCloudState(snapshot.data());
       }, (error) => {
         console.error('Erro ao ouvir dados privados:', error);
@@ -11191,6 +11201,587 @@
   setTimeout(hookDispTab, 300);
   setTimeout(hookDispTab, 900);
   setTimeout(updateNavLabels, 400);
+
+})();
+</script>
+
+
+
+
+<script id="fao-relatorio-instrucao">
+(function () {
+  'use strict';
+  if (window.__faoRelatorioLoaded) return;
+  window.__faoRelatorioLoaded = true;
+
+  // ================================================================
+  // DADOS — replicados do fao-module para independência total de timing
+  // ================================================================
+  var FAO_MATRIX = [
+    { oi:'05',   nome:'Exercício de REOP',                  tipo:'FAO',   spmos:[6,7,12,13],                           grupo:'Planejamento'      },
+    { oi:'06',   nome:'Gerenciamento do Espaço Aéreo',      tipo:'TEO',   spmos:[1,2,3,4,7,8,9],                       grupo:'COAAE'             },
+    { oi:'07',   nome:'Comando e Controle',                  tipo:'TEO',   spmos:[1,2,3,4,6,7,8,9,10,11],              grupo:'COAAE'             },
+    { oi:'11.1', nome:'Exercício de COAAE (11.1)',           tipo:'FAO',   spmos:[3,7],                                 grupo:'COAAE'             },
+    { oi:'11.2', nome:'Exercício de COAAE (11.2)',           tipo:'FAO',   spmos:[8],                                   grupo:'COAAE'             },
+    { oi:'11.3', nome:'Exercício de COAAE (11.3)',           tipo:'FAO',   spmos:[10],                                  grupo:'COAAE'             },
+    { oi:'11.4', nome:'Exercício de COAAE (11.4)',           tipo:'FAO',   spmos:[4,9],                                 grupo:'COAAE'             },
+    { oi:'12',   nome:'Dados Técnicos',                     tipo:'TEO',   spmos:[5,13],                                grupo:'Radar Saber M60'   },
+    { oi:'15',   nome:'Emprego',                            tipo:'TEO',   spmos:[5,13],                                grupo:'Radar Saber M60'   },
+    { oi:'16',   nome:'Unidade de Visualização',            tipo:'FAO',   spmos:[4,5,8,9,13],                          grupo:'Radar Saber M60'   },
+    { oi:'17',   nome:'Manutenção',                         tipo:'TEO',   spmos:[5,13],                                grupo:'Radar Saber M60'   },
+    { oi:'19',   nome:'Emprego Operacional',                tipo:'TEO',   spmos:[6,12,14,15],                          grupo:'Armamento IGLA-S'  },
+    { oi:'20.1', nome:'Normas Trab. Combativo (20.1)',      tipo:'FAO',   spmos:[12],                                  grupo:'Armamento IGLA-S'  },
+    { oi:'20.2', nome:'Normas Trab. Combativo (20.2)',      tipo:'FAO',   spmos:[14],                                  grupo:'Armamento IGLA-S'  },
+    { oi:'20.3', nome:'Normas Trab. Combativo (20.3)',      tipo:'FAO',   spmos:[15],                                  grupo:'Armamento IGLA-S'  },
+    { oi:'20.4', nome:'Normas Trab. Combativo (20.4)',      tipo:'FAO',   spmos:[12],                                  grupo:'Armamento IGLA-S'  },
+    { oi:'20.5', nome:'Normas Trab. Combativo (20.5)',      tipo:'FAO',   spmos:[14],                                  grupo:'Armamento IGLA-S'  },
+    { oi:'20.6', nome:'Normas Trab. Combativo (20.6)',      tipo:'FAO',   spmos:[15],                                  grupo:'Armamento IGLA-S'  },
+    { oi:'21',   nome:'Disp. Termal de Pontaria',           tipo:'FAO',   spmos:[12,14],                               grupo:'Armamento IGLA-S'  },
+    { oi:'22.1', nome:'Prática Simulador KONUS (22.1)',     tipo:'FAO',   spmos:[12],                                  grupo:'Armamento IGLA-S'  },
+    { oi:'22.2', nome:'Prática Simulador KONUS (22.2)',     tipo:'FAO',   spmos:[14],                                  grupo:'Armamento IGLA-S'  },
+    { oi:'23',   nome:'Navegação Terrestre',                tipo:'FAO',   spmos:[5,6,12,13,14,15,16],                  grupo:'Combate Terrestre' },
+    { oi:'27',   nome:'Comunicações',                       tipo:'FAO',   spmos:[3,5,6,7,8,12,13,14,15,16],           grupo:'Combate Terrestre' },
+    { oi:'28.1', nome:'Percepção Visual do Objetivo (1ª)',  tipo:'TEO',   spmos:[12,14,15,16],                         grupo:'Combate Terrestre' },
+    { oi:'28.2', nome:'Percepção Visual do Objetivo (2ª)',  tipo:'TEO',   spmos:[12,14,15,16],                         grupo:'Combate Terrestre' },
+    { oi:'32',   nome:'NOSDA',                              tipo:'NOSDA', spmos:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], grupo:'NOSDA'        }
+  ];
+
+  var FOP_TO_SPMO = {
+    'CMT DAAE':1,'CMT BIA DAAE':2,'OF CTRL':3,'OLAAE':4,'OF RADAR':5,
+    'CMT SEC TIR':6,'ADJ OF CT':7,'LOCADOR':8,'AJOLAAE':9,'REGISTRADOR':10,
+    'OP SMOT':11,'CMT UTIR':12,'OP RADAR':13,'AT':14,'REMUNICIADOR':15,'OBDAAE':16
+  };
+
+  var SPMO_LABEL = {
+    1:'CMT DAAE',2:'CMT BIA DAAE',3:'OF CTRL',4:'OLAAE',5:'OF RADAR',
+    6:'CMT SEC TIR',7:'ADJ OF CT',8:'LOCADOR',9:'AJOLAAE',10:'REGISTRADOR',
+    11:'OP SMOT',12:'CMT UTIR',13:'OP RADAR',14:'AT',15:'REMUNICIADOR',16:'OBDAAE'
+  };
+
+  // ================================================================
+  // ACESSO AO ESTADO — via window.getState() exposto pelo sistema
+  // ================================================================
+  function getEstado() {
+    return (typeof window.getState === 'function') ? window.getState() : {};
+  }
+
+  function getFaoData() {
+    var st = getEstado();
+    return (st && st.faoData) ? st.faoData : null;
+  }
+
+  // ── Semestres ────────────────────────────────────────────────────
+  function getSemKeys() {
+    var fd = getFaoData();
+    if (!fd || !fd.semesters) return [];
+    return Object.keys(fd.semesters).sort(function (a, b) { return b.localeCompare(a); });
+  }
+
+  function getActiveSemKey() {
+    var fd = getFaoData();
+    return fd ? (fd.activeSemester || '') : '';
+  }
+
+  function getSemLabel(key) {
+    var fd = getFaoData();
+    if (!fd || !fd.semesters || !fd.semesters[key]) return key;
+    return fd.semesters[key].label || key;
+  }
+
+  // ── Registro de avaliação de um militar num semestre ─────────────
+  function getRegistro(semKey, personId) {
+    var fd = getFaoData();
+    if (!fd || !fd.semesters || !fd.semesters[semKey]) return {};
+    return ((fd.semesters[semKey].records || {})[personId]) || {};
+  }
+
+  // ── SPMOs de um militar a partir das FOPs cadastradas ────────────
+  function getSpmos(person) {
+    var spmos = [];
+    ['fop1','fop2','fop3','fop4'].forEach(function (k) {
+      var f = String(person[k] || '').trim();
+      if (f && FOP_TO_SPMO[f] !== undefined) {
+        var n = FOP_TO_SPMO[f];
+        if (spmos.indexOf(n) === -1) spmos.push(n);
+      }
+    });
+    return spmos;
+  }
+
+  // ── Avaliações que um militar deve realizar ──────────────────────
+  // Retorna array de { key, oi, nome, tipo, grupo }
+  function getAvals(person) {
+    var spmos = getSpmos(person);
+    if (!spmos.length) return [];
+    var lista = [];
+    FAO_MATRIX.forEach(function (entry) {
+      if (entry.tipo === 'NOSDA') {
+        spmos.forEach(function (s) {
+          lista.push({
+            key:   'nosda_' + s,
+            oi:    '32',
+            nome:  'NOSDA — ' + (SPMO_LABEL[s] || 'SPMO-' + s),
+            tipo:  'FAO+TEO',
+            grupo: 'NOSDA'
+          });
+        });
+      } else {
+        var intersecta = entry.spmos.some(function (s) { return spmos.indexOf(s) !== -1; });
+        if (intersecta) {
+          lista.push({
+            key:   entry.oi,
+            oi:    entry.oi,
+            nome:  entry.nome,
+            tipo:  entry.tipo === 'TEO' ? 'Av Teórica' : 'FAO',
+            grupo: entry.grupo
+          });
+        }
+      }
+    });
+    return lista;
+  }
+
+  // ── Militares com pelo menos uma FOP operacional ─────────────────
+  function getPessoalFop() {
+    var st = getEstado();
+    if (!st || !Array.isArray(st.personnel)) return [];
+    return st.personnel.filter(function (p) { return getSpmos(p).length > 0; });
+  }
+
+  // ── Verifica se avaliação foi realizada ──────────────────────────
+  function isRealizada(r) {
+    if (!r) return false;
+    return (typeof r.data === 'string' && r.data.trim() !== '') ||
+           (typeof r.nota === 'string' && r.nota.trim() !== '');
+  }
+
+  // ── Escape HTML ──────────────────────────────────────────────────
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ================================================================
+  // MODAL — criado uma única vez, reutilizado
+  // ================================================================
+  var overlay = null;
+
+  function criarModal() {
+    if (document.getElementById('faoRelOverlay')) {
+      overlay = document.getElementById('faoRelOverlay');
+      return;
+    }
+    overlay = document.createElement('div');
+    overlay.id = 'faoRelOverlay';
+    overlay.style.cssText = [
+      'position:fixed','top:0','left:0','width:100%','height:100%',
+      'background:rgba(0,0,0,0.80)','z-index:9000',
+      'display:none','align-items:center','justify-content:center',
+      'padding:20px','box-sizing:border-box'
+    ].join(';');
+
+    overlay.innerHTML = [
+      '<div style="background:var(--bg-card);border:1px solid var(--line-soft);border-radius:var(--radius-lg);',
+             'width:100%;max-width:1000px;max-height:90vh;display:flex;flex-direction:column;',
+             'box-shadow:var(--shadow-lg);overflow:hidden;">',
+
+        // ── Cabeçalho ───────────────────────────────────────────────
+        '<div style="padding:18px 20px;border-bottom:1px solid var(--line-soft);',
+               'background:var(--bg-panel);flex-shrink:0;">',
+          '<div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;">',
+
+            // Título
+            '<div style="flex:1;min-width:180px;">',
+              '<h3 style="margin:0 0 3px;font-family:Oswald,sans-serif;font-size:20px;',
+                    'text-transform:uppercase;letter-spacing:1px;color:#fff;">📋 Relatório por Instrução</h3>',
+              '<p style="margin:0;color:var(--text-muted);font-size:12px;">',
+                'Selecione a instrução para ver quem realizou e quem ainda precisa realizar.',
+              '</p>',
+            '</div>',
+
+            // Controles
+            '<div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;">',
+
+              // Select semestre
+              '<div style="display:flex;flex-direction:column;gap:4px;">',
+                '<label style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Semestre</label>',
+                '<select id="faoRelSemSelect"',
+                  ' style="height:34px;font-size:13px;min-width:155px;',
+                           'background:var(--bg-input);color:var(--text-main);',
+                           'border:1px solid var(--line);border-radius:var(--radius-sm);padding:0 8px;"',
+                  ' onchange="window._faoRelRender()">',
+                '</select>',
+              '</div>',
+
+              // Select instrução
+              '<div style="display:flex;flex-direction:column;gap:4px;">',
+                '<label style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Instrução / Avaliação</label>',
+                '<select id="faoRelAvalSelect"',
+                  ' style="height:34px;font-size:13px;min-width:300px;',
+                           'background:var(--bg-input);color:var(--text-main);',
+                           'border:1px solid var(--line);border-radius:var(--radius-sm);padding:0 8px;"',
+                  ' onchange="window._faoRelRender()">',
+                '</select>',
+              '</div>',
+
+              // Botões
+              '<button onclick="window._faoRelImprimir()"',
+                ' style="height:34px;padding:0 16px;background:var(--accent);color:#fff;border:none;',
+                         'border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">',
+                '🖨 Imprimir',
+              '</button>',
+              '<button onclick="window._faoRelFechar()"',
+                ' style="height:34px;padding:0 14px;background:transparent;color:var(--text-muted);',
+                         'border:1px solid var(--line);border-radius:var(--radius-sm);font-size:13px;cursor:pointer;">',
+                '✕ Fechar',
+              '</button>',
+
+            '</div>',
+          '</div>',
+        '</div>',
+
+        // ── Corpo ────────────────────────────────────────────────────
+        '<div id="faoRelBody" style="overflow-y:auto;flex:1;padding:20px;min-height:200px;">',
+          '<p style="color:var(--text-muted);text-align:center;padding:60px 0;font-size:14px;">',
+            'Selecione uma instrução acima para ver o relatório.',
+          '</p>',
+        '</div>',
+
+      '</div>'
+    ].join('');
+
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) window._faoRelFechar();
+    });
+  }
+
+  // ================================================================
+  // POPULAR SELECTS — chamado toda vez que o modal abre
+  // (lê o estado no momento da abertura, sempre atualizado)
+  // ================================================================
+  function popularSelects() {
+    var semSel  = document.getElementById('faoRelSemSelect');
+    var avalSel = document.getElementById('faoRelAvalSelect');
+    if (!semSel || !avalSel) return;
+
+    // ── Semestres ────────────────────────────────────────────────
+    var keys   = getSemKeys();
+    var active = getActiveSemKey();
+
+    if (!keys.length) {
+      semSel.innerHTML = '<option value="">Nenhum semestre cadastrado</option>';
+    } else {
+      semSel.innerHTML = keys.map(function (k) {
+        return '<option value="' + esc(k) + '"' + (k === active ? ' selected' : '') + '>' + esc(getSemLabel(k)) + '</option>';
+      }).join('');
+    }
+
+    // ── Instruções — geradas diretamente da FAO_MATRIX + pessoal ──
+    var pessoas = getPessoalFop();
+
+    // Descobre todos os SPMOs presentes no efetivo
+    var smposPresentes = {};
+    pessoas.forEach(function (p) {
+      getSpmos(p).forEach(function (s) { smposPresentes[s] = true; });
+    });
+
+    // Monta opções agrupadas por grupo
+    var grupos = {};
+    FAO_MATRIX.forEach(function (entry) {
+      if (entry.tipo === 'NOSDA') {
+        // Uma opção por SPMO presente no efetivo
+        Object.keys(smposPresentes).forEach(function (s) {
+          var sn = parseInt(s, 10);
+          var key = 'nosda_' + sn;
+          var label = 'NOSDA — ' + (SPMO_LABEL[sn] || 'SPMO-' + sn);
+          if (!grupos['NOSDA']) grupos['NOSDA'] = [];
+          grupos['NOSDA'].push({ key: key, label: label, tipo: 'FAO+TEO' });
+        });
+      } else {
+        // Só inclui se ao menos um militar do efetivo tem o SPMO
+        var relevante = entry.spmos.some(function (s) { return smposPresentes[s]; });
+        if (relevante) {
+          if (!grupos[entry.grupo]) grupos[entry.grupo] = [];
+          var tipoLabel = entry.tipo === 'TEO' ? 'Av Teórica' : 'FAO';
+          grupos[entry.grupo].push({
+            key:   entry.oi,
+            label: '[OI ' + entry.oi + '] ' + entry.nome,
+            tipo:  tipoLabel
+          });
+        }
+      }
+    });
+
+    // Monta HTML com <optgroup>
+    var optsHtml = '<option value="">— Selecione uma instrução —</option>';
+    var ordemGrupos = ['Planejamento','COAAE','Radar Saber M60','Armamento IGLA-S','Combate Terrestre','NOSDA'];
+    ordemGrupos.forEach(function (g) {
+      if (!grupos[g] || !grupos[g].length) return;
+      optsHtml += '<optgroup label="' + esc(g) + '">';
+      grupos[g].forEach(function (o) {
+        optsHtml += '<option value="' + esc(o.key) + '">[' + esc(o.tipo) + '] ' + esc(o.label) + '</option>';
+      });
+      optsHtml += '</optgroup>';
+    });
+
+    // Preserva seleção anterior se possível
+    var prevVal = avalSel.value;
+    avalSel.innerHTML = optsHtml;
+    if (prevVal) {
+      var opt = avalSel.querySelector('option[value="' + prevVal.replace(/"/g, '') + '"]');
+      if (opt) opt.selected = true;
+    }
+  }
+
+  // ================================================================
+  // RENDERIZAR TABELA
+  // ================================================================
+  window._faoRelRender = function () {
+    var semSel  = document.getElementById('faoRelSemSelect');
+    var avalSel = document.getElementById('faoRelAvalSelect');
+    var body    = document.getElementById('faoRelBody');
+    if (!semSel || !avalSel || !body) return;
+
+    var semKey  = semSel.value;
+    var avalKey = avalSel.value;
+
+    if (!avalKey) {
+      body.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:60px 0;font-size:14px;">Selecione uma instrução acima para ver o relatório.</p>';
+      return;
+    }
+
+    var pessoas = getPessoalFop();
+
+    // Filtrar quem DEVE fazer esta avaliação
+    var candidatos = pessoas.filter(function (p) {
+      return getAvals(p).some(function (av) { return av.key === avalKey; });
+    });
+
+    if (!candidatos.length) {
+      body.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:60px 0;font-size:14px;">Nenhum militar deve realizar esta instrução.</p>';
+      return;
+    }
+
+    // Nome/tipo/grupo da avaliação selecionada
+    var nomeAval = avalKey, tipoAval = '', grupoAval = '';
+    var avRef = getAvals(candidatos[0]).find(function (av) { return av.key === avalKey; });
+    if (avRef) { nomeAval = avRef.nome; tipoAval = avRef.tipo; grupoAval = avRef.grupo; }
+
+    // Separar realizados e pendentes
+    var realizados = [], pendentes = [];
+    candidatos.forEach(function (p) {
+      var rec  = getRegistro(semKey, p.id);
+      var r    = rec[avalKey] || {};
+      var real = isRealizada(r);
+      var dataFmt = (r.data || '').trim() ? r.data.split('-').reverse().join('/') : '—';
+      var nota    = (r.nota || '').trim() || '—';
+      (real ? realizados : pendentes).push({ p: p, data: dataFmt, nota: nota });
+    });
+
+    var total  = candidatos.length;
+    var nReal  = realizados.length;
+    var pct    = total > 0 ? Math.round(nReal / total * 100) : 0;
+    var corPct = pct === 100 ? '#3ecf82' : pct >= 50 ? '#c8a840' : '#c06060';
+    var semLabel = getSemLabel(semKey);
+
+    // Tags de FOP
+    function fopsTag(p) {
+      return ['fop1','fop2','fop3','fop4'].map(function (k) {
+        return p[k]
+          ? '<span style="font-size:10px;background:rgba(82,138,99,0.15);border:1px solid var(--accent);' +
+            'border-radius:4px;padding:1px 6px;margin:1px;display:inline-block;">' + esc(p[k]) + '</span>'
+          : '';
+      }).filter(Boolean).join('');
+    }
+
+    // Linha da tabela
+    function linha(obj, realizada) {
+      var badge = realizada
+        ? '<span style="background:rgba(62,207,130,0.15);color:#3ecf82;border:1px solid #3ecf82;' +
+          'border-radius:6px;padding:2px 10px;font-size:11px;font-weight:700;">✔ REALIZADO</span>'
+        : '<span style="background:rgba(192,96,96,0.15);color:#c06060;border:1px solid #c06060;' +
+          'border-radius:6px;padding:2px 10px;font-size:11px;font-weight:700;">✘ PENDENTE</span>';
+      return '<tr>' +
+        '<td>' + esc(obj.p.ptgrad) + '</td>' +
+        '<td>' + esc(obj.p.nomeGuerra) + '</td>' +
+        '<td style="text-align:center;">' + esc(obj.p.trigrama || '') + '</td>' +
+        '<td>' + fopsTag(obj.p) + '</td>' +
+        '<td style="text-align:center;">' + badge + '</td>' +
+        '<td style="text-align:center;">' + esc(obj.data) + '</td>' +
+        '<td style="text-align:center;">' + esc(obj.nota) + '</td>' +
+        '</tr>';
+    }
+
+    // Cabeçalho de seção
+    function secao(txt, cor) {
+      return '<tr><td colspan="7" style="background:rgba(0,0,0,0.2);color:' + cor + ';' +
+        'font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:700;padding:8px 12px;">' + txt + '</td></tr>';
+    }
+
+    body.innerHTML = [
+      // Cards
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;">',
+
+        '<div style="flex:1;min-width:180px;background:var(--bg-panel);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:14px 18px;">',
+          '<div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Instrução</div>',
+          '<div style="font-size:15px;font-family:Oswald,sans-serif;color:#fff;">' + esc(nomeAval) + '</div>',
+          '<div style="font-size:11px;color:var(--text-muted);margin-top:3px;">' + esc(grupoAval) + ' · ' + esc(tipoAval) + ' · ' + esc(semLabel) + '</div>',
+        '</div>',
+
+        '<div style="background:var(--bg-panel);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:14px 20px;text-align:center;min-width:95px;">',
+          '<div style="font-size:26px;font-family:Oswald,sans-serif;color:#fff;">' + total + '</div>',
+          '<div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Devem Realizar</div>',
+        '</div>',
+
+        '<div style="background:var(--bg-panel);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:14px 20px;text-align:center;min-width:95px;">',
+          '<div style="font-size:26px;font-family:Oswald,sans-serif;color:#3ecf82;">' + nReal + '</div>',
+          '<div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Realizaram</div>',
+        '</div>',
+
+        '<div style="background:var(--bg-panel);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:14px 20px;text-align:center;min-width:95px;">',
+          '<div style="font-size:26px;font-family:Oswald,sans-serif;color:#c06060;">' + (total - nReal) + '</div>',
+          '<div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Pendentes</div>',
+        '</div>',
+
+        '<div style="background:var(--bg-panel);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:14px 20px;text-align:center;min-width:95px;">',
+          '<div style="font-size:26px;font-family:Oswald,sans-serif;color:' + corPct + ';">' + pct + '%</div>',
+          '<div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Realização</div>',
+        '</div>',
+
+      '</div>',
+
+      // Barra de progresso
+      '<div style="background:var(--bg-panel);border-radius:6px;height:8px;margin-bottom:20px;overflow:hidden;">',
+        '<div style="height:8px;width:' + pct + '%;background:' + corPct + ';border-radius:6px;transition:width .3s;"></div>',
+      '</div>',
+
+      // Tabela
+      '<div class="table-wrap">',
+        '<table>',
+          '<thead><tr>',
+            '<th>PT/GRAD</th><th>Nome de Guerra</th>',
+            '<th style="text-align:center;">Trigrama</th><th>FOPs</th>',
+            '<th style="text-align:center;">Status</th>',
+            '<th style="text-align:center;">Data Realização</th>',
+            '<th style="text-align:center;">Nota</th>',
+          '</tr></thead>',
+          '<tbody>',
+            pendentes.length  ? secao('⚠ Pendentes — ' + pendentes.length  + ' militar(es)', '#c06060') + pendentes.map( function(o){ return linha(o, false); }).join('') : '',
+            realizados.length ? secao('✔ Realizados — ' + realizados.length + ' militar(es)', '#3ecf82') + realizados.map(function(o){ return linha(o, true);  }).join('') : '',
+          '</tbody>',
+        '</table>',
+      '</div>',
+
+      '<p style="color:var(--text-muted);font-size:11px;margin-top:10px;text-align:right;">',
+        'Gerado em ' + new Date().toLocaleDateString('pt-BR'),
+      '</p>'
+    ].join('');
+
+    // Salvar contexto para impressão
+    window._faoRelCtx = {
+      nomeAval: nomeAval, tipoAval: tipoAval, grupoAval: grupoAval,
+      semLabel: semLabel, total: total, nReal: nReal, pct: pct,
+      corPct: corPct, pendentes: pendentes, realizados: realizados
+    };
+  };
+
+  // ================================================================
+  // ABRIR MODAL
+  // ================================================================
+  window.faoAbrirRelatorioInstrucao = function () {
+    criarModal();
+    overlay.style.display = 'flex';
+    // Popular sempre ao abrir — garante dados atualizados
+    popularSelects();
+    window._faoRelRender();
+  };
+
+  // ================================================================
+  // FECHAR MODAL
+  // ================================================================
+  window._faoRelFechar = function () {
+    if (overlay) overlay.style.display = 'none';
+  };
+
+  // ================================================================
+  // IMPRESSÃO
+  // ================================================================
+  window._faoRelImprimir = function () {
+    var ctx = window._faoRelCtx;
+    if (!ctx) { alert('Selecione uma instrução antes de imprimir.'); return; }
+
+    function fopsStr(p) {
+      return ['fop1','fop2','fop3','fop4'].map(function (k) { return p[k] || ''; }).filter(Boolean).join(', ');
+    }
+
+    function linhasImp(lista, status, cor) {
+      return lista.map(function (o) {
+        return '<tr>' +
+          '<td>' + o.p.ptgrad + '</td>' +
+          '<td>' + o.p.nomeGuerra + '</td>' +
+          '<td style="text-align:center;">' + (o.p.trigrama || '') + '</td>' +
+          '<td>' + fopsStr(o.p) + '</td>' +
+          '<td style="text-align:center;font-weight:700;color:' + cor + ';">' + status + '</td>' +
+          '<td style="text-align:center;">' + o.data + '</td>' +
+          '<td style="text-align:center;">' + o.nota + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    var w = window.open('', '_blank');
+    if (!w) { alert('Permita pop-ups para imprimir.'); return; }
+
+    var corPctImp = ctx.pct === 100 ? '#1a7a40' : ctx.pct >= 50 ? '#7a5a00' : '#a00000';
+
+    w.document.write([
+      '<!DOCTYPE html><html><head><meta charset="UTF-8">',
+      '<title>Relatório FAO — ' + ctx.nomeAval + '</title>',
+      '<style>',
+        'body{font-family:Arial,sans-serif;font-size:12px;color:#111;margin:24px;}',
+        'h1{font-size:15px;margin:0 0 3px;}',
+        '.sub{color:#555;font-size:10px;margin:0 0 14px;}',
+        '.cards{display:flex;gap:12px;margin-bottom:14px;}',
+        '.card{border:1px solid #ccc;border-radius:5px;padding:8px 14px;text-align:center;}',
+        '.card .v{font-size:20px;font-weight:700;}',
+        '.card .l{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.5px;}',
+        '.bar-bg{background:#e0e0e0;border-radius:4px;height:8px;margin-bottom:14px;}',
+        '.bar-fill{height:8px;border-radius:4px;}',
+        'table{width:100%;border-collapse:collapse;}',
+        'th{background:#1a3a25;color:#fff;padding:6px 8px;text-align:left;font-size:10px;}',
+        'td{padding:5px 8px;border-bottom:1px solid #e0e0e0;font-size:11px;}',
+        'tr:nth-child(even) td{background:#f5f5f5;}',
+        '.sec-p td{background:#fff0f0;color:#a00000;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;}',
+        '.sec-r td{background:#f0fff4;color:#1a6b40;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;}',
+        '@media print{button{display:none;}}',
+      '</style></head><body>',
+      '<h1>Relatório FAO por Instrução</h1>',
+      '<p class="sub">' + ctx.nomeAval + ' &nbsp;·&nbsp; ' + ctx.tipoAval + ' &nbsp;·&nbsp; ' + ctx.grupoAval +
+        ' &nbsp;|&nbsp; Semestre: ' + ctx.semLabel + ' &nbsp;|&nbsp; Emitido em: ' + new Date().toLocaleDateString('pt-BR') + '</p>',
+      '<div class="cards">',
+        '<div class="card"><div class="v">' + ctx.total + '</div><div class="l">Devem Realizar</div></div>',
+        '<div class="card"><div class="v" style="color:#1a7a40;">' + ctx.nReal + '</div><div class="l">Realizaram</div></div>',
+        '<div class="card"><div class="v" style="color:#a00000;">' + (ctx.total - ctx.nReal) + '</div><div class="l">Pendentes</div></div>',
+        '<div class="card"><div class="v" style="color:' + corPctImp + ';">' + ctx.pct + '%</div><div class="l">Realização</div></div>',
+      '</div>',
+      '<div class="bar-bg"><div class="bar-fill" style="width:' + ctx.pct + '%;background:' + corPctImp + ';"></div></div>',
+      '<table>',
+        '<thead><tr>',
+          '<th>PT/GRAD</th><th>Nome de Guerra</th><th>Trigrama</th>',
+          '<th>FOPs</th><th>Status</th><th>Data Realização</th><th>Nota</th>',
+        '</tr></thead>',
+        '<tbody>',
+          (ctx.pendentes.length  ? '<tr class="sec-p"><td colspan="7">⚠ Pendentes ('  + ctx.pendentes.length  + ')</td></tr>' + linhasImp(ctx.pendentes,  'PENDENTE',  '#a00000') : ''),
+          (ctx.realizados.length ? '<tr class="sec-r"><td colspan="7">✔ Realizados (' + ctx.realizados.length + ')</td></tr>' + linhasImp(ctx.realizados, 'REALIZADO', '#1a6b40') : ''),
+        '</tbody>',
+      '</table>',
+      '</body></html>'
+    ].join(''));
+
+    w.document.close();
+    setTimeout(function () { w.print(); }, 400);
+  };
 
 })();
 </script>
